@@ -1,16 +1,15 @@
-// ============================================
 // 📊 Modelo de Usuários (Login/Cadastro)
 // Suporta MySQL e Mock JSON (para desenvolvimento)
 // ============================================
-
+ 
 const fs = require("fs");
 const path = require("path");
-
+ 
 // Tentar conectar ao MySQL, mas usar JSON como fallback
 let pool = null;
 let usarJSON = true;
 let tentouMySQL = false;
-
+ 
 try {
   pool = require("../../config/pool_conexoes");
   tentouMySQL = true;
@@ -19,7 +18,7 @@ try {
   console.log("⚠️  MySQL indisponível na inicialização, usando JSON");
   tentouMySQL = false;
 }
-
+ 
 // Função auxiliar para detectar falha de conexão e usar JSON
 const withFallback = async (mysqlFn, jsonFn) => {
   try {
@@ -34,44 +33,69 @@ const withFallback = async (mysqlFn, jsonFn) => {
     return jsonFn();
   }
 };
-
+ 
 // Caminho do arquivo JSON
 const dbPath = path.join(__dirname, "../../data/usuarios.json");
 const dbDir = path.dirname(dbPath);
-
+ 
 // Garantir que o diretório existe
 if (!fs.existsSync(dbDir)) {
   fs.mkdirSync(dbDir, { recursive: true });
 }
-
+ 
 // Garantir que o arquivo exists
 if (!fs.existsSync(dbPath)) {
   fs.writeFileSync(dbPath, JSON.stringify([], null, 2));
 }
-
+ 
 // ============================================
 // FUNÇÕES DE LEITURA/ESCRITA JSON
 // ============================================
-
+ 
 const lerUsuarios = () => {
-  const dados = fs.readFileSync(dbPath, "utf8");
-  return JSON.parse(dados);
+  try {
+    if (!fs.existsSync(dbPath)) {
+      fs.writeFileSync(dbPath, JSON.stringify([], null, 2), "utf8");
+      return [];
+    }
+ 
+    const dados = fs.readFileSync(dbPath, "utf8");
+    if (!dados || !dados.trim()) {
+      return [];
+    }
+ 
+    return JSON.parse(dados);
+  } catch (err) {
+    console.error("❌ Falha ao ler usuario.json:", err);
+    try {
+      fs.writeFileSync(dbPath, JSON.stringify([], null, 2), "utf8");
+      console.log("✅ usuario.json reiniciado como array vazio");
+    } catch (writeErr) {
+      console.error("❌ Falha ao recriar usuario.json:", writeErr);
+    }
+    return [];
+  }
 };
-
+ 
 const salvarUsuarios = (usuarios) => {
-  fs.writeFileSync(dbPath, JSON.stringify(usuarios, null, 2));
+  try {
+    fs.writeFileSync(dbPath, JSON.stringify(usuarios, null, 2), "utf8");
+  } catch (err) {
+    console.error("❌ Falha ao salvar usuario.json:", err);
+    throw err;
+  }
 };
-
+ 
 const gerarId = () => {
   const usuarios = lerUsuarios();
   if (usuarios.length === 0) return 1;
   return Math.max(...usuarios.map(u => u.id)) + 1;
 };
-
+ 
 // ============================================
 // MODELO DE USUÁRIOS
 // ============================================
-
+ 
 const usuariosModel = {
   // Listar todos os usuários
   findAll: async (opts = { limit: 100, offset: 0 }) => {
@@ -87,7 +111,7 @@ const usuariosModel = {
       }
     );
   },
-
+ 
   // Buscar usuário por ID
   findById: async (id) => {
     return await withFallback(
@@ -106,7 +130,7 @@ const usuariosModel = {
       }
     );
   },
-
+ 
   // Buscar usuário por email
   findByEmail: async (email) => {
     return await withFallback(
@@ -125,7 +149,7 @@ const usuariosModel = {
       }
     );
   },
-
+ 
   // Buscar usuário por provider e providerId
   findByProviderId: async (provider, providerId) => {
     return await withFallback(
@@ -146,13 +170,13 @@ const usuariosModel = {
       }
     );
   },
-
+ 
   // Criar novo usuário
   create: async (dados) => {
     if (!dados || !dados.nome || !dados.email) {
       throw new Error("Nome e email são obrigatórios");
     }
-
+ 
     const usuarioValido = {
       nome: dados.nome.trim(),
       email: dados.email.toLowerCase(),
@@ -161,11 +185,11 @@ const usuariosModel = {
       provider: dados.provider || "local",
       providerId: dados.providerId || null,
     };
-
+ 
     if (usuarioValido.provider === "local" && !usuarioValido.senha) {
       throw new Error("Senha é obrigatória para cadastro local");
     }
-
+ 
     return await withFallback(
       async () => {
         const sql = `
@@ -198,11 +222,11 @@ const usuariosModel = {
         usuarios.push(novoUsuario);
         salvarUsuarios(usuarios);
         console.log("✅ Usuário cadastrado (JSON):", dados.nome);
-        return { insertId: id };
+        return novoUsuario;
       }
     );
   },
-
+ 
   // Verificar se usuário existe (por nome ou email, sem senha)
   findByUsuarioOuEmail: async (usuarioOuEmail) => {
     return await withFallback(
@@ -216,14 +240,14 @@ const usuariosModel = {
       },
       () => {
         const usuarios = lerUsuarios();
-        const usuario = usuarios.find(u => 
+        const usuario = usuarios.find(u =>
           u.email === usuarioOuEmail.toLowerCase() || u.nome.toLowerCase() === usuarioOuEmail.toLowerCase()
         );
         return usuario || null;
       }
     );
   },
-
+ 
   // Verificar login (nome/email + senha)
   findByCredentials: async (usuarioOuEmail, senha) => {
     return await withFallback(
@@ -237,8 +261,8 @@ const usuariosModel = {
       },
       () => {
         const usuarios = lerUsuarios();
-        const usuario = usuarios.find(u => 
-          (u.email === usuarioOuEmail.toLowerCase() || u.nome.toLowerCase() === usuarioOuEmail.toLowerCase()) && 
+        const usuario = usuarios.find(u =>
+          (u.email === usuarioOuEmail.toLowerCase() || u.nome.toLowerCase() === usuarioOuEmail.toLowerCase()) &&
           u.senha === senha
         );
         return usuario || null;
@@ -246,7 +270,7 @@ const usuariosModel = {
     );
   }
 };
-
+ 
 // Mapear resultado do banco para objeto usuário (para MySQL)
 const mapRowToUsuario = (row) => ({
   id: row.id,
@@ -257,5 +281,5 @@ const mapRowToUsuario = (row) => ({
   providerId: row.provider_id || row.providerId || null,
   dataCriacao: row.data_criacao || row.dataCriacao
 });
-
+ 
 module.exports = usuariosModel;

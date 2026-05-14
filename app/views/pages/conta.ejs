@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Perfil</title>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap%22 rel="stylesheet">
   <link rel="stylesheet" href="../css/conta.css" />
 </head>
 <%- include('../partials/header.ejs') %>
-
+ 
 <body>
   <main class="container">
     <!-- Profile Section -->
@@ -30,125 +30,103 @@
 
     <form action="/enviar-foto" method="POST" enctype="multipart/form-data"><input type="file" name="imagemUsuario" accept="img/*">
     <button type="submit">Upload Inteligente</button></form>
-
+ 
     <!-- Credit Balance -->
     <section class="balance-card">
-      <span class="balance-label">Saldo de Crédito</span>
-      <div class="balance-amount">
-        <span class="dollar-sign">$</span>
-        <span class="amount">1.250</span>
-      </div>
-    </section>
-
-    <!-- Bento Grid -->
-    <div class="bento-grid">
-      <!-- In-Progress Trades -->
-      <section class="trades-section">
-        <h2>Trocas em Andamento</h2>
-        
-        <div class="trade-card">
-          <div class="trade-icon">
-            <span class="material-symbols-outlined">pending_actions</span>
-          </div>
-          <div class="trade-info">
-            <p class="trade-type">Serviço</p>
-            <p class="trade-name">Direção Criativa</p>
-          </div>
-          <div class="trade-status">75%</div>
-        </div>
-
-        <div class="trade-card">
-          <div class="trade-icon">
-            <span class="material-symbols-outlined">local_shipping</span>
-          </div>
-          <div class="trade-info">
-            <p class="trade-type">Mercadoria</p>
-            <p class="trade-name">Limited Vinyl Set</p>
-          </div>
-          <div class="trade-status">EM ROTA</div>
+        <div class="balance-amount">
+          <span class="amount">Você acumulou 100 créditos<!-- <img src="/img/img-creditos.png" alt="Ícone de créditos">--></span>
         </div>
       </section>
-
-      <!-- Proposals -->
-      <section class="proposals-section">
-        <h2>Propostas Recebidas</h2>
-        
-        <div class="proposal-card">
-          <div class="proposal-header">
-            <span class="material-symbols-outlined">mic</span>
-            <span>Dr. Dre</span>
-            <span class="proposal-type">Serviço</span>
+ 
+      <!-- Bento Grid -->
+      <div class="bento-grid">
+        <!-- In-Progress Trades -->
+        <section class="trades-section">
+          <h2>Últimas Trocas</h2>
+         
+          <div class="trade-card">
+            <div class="trade-icon">
+              <span class="material-symbols-outlined">pending_actions</span>
+            </div>
+            <div class="trade-info">
+              <p class="trade-type">06/05/2026</p>
+              <p class="trade-type">Kamau Santana</p>
+              <p class="trade-name">Limpeza</p>
+            </div>
+            <div class="trade-status status-badge status-andamento">ANDAMENTO</div>
           </div>
-          <p>Studio Mix Session</p>
-        </div>
-
-        <div class="proposal-card">
-          <div class="proposal-header">
-            <span class="material-symbols-outlined">directions_car</span>
-            <span>Snoop Dogg</span>
-            <span class="proposal-type">Bens</span>
+ 
+          <div class="trade-card">
+            <div class="trade-icon">
+              <span class="material-symbols-outlined">pending_actions</span>
+            </div>
+            <div class="trade-info">
+              <p class="trade-type">05/05/2026</p>
+              <p class="trade-type">Igor Andrade</p>
+              <p class="trade-name">Limpeza</p>
+            </div>
+            <div class="trade-status status-badge status-concluido">CONCLUÍDO</div>
           </div>
-          <p>Classic Lowrider Model</p>
-        </div>
-
-        <div class="proposal-card">
-          <div class="proposal-header">
-            <span class="material-symbols-outlined">restaurant</span>
-            <span>50 Cent</span>
-            <span class="proposal-type">Comida</span>
+ 
+          <div class="trade-card">
+            <div class="trade-icon">
+              <span class="material-symbols-outlined">pending_actions</span>
+            </div>
+            <div class="trade-info">
+              <p class="trade-type">04/05/2026</p>
+              <p class="trade-type">Marcos Gabriel</p>
+              <p class="trade-name">Limpeza</p>
+            </div>
+            <div class="trade-status status-badge status-concluido">CONCLUÍDO</div>
           </div>
-          <p>Vitamin Water Case</p>
-        </div>
-      </section>
-    </div>
-
-    <!-- History Table -->
-    <section class="history-section">
-      <h2>Histórico Recente (10 dias)</h2>
-      <div class="history-table">
-        <table>
-          <thead>
-            <tr>
-              <th>Data</th>
-              <th>Troca</th>
-              <th>Valor</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>24 Out</td>
-              <td>Royalties Collection</td>
-              <td class="positive">+$450</td>
-            </tr>
-            <tr>
-              <td>22 Out</td>
-              <td>Studio Gear Sale</td>
-              <td class="positive">+$320</td>
-            </tr>
-            <tr>
-              <td>19 Out</td>
-              <td>Merch Restock</td>
-              <td class="negative">-$120</td>
-            </tr>
-            <tr>
-              <td>15 Out</td>
-              <td>Collaboration Fee</td>
-              <td class="positive">+$1.000</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- Logout -->
-    <section class="logout-section">
-      <a href="/logout" class="logout-btn">
-        <span class="material-symbols-outlined">logout</span>
-        Sair da Conta
-      </a>
-    </section>
+        </section>
+       
+        <section class="trades-section">
+          <h2>Ofertas Ativas</h2>
+         
+          <div class="trade-card">
+            <div class="trade-icon">
+              <span class="material-symbols-outlined">pending_actions</span>
+            </div>
+            <div class="trade-info">
+              <p class="trade-type">07/05/2026</p>
+              <p class="trade-type">Marcos Vinicius</p>
+              <p class="trade-name">Limpeza</p>
+            </div>
+            <div class="trade-status status-badge status-inativa">INATIVA</div>
+          </div>
+ 
+          <div class="trade-card">
+            <div class="trade-icon">
+              <span class="material-symbols-outlined">pending_actions</span>
+            </div>
+            <div class="trade-info">
+              <p class="trade-type">05/05/2026</p>
+              <p class="trade-type">Matheus Barbosa</p>
+              <p class="trade-name">Limpeza</p>
+            </div>
+            <div class="trade-status status-badge status-ativa">ATIVA</div>
+          </div>
+ 
+          <div class="trade-card">
+            <div class="trade-icon">
+              <span class="material-symbols-outlined">pending_actions</span>
+            </div>
+            <div class="trade-info">
+              <p class="trade-type">04/05/2026</p>
+              <p class="trade-type">Gibson Lionesio</p>
+              <p class="trade-name">Limpeza</p>
+            </div>
+            <div class="trade-status status-badge status-ativa">ATIVA</div>
+          </div>
+        </section>
   </main>
-
+ 
+   <!-- Logout -->
+    <section class="logout-section">
+      <a href="/logout" class="logout-btn">Sair da Conta</a>
+    </section>
+ 
     <%- include('../partials/footer.ejs') %>
 </body>
 </html>

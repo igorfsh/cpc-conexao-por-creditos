@@ -4,7 +4,8 @@
   padding: 0;
   box-sizing: border-box;
 }
-
+ 
+ 
 body {
   font-family: 'Manrope', sans-serif;
   background: #f8faf8;
@@ -13,21 +14,24 @@ body {
   padding-bottom: 40px;
   position: relative;
 }
-
+ 
+ 
 .material-symbols-outlined {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
   font-size: 24px;
 }
-
+ 
+ 
 /* Container Principal */
 .container {
   max-width: 12800px;
   margin: 0 auto;
   padding: 0 24px;
   padding-top: 80px;
-  padding-bottom: 80000px;
+  padding-bottom: 8000px;
 }
-
+ 
+ 
 /* Profile */
 .profile {
   display: flex;
@@ -36,7 +40,8 @@ body {
   margin-bottom: 40px;
   text-align: center;
 }
-
+ 
+ 
 .profile-image img {
   width: 128px;
   height: 128px;
@@ -44,8 +49,10 @@ body {
   border: 4px solid white;
   box-shadow: 0 4px 20px rgba(0,0,0,0.1);
   margin-bottom: 16px;
+  margin-top: 40px;
 }
-
+ 
+ 
 .profile h1 {
   font-size: 32px;
   font-weight: 700;
@@ -53,67 +60,88 @@ body {
   letter-spacing: -0.02em;
   margin-bottom: 8px;
 }
-
+ 
+ 
 .profile p {
   font-size: 16px;
   color: #424842;
   opacity: 0.7;
 }
-
+ 
+ 
 /* Balance Card */
 .balance-card {
-  background: linear-gradient(135deg, #8ba88e 0%, #4a654e 100%);
-  color: white;
+  background: linear-gradient(135deg, #F8A700 0%, #f8a700 100%);
+  color: #000000;
   padding: 24px;
-  border-radius: 12px;
+  border-radius: 35px;
   text-align: center;
   margin-bottom: 40px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  border: 1px solid rgba(194, 200, 192, 0.3);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  border: px solid rgba(173, 136, 23, 0.4);
 }
-
+ 
+ 
 .balance-label {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  opacity: 1;
+  margin-bottom: 8px;
+  display: block;
+}
+ 
+ 
+.balance-amount {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+}
+ 
+ 
+.amount {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: #111111;
+  white-space: nowrap;
+}
+ 
+ 
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: 999px;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  opacity: 0.8;
-  margin-bottom: 8px;
-  display: block;
+  min-width: 100px;
+  text-align: center;
 }
-
-.balance-amount {
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-}
-
-.dollar-sign {
-  font-size: 32px;
-  opacity: 0.9;
-}
-
-.amount {
-  font-size: 40px;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.03em;
-}
-
+ 
+ 
 /* Bento Grid */
 .bento-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 24px;
+  gap: 50px;
   margin-bottom: 40px;
 }
-
+ 
+ 
 .trades-section, .proposals-section {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
-
+ 
+ 
 .trades-section h2, .proposals-section h2, .history-section h2 {
   font-size: 24px;
   font-weight: 600;
@@ -121,12 +149,14 @@ body {
   letter-spacing: -0.01em;
   margin-bottom: 8px;
   padding-left: 8px;
+  text-align: center;
 }
-
+ 
+ 
 /* Trade Cards */
 .trade-card, .proposal-card {
   background: white;
-  border: 1px solid rgba(194, 200, 192, 0.4);
+  border: 1px solid rgba(192, 216, 184, 0.4);
   border-radius: 12px;
   padding: 16px;
   display: flex;
@@ -135,13 +165,15 @@ body {
   box-shadow: 0 4px 20px rgba(0,0,0,0.04);
   transition: all 0.2s;
 }
-
+ 
+ 
 .trade-card:hover, .proposal-card:hover {
   border-color: #c2c8c0;
   background: #f2f4f2;
   transform: translateY(1px);
 }
-
+ 
+ 
 .trade-icon {
   width: 48px;
   height: 48px;
@@ -150,13 +182,15 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #506352;
+  color: #67c28d;
 }
-
+ 
+ 
 .trade-info {
   flex: 1;
 }
-
+ 
+ 
 .trade-type {
   font-size: 12px;
   font-weight: 700;
@@ -165,135 +199,97 @@ body {
   color: #546756;
   margin-bottom: 4px;
 }
-
+ 
+ 
 .trade-name {
   font-size: 18px;
   font-weight: 700;
 }
-
+ 
+ 
 .trade-status {
-  background: #d3e8d2;
+  background: #9ce4b4;
   color: #394b3b;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: 12px 9px;
+  border-radius: 3px;
 }
-
-/* Proposal Cards */
-.proposal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.proposal-header > span:first-child {
-  margin-right: 8px;
-}
-
-.proposal-type {
-  background: #cceace;
-  color: #334d38;
-  font-size: 10px;
+ 
+ 
+.trade-status.status-andamento{
+  background: #FFC107;
+  color: #000000;
+  font-size: 11px;
   font-weight: 700;
-  padding: 4px 8px;
-  border-radius: 4px;
-  text-transform: uppercase;
+  padding: 12px 9px;
+  border-radius: 3px;
 }
-
-.proposal-card p {
-  font-size: 16px;
-  color: #424842;
-}
-
-/* History Table */
-.history-section {
-  margin-bottom: 40px;
-}
-
-.history-table {
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid rgba(194, 200, 192, 0.2);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th {
-  font-size: 12px;
+ 
+ 
+.trade-status.status-concluido{
+  background: #4CAF50;
+  color: #ffffff;
+  font-size: 11px;
   font-weight: 700;
-  color: #424842;
-  text-transform: uppercase;
-  padding: 16px 24px;
-  text-align: left;
-  background: #f2f4f2;
-  border-bottom: 1px solid rgba(115, 121, 114, 0.1);
+  padding: 12px 9px;
+  border-radius: 3px;
 }
-
-th:last-child {
-  text-align: right;
-}
-
-td {
-  padding: 16px 24px;
-  font-size: 16px;
-  border-bottom: 1px solid rgba(194, 200, 192, 0.3);
-}
-
-td:first-child {
-  color: #424842;
-  opacity: 0.6;
-  font-size: 14px;
-}
-
-td:nth-child(2) {
+ 
+ 
+.trade-status.status-inativa{
+  background: #FF0000;
+  color: #ffffff;
+  font-size: 11px;
   font-weight: 700;
+  padding: 12px 9px;
+  border-radius: 3px;
 }
-
-.positive {
-  color: #4a654e;
+ 
+ 
+.trade-status.status-ativa{
+  background: #33A8E2;
+  color: #ffffff;
+  font-size: 11px;
   font-weight: 700;
-  text-align: right;
+  padding: 12px 9px;
+  border-radius: 3px;
 }
-
-.negative {
-  color: #ba1a1a;
-  font-weight: 700;
-  text-align: right;
-}
-
+ 
 /* Logout */
 .logout-section {
   padding-top: 24px;
+  padding-bottom: 50px; /* Adicione isso para empurrar o rodapé para baixo */
   border-top: 1px solid rgba(115, 121, 114, 0.3);
+  display: flex;
+  justify-content: center;
 }
-
+ 
+ 
 .logout-btn {
   width: 100%;
-  padding: 16px 24px;
-  background: #eceeec;
-  color: #ba1a1a;
-  font-size: 24px;
+  max-width: 95%; /* Mantém um respiro nas laterais no mobile */
+  margin: 0 auto;
+  padding: 12px 24px;
+  background: #FF0000;
+  color: white;
+  font-size: 17px;
   font-weight: 600;
-  border: 1px solid rgba(186, 26, 26, 0.3);
-  border-radius: 12px;
+  border-radius: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
   transition: all 0.2s;
+  text-decoration: none;
+  margin-bottom: 20px; /* Margem extra de segurança abaixo do botão */
 }
-
+ 
+ 
 .logout-btn:hover {
-  background: #ffdad6;
+  background: rgb(255, 130, 130);
 }
-
+ 
+ 
 /* Background Decorations */
 body::before {
   content: '';
@@ -310,7 +306,8 @@ body::before {
   z-index: -1;
   opacity: 0.3;
 }
-
+ 
+ 
 body::after {
   content: '';
   position: fixed;
@@ -326,34 +323,51 @@ body::after {
   z-index: -1;
   opacity: 0.3;
 }
-
+ 
+ 
 /* RESPONSIVO - Tablet e Desktop */
 @media (min-width: 768px) {
   .bento-grid {
     grid-template-columns: 1fr 1fr;
   }
-  
+ 
   .container {
     padding: 0 40px;
   }
 }
-
+ 
+ 
 /* Desktop Large */
 @media (min-width: 1024px) {
   .profile h1 {
     font-size: 36px;
   }
+  .logout-btn {
+    width: 1200px;        /* Define um tamanho fixo menor para o PC */
+    font-size: 15px;     /* Opcional: diminui um pouco a fonte no desktop */
+    padding: 15px 24px;  /* Opcional: botão levemente mais fino */
+  }
+ 
+  .logout-btn:hover {
+  background: rgb(255, 130, 130);
+ }
 }
-
+ 
+ 
 /* Mobile adjustments */
 @media (max-width: 480px) {
   .container {
     padding: 0 16px;
     padding-top: 24px;
   }
-  
+ 
   .profile-image img {
     width: 96px;
     height: 96px;
+  }
+ 
+ 
+  .amount {
+    font-size: 24px;
   }
 }
