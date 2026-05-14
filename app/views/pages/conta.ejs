@@ -25,6 +25,12 @@
       <p><%= usuario?.email || 'Sem e-mail cadastrado' %></p>
     </section>
 
+    <form action="/upload" method="POST" enctype="multipart/form-data"><label>Escolha uma foto (JPG ou PNG):</label>
+    <input type="file" name="minhaImagem" accept="img/*" required><button type="submit">Subir e Converter</button></form>
+
+    <form action="/enviar-foto" method="POST" enctype="multipart/form-data"><input type="file" name="imagemUsuario" accept="img/*">
+    <button type="submit">Upload Inteligente</button></form>
+
     <!-- Credit Balance -->
     <section class="balance-card">
       <span class="balance-label">Saldo de Crédito</span>
