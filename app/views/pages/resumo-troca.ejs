@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Resumo Troca</title>
+  <title>Resumo de Troca - CPC</title>
   <link rel="stylesheet" href="/css/resumo-troca.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap">
 </head>
@@ -11,77 +11,72 @@
 <%- include('../partials/header.ejs') %>
 <body>
   <main>
-    <!-- Cabeçalho da página -->
     <header class="page-header">
       <h1>Resumo de Troca</h1>
     </header>
 
-    <!-- Seção de informações da troca -->
-    <section class="trade-info" aria-labelledby="trade-info-title">
-      <h2 id="trade-info-title" class="visually-hidden">Informações da Troca</h2>
+    <% if (!anuncio) { %>
+      <p style="text-align:center;padding:40px">Nenhum anúncio selecionado. <a href="/todos">Ver anúncios</a></p>
+    <% } else { %>
+
+    <section class="trade-info">
       <dl class="trade-details">
-        <dt>Troca:</dt>
-        <dd>Marceneiro & Leite Infantil</dd>
-        
-        <dt>Item 1:</dt>
-        <dd>Marceneiro = 30 PONTOS</dd>
-        
-        <dt>Item 2:</dt>
-        <dd>Leite Infantil = 8 PONTOS</dd>
+        <dt>Anúncio:</dt>
+        <dd><%= anuncio.titulo %></dd>
+        <dt>Doador:</dt>
+        <dd><%= anuncio.doadorNome %> — <%= anuncio.doadorLocal %></dd>
+        <dt>Pontos:</dt>
+        <dd><%= anuncio.pontos %> PONTOS</dd>
+        <dt>Tipo:</dt>
+        <dd><%= anuncio.tipo === 'servico' ? 'Serviço' : 'Produto' %></dd>
       </dl>
     </section>
 
-    <!-- Seção de cálculo da diferença -->
-    <section class="calculation-section" aria-labelledby="calculation-title">
-      <h2 id="calculation-title">Diferença</h2>
+    <section class="calculation-section">
+      <h2>Valor estimado</h2>
       <article class="calculation-details">
-        <p class="calculation-formula">30 PONTOS - 8 PONTOS</p>
-        <p class="calculation-conversion">22 × 5 = R$ 110,00</p>
-        <p class="calculation-final">R$ 110,00 - Taxa = <strong>R$ 100,00</strong></p>
+        <p class="calculation-formula"><%= anuncio.pontos %> PONTOS</p>
+        <p class="calculation-conversion"><%= anuncio.pontos %> × 5 = R$ <%= (anuncio.pontos * 5).toFixed(2) %></p>
+        <p class="calculation-final">R$ <%= (anuncio.pontos * 5).toFixed(2) %> - Taxa = <strong>R$ <%= (anuncio.pontos * 5 * 0.9).toFixed(2) %></strong></p>
       </article>
     </section>
 
-    <!-- Seção de produtos visuais -->
-    <section class="products-showcase" aria-labelledby="products-title">
-      <h2 id="products-title" class="visually-hidden">Produtos da Troca</h2>
+    <section class="products-showcase">
       <figure class="product-images">
-        <img src="../img/img malcon.png" alt="Serviço de Marcenaria - Malcolm" class="product-image">
+        <img src="<%= anuncio.foto %>" alt="<%= anuncio.titulo %>" class="product-image">
         <span class="exchange-symbol" aria-hidden="true">⇄</span>
-        <img src="../img/leite.webp" alt="Leite Infantil" class="product-image">
-        <figcaption class="visually-hidden">Troca entre Serviço de Marcenaria e Leite Infantil</figcaption>
+        <img src="../img/leite.webp" alt="Produto em troca" class="product-image">
       </figure>
     </section>
 
-    <!-- Seção de descrição da troca -->
-    <section class="trade-description" aria-labelledby="description-title">
-      <h2 id="description-title" class="visually-hidden">Descrição da Troca</h2>
-      <p>
-        Você está trocando Serviço de Marcenaria por Leite Infantil. O valor de R$ 100,00 será creditado na sua conta assim que o usuário realizar a transferência.
-      </p>
+    <section class="trade-description">
+      <p><%= anuncio.descricao %></p>
     </section>
 
-    <!-- Seção de termos e condições -->
-    <section class="terms-section" aria-labelledby="terms-title">
-      <h2 id="terms-title" class="visually-hidden">Termos e Condições</h2>
+    <section class="terms-section">
       <p class="terms-text">
-        Ao fazer essa troca você concorda com os 
+        Ao fazer essa troca você concorda com os
         <a href="#" class="terms-link">Termos de uso do Conexão por Créditos</a>.
       </p>
     </section>
 
-    <!-- Seção de ação principal -->
+    <!-- Formulário de confirmação - registra no banco -->
     <section class="action-section">
-      <a href="/obrigado" class="confirm-button-link">
-        <button type="button" class="confirm-button">Confirmar Troca</button>
-      </a>
-      
+      <form action="/confirmar-troca" method="POST">
+        <input type="hidden" name="anuncioId" value="<%= anuncio.id %>">
+        <input type="hidden" name="anuncioTitulo" value="<%= anuncio.titulo %>">
+        <textarea name="mensagem" placeholder="Mensagem para o doador (opcional)" style="width:100%;padding:12px;border-radius:8px;border:1px solid #ccc;margin-bottom:12px;font-family:Poppins,sans-serif;font-size:14px;resize:vertical" rows="3"></textarea>
+        <button type="submit" class="confirm-button">Confirmar Troca</button>
+      </form>
+
       <aside class="warning-notice">
-        <p>
-          Os usuários têm até 30 dias para efetuar os serviços. Ao realizar a troca você concorda com todos os termos de uso da plataforma e com o Contrato de troca.</p><br>
+        <p>Os usuários têm até 30 dias para efetuar os serviços. Ao realizar a troca você concorda com todos os termos de uso da plataforma e com o Contrato de troca.</p>
       </aside>
     </section>
+
+    <% } %>
   </main>
 </body>
-
-<br><br><br><%- include('../partials/footer.ejs') %>
+<br><br><br>
+<%- include('../partials/footer.ejs') %>
 </html>

@@ -3,117 +3,54 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Serviços de Alimentação</title>
+  <title>Alimentação - CPC</title>
   <link rel="stylesheet" href="../css/todos.css" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?familly=Poppins:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap">
 </head>
 
 <%- include('../partials/header.ejs') %>
 <body>
-<script>
-  var services = [
-    { nome: "Maçã", local: "Malcolm, Barueri-SP", categoria: "alimentação", img: "../img/img malcon.png" },
-    { nome: "Arroz", local: "Malcolm, Barueri-SP", categoria: "alimentação", img: "../img/img malcon.png" },
-    { nome: "Leite", local: "Malcolm, Barueri-SP", categoria: "alimentação", img: "../img/img malcon.png" },
-    { nome: "Óleo", local: "Malcolm, Barueri-SP", categoria: "alimentação", img: "../img/img malcon.png" },
-    { nome: "Feijão", local: "Malcolm, Barueri-SP", categoria: "alimentação", img: "../img/img malcon.png" },
-    { nome: "Macarrão", local: "Malcolm, Barueri-SP", categoria: "alimentação", img: "../img/img malcon.png" }
-  ];
-</script>
-  
-  <!-- SOBREPOSIÇÃO DO MENU (FUNDO ESCURO) -->
 
-  <!--Campo de Busca-->
-<section id="divBusca">
-  <label for="txtBusca"></label>
-  <input type="search" id="txtBusca" placeholder="Busque seu Alimento">
-  <button id="btnBusca" type="button"><img src="../img/img lupa.png" alt="Buscar"></button>
-</section><br>
-<!-- Local onde o texto buscado vai aparecer -->
-<p id="resultadoBusca"></p>
+  <section id="divBusca">
+    <form action="/alimentos" method="GET" style="display:flex;gap:8px;width:100%">
+      <input type="search" id="txtBusca" name="busca" placeholder="Busque seu Alimento" value="<%= busca %>">
+      <button id="btnBusca" type="submit"><img src="../img/img lupa.png" alt="Buscar"></button>
+    </form>
+  </section><br>
 
-  <!-- Filtros -->
+  <% if (busca) { %>
+    <p id="resultadoBusca">Resultados para: <strong><%= busca %></strong> — <%= anuncios.length %> encontrado(s)</p>
+  <% } %>
+
   <nav>
-    <a href="/todos"><button class="filter-btn" data-filter="todos">Todos</button></a>
-    <a href="/kids"><button class="filter-btn" data-filter="infantil">Infantil</button></a>
-    <a href="/profissionais"><button class="filter-btn" data-filter="profissionais">Profissionais</button></a>
-    <a href="/alimentos"><button class="filter-btn active" data-filter="alimentos">Alimentação</button></a>
+    <a href="/todos"><button class="filter-btn">Todos</button></a>
+    <a href="/kids"><button class="filter-btn">Infantil</button></a>
+    <a href="/profissionais"><button class="filter-btn">Profissionais</button></a>
+    <a href="/alimentos"><button class="filter-btn active">Alimentação</button></a>
   </nav>
 
-  <!-- Lista de serviços -->
   <section class="service-list">
-
-  <br><section class="service-card active">
-      <img src="../img/img malcon.png" alt="Foto" class="avatar">
-      <section class="service-info">
-        <h3>Maçã</h3>
-        <p>Malcolm, Barueri-SP</p>
-        <a href="/contato"><button class="btn-contato">Contato</button></a>
+    <% if (anuncios.length === 0) { %>
+      <p style="text-align:center;padding:40px;color:#888">Nenhum anúncio encontrado.</p>
+    <% } %>
+    <% anuncios.forEach(function(anuncio) { %>
+      <br>
+      <section class="service-card active">
+        <img src="<%= anuncio.foto %>" alt="<%= anuncio.titulo %>" class="avatar">
+        <section class="service-info">
+          <h3><%= anuncio.titulo %></h3>
+          <p><%= anuncio.doadorNome %>, <%= anuncio.doadorLocal %></p>
+          <small style="color:#4caf50;font-weight:600"><%= anuncio.pontos %> pontos</small><br>
+          <a href="/contato/<%= anuncio.id %>"><button class="btn-contato">Contato</button></a>
+        </section>
       </section>
-    </section><br>
+    <% }) %>
+  </section><br>
 
-    <section class="service-card active">
-      <img src="../img/img malcon.png" alt="Foto" class="avatar">
-      <section class="service-info">
-        <h3>Arroz</h3>
-        <p>Malcolm, Barueri-SP</p>
-        <a href="/contato"><button class="btn-contato">Contato</button></a>
-      </section>
-    </section><br>
-    
-    <section class="service-card active">
-      <img src="../img/img malcon.png" alt="Foto" class="avatar">
-      <section class="service-info">
-        <h3>Leite</h3>
-        <p>Malcolm, Barueri-SP</p>
-        <a href="/contato"><button class="btn-contato">Contato</button></a>
-      </section>
-    </section><br>
+  <div style="text-align:center;padding:20px">
+    <a href="/novo-anuncio" style="background:#4caf50;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600">+ Cadastrar Anúncio</a>
+  </div><br>
 
-    <section class="service-card active">
-      <img src="../img/img malcon.png" alt="Foto" class="avatar">
-      <section class="service-info">
-        <h3>Óleo</h3>
-        <p>Malcolm, Barueri-SP</p>
-        <a href="/contato"><button class="btn-contato">Contato</button></a>
-      </section>
-    </section><br>
-
-    <section class="service-card active">
-      <img src="../img/img malcon.png" alt="Foto" class="avatar">
-      <section class="service-info">
-        <h3>Feijão</h3>
-        <p>Malcolm, Barueri-SP</p>
-        <a href="/contato"><button class="btn-contato">Contato</button></a>
-      </section>
-    </section><br>
-
-    <section class="service-card active">
-      <img src="../img/img malcon.png" alt="Foto" class="avatar">
-      <section class="service-info">
-        <h3>Macarrão</h3>
-        <p>Malcolm, Barueri-SP</p>
-        <a href="/contato"><button class="btn-contato">Contato</button></a>
-      </section>
-    </section><br>
-
-    </section><br>
-
-</section>
-
-<script> const termoBusca = document.getElementById("txtBusca").value.trim();
-document.getElementById("btnBusca").addEventListener("click", function() {
-        const termoBusca = document.getElementById("txtBusca").value.trim()
-        const resultado = document.getElementById("resultadoBusca")
-
-        if (termoBusca !== "") {
-            resultado.textContent = "Você buscou por: " + termoBusca
-        } else {
-            resultado.textContent = "Digite algo para buscar."
-        }
-    });
-</script>
-  <script src="../js/busca.js"></script>
   <script src="../js/menu.js"></script>
 </body>
 <%- include('../partials/footer.ejs') %>

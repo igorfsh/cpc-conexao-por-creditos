@@ -1,52 +1,57 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Serviços de Trocas</title>
-  <link rel="stylesheet" href="../css/todos.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Serviços de Troca</title>
-  <link rel="stylesheet" href="../css/todos.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?familly=Poppins:wght@400;600;700&display=swap">
+  <title>Todos os Anúncios - CPC</title>
+  <link rel="stylesheet" href="../css/todos.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap">
 </head>
 
 <%- include('../partials/header.ejs') %>
 <body>
-<script>
-  var services = [
-    { nome: "Berço", local: "Malcolm, Barueri-SP", categoria: "infantil", img: "../img/img malcon.png" },
-    { nome: "Limpeza", local: "Malcolm, Barueri-SP", categoria: "profissionais", img: "../img/img malcon.png" },
-    { nome: "Pedreiro", local: "Malcolm, Barueri-SP", categoria: "profissionais", img: "../img/img malcon.png" },
-    { nome: "Cadeirinha", local: "Malcolm, Barueri-SP", categoria: "infantil", img: "../img/img malcon.png" },
-    { nome: "Sal", local: "Malcolm, Barueri-SP", categoria: "alimentação", img: "../img/img malcon.png" },
-    { nome: "Macarrão", local: "Malcolm, Barueri-SP", categoria: "alimentação", img: "../img/img malcon.png" }
-  ];
-</script>
 
-<!--Campo de Busca-->
-<section id="divBusca">
-  <input type="text" id="txtBusca" placeholder="Buscar">
-  <img src="../img/img lupa.png" id="btnBusca" alt="Buscar">
-</section><br>
+  <section id="divBusca">
+    <form action="/todos" method="GET" style="display:flex;gap:8px;width:100%">
+      <input type="search" id="txtBusca" name="busca" placeholder="Busque por serviço ou produto" value="<%= busca %>">
+      <button id="btnBusca" type="submit"><img src="../img/img lupa.png" alt="Buscar"></button>
+    </form>
+  </section><br>
 
-  <!-- Filtros -->
+  <% if (busca) { %>
+    <p id="resultadoBusca">Resultados para: <strong><%= busca %></strong> — <%= anuncios.length %> encontrado(s)</p>
+  <% } %>
+
   <nav>
-    <a href="/todos"><button class="filter-btn active" data-filter="todos">Todos</button></a>
-    <a href="/kids"><button class="filter-btn" data-filter="infantil">Infantil</button></a>
-    <a href="/profissionais"><button class="filter-btn" data-filter="profissionais">Profissionais</button></a>
-    <a href="/alimentos"><button class="filter-btn" data-filter="alimentos">Alimentação</button></a>
+    <a href="/todos"><button class="filter-btn active">Todos</button></a>
+    <a href="/kids"><button class="filter-btn">Infantil</button></a>
+    <a href="/profissionais"><button class="filter-btn">Profissionais</button></a>
+    <a href="/alimentos"><button class="filter-btn">Alimentação</button></a>
   </nav>
 
-  <!-- Lista de serviços -->
+  <section class="service-list">
+    <% if (anuncios.length === 0) { %>
+      <p style="text-align:center;padding:40px;color:#888">Nenhum anúncio encontrado.</p>
+    <% } %>
+    <% anuncios.forEach(function(anuncio) { %>
+      <br>
+      <section class="service-card active">
+        <img src="<%= anuncio.foto %>" alt="<%= anuncio.titulo %>" class="avatar">
+        <section class="service-info">
+          <h3><%= anuncio.titulo %></h3>
+          <p><%= anuncio.doadorNome %>, <%= anuncio.doadorLocal %></p>
+          <small style="color:#4caf50;font-weight:600"><%= anuncio.pontos %> pontos &nbsp;|&nbsp; <%= anuncio.categoria %></small><br>
+          <a href="/contato/<%= anuncio.id %>"><button class="btn-contato">Contato</button></a>
+        </section>
+      </section>
+    <% }) %>
+  </section><br>
 
-  <section class="service-list"></section>
-</section>
+  <div style="text-align:center;padding:20px">
+    <a href="/novo-anuncio" style="background:#4caf50;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600">+ Cadastrar Anúncio</a>
+  </div><br>
 
   <script src="../js/menu.js"></script>
-  <script src="../js/busca.js"></script>
 </body>
 <%- include('../partials/footer.ejs') %>
 </html>

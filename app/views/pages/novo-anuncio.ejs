@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Novo Anúncio - CPC</title>
+  <link rel="stylesheet" href="/css/login.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap">
+  <style>
+    .form-anuncio { max-width: 480px; margin: 40px auto; padding: 32px; background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.10); }
+    .form-anuncio h2 { color: #2e7d32; margin-bottom: 24px; text-align: center; }
+    .form-anuncio label { display: block; font-size: 13px; font-weight: 600; color: #444; margin-bottom: 4px; margin-top: 14px; }
+    .form-anuncio input, .form-anuncio select, .form-anuncio textarea {
+      width: 100%; padding: 10px 14px; border: 1.5px solid #ccc; border-radius: 8px;
+      font-family: Poppins, sans-serif; font-size: 14px; box-sizing: border-box; transition: border 0.2s;
+    }
+    .form-anuncio input:focus, .form-anuncio select:focus, .form-anuncio textarea:focus { border-color: #4caf50; outline: none; }
+    .form-anuncio button[type=submit] {
+      width: 100%; margin-top: 22px; padding: 13px; background: #4caf50; color: #fff;
+      border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: background 0.2s;
+    }
+    .form-anuncio button[type=submit]:hover { background: #388e3c; }
+    .msg-erro { background: #fdecea; color: #c62828; border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: 14px; }
+    .msg-sucesso { background: #e8f5e9; color: #2e7d32; border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: 14px; }
+    body { background: #f5f5f5; font-family: Poppins, sans-serif; }
+  </style>
+</head>
+
+<%- include('../partials/header.ejs') %>
+<body>
+
+  <div class="form-anuncio">
+    <h2>📢 Cadastrar Anúncio</h2>
+    <p style="text-align:center;color:#666;font-size:13px;margin-bottom:20px">Ofereça um produto ou serviço para a comunidade</p>
+
+    <% if (erro) { %>
+      <div class="msg-erro">⚠️ <%= erro %></div>
+    <% } %>
+    <% if (sucesso) { %>
+      <div class="msg-sucesso">✅ <%= sucesso %> <a href="/todos">Ver anúncios</a></div>
+    <% } %>
+
+    <form action="/novo-anuncio" method="POST">
+
+      <label for="titulo">Título do anúncio *</label>
+      <input type="text" id="titulo" name="titulo" placeholder="Ex: Encanador, Arroz 5kg, Berço..." value="<%= valores.titulo || '' %>" required>
+
+      <label for="descricao">Descrição *</label>
+      <textarea id="descricao" name="descricao" rows="3" placeholder="Descreva o que está oferecendo..." required><%= valores.descricao || '' %></textarea>
+
+      <label for="categoria">Categoria *</label>
+      <select id="categoria" name="categoria" required>
+        <option value="">Selecione...</option>
+        <option value="profissionais" <%= valores.categoria === 'profissionais' ? 'selected' : '' %>>Profissionais</option>
+        <option value="alimentos" <%= valores.categoria === 'alimentos' ? 'selected' : '' %>>Alimentação</option>
+        <option value="infantil" <%= valores.categoria === 'infantil' ? 'selected' : '' %>>Infantil (Kids)</option>
+      </select>
+
+      <label for="tipo">Tipo *</label>
+      <select id="tipo" name="tipo">
+        <option value="produto" <%= valores.tipo === 'produto' ? 'selected' : '' %>>Produto</option>
+        <option value="servico" <%= valores.tipo === 'servico' ? 'selected' : '' %>>Serviço</option>
+      </select>
+
+      <label for="pontos">Pontos (1–100) *</label>
+      <input type="number" id="pontos" name="pontos" min="1" max="100" placeholder="Ex: 20" value="<%= valores.pontos || '' %>" required>
+
+      <label for="doadorNome">Seu nome (se não estiver logado)</label>
+      <input type="text" id="doadorNome" name="doadorNome" placeholder="Nome completo" value="<%= valores.doadorNome || '' %>">
+
+      <label for="doadorLocal">Localização</label>
+      <input type="text" id="doadorLocal" name="doadorLocal" placeholder="Ex: São Paulo-SP" value="<%= valores.doadorLocal || '' %>">
+
+      <button type="submit">Publicar Anúncio</button>
+    </form>
+
+    <p style="text-align:center;margin-top:16px;font-size:13px"><a href="/todos" style="color:#4caf50">← Ver todos os anúncios</a></p>
+  </div>
+
+  <script src="../js/menu.js"></script>
+</body>
+<%- include('../partials/footer.ejs') %>
+</html>

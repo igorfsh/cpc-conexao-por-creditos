@@ -6,38 +6,16 @@
   <title>Página Inicial - CPC</title>
   <link rel="stylesheet" href="../css/home.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap">
-
-<meta property="og:title" content="Ajude quem precisa sem usar seu dinheiro." />
-<meta property="og:description" content="Reaproveite itens e mostre seus trabalhados doando e ajudando alguém que precisa, recebendo créditos pelas ações."/><!--TALVEZ MUDE(IGOR N GOSTOU MTO-ELE Q CRIOU)-->
-<meta property="og:image" content="/workspaces/cpc-conexao-por-creditos/app/public/img/img home-2.png"/>
-<meta property="og:url" content="https://cpc-conexao-por-creditos.onrender.com/" />
-<meta property="og:type" content="website" />
-
-<meta property="og:locale" content="pt_BR">
-<meta property="og:locale:alternate" content="en_US">
-<meta property="og:site_name" content="Conexão Por Créditos">
-<meta property="og:image:secure_url" content="https://www.seusite.com.br/img/og-image-1200x630.jpg"><!--VERIFICAR-->
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:image:type" content="image/jpeg">
-<meta property="og:image:alt" content="Doação de mantimentos básicos como macarrão, água, azeite e coberta"><!--VERIFICAR MUDANÇA-->
-
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:site" content="@conexaoporcreditos_x">
-<meta name="twitter:creator" content="@autor_x"><!--Twitter do Kamau?-->
-<meta name="twitter:title" content="Título Otimizado para o Feed do X"><!--VERIFICAR-->
-<meta name="twitter:description" content="Descrição curta e direta para atrair usuários no X."><!--VERIFICAR-->
-<meta name="twitter:image" content="https://cpc-conexao-por-creditos.onrender.com/img/og-image-1200x630.jpg"><!--VERIFICAR-->
 </head>
- 
+
 <%- include('../partials/header.ejs') %>
 <body>
- 
+
   <!-- BANNER -->
   <section class="banner">
     <img src="../img/img-banner.png" alt="Banner principal">
   </section>
- 
+
   <!-- BOAS-VINDAS -->
   <section class="boas-vindas">
     <h2>Bem-vindo ao Conexão por Créditos</h2>
@@ -45,179 +23,151 @@
     O CPC é uma organização que promove inclusão, solidariedade e transformação social.
     Somos uma organização que trabalha pelo fim da pobreza.</p>
   </section>
- 
+
   <!-- ÍCONES -->
   <section class="icones">
     <section class="icone">
       <a href="/kids"><img src="../img/img kids.jpeg" alt="Área Kids"></a>
       <p>Área Kids</p>
     </section>
-    
     <section class="icone">
       <a href="/profissionais"><img src="../img/servicos.jpeg" alt="Serviços"></a>
       <p>Serviços</p>
     </section>
- 
     <section class="icone">
       <a href="/alimentos"><img src="../img/img alimentacao.jpeg" alt="Alimentação"></a>
       <p>Alimentação</p>
     </section>
- 
     <section class="icone">
       <a href="/avaliacao"><img src="../img/icone perfil.png" alt="Perfil"></a>
       <p>Perfil</p>
     </section>
   </section>
- 
+
   <!-- ABAS -->
   <section class="abas">
     <a href="/"><button id="btn-sobre" class="aba ativa">Conheça o CPC</button></a>
   </section>
- 
-  <!--Conteúdos Home Desktop-->
-   <section class="desktop-only">
-<section class="container">
 
-    <article class="card">
+  <!-- Conteúdos Home Desktop -->
+  <section class="desktop-only">
+    <section class="container">
+      <article class="card">
         <img src="../img/img2-home.jpeg" alt="Foto da organização CPC em atividade">
         <h3>Sobre a organização</h3>
         <p>Nosso objetivo é criar uma rede solidária onde pessoas possam trocar serviços e produtos sem a necessidade de dinheiro. Aqui você pode oferecer suas habilidades, ajudar quem precisa e receber apoio em troca, tudo de uma forma simples e acessível.
-      Ideal para quem busca se conectar, compartilhar e transformar vidas na comunidade, nosso espaço é um ponto de encontro para aqueles em situação de <strong>vulnerabilidade</strong> e para todos que desejam fazer a diferença.<br>
-      Junte-se a nós e descubra o poder da colaboração!</p>
-    </article>
-
-    <article class="card">
+        Ideal para quem busca se conectar, compartilhar e transformar vidas na comunidade, nosso espaço é um ponto de encontro para aqueles em situação de <strong>vulnerabilidade</strong> e para todos que desejam fazer a diferença.<br>
+        Junte-se a nós e descubra o poder da colaboração!</p>
+      </article>
+      <article class="card">
         <img src="../img/img home-2.png" alt="Foto da organização">
         <h3>Faça parte da mudança</h3>
         <p>Com sua ajuda, podemos continuar construindo uma comunidade mais justa e sustentável, 
         onde todos tenham a chance de participar e prosperar. Doe produtos, tempo ou habilidades e faça parte dessa transformação.</p>
-    </article>
-</section>
-   </section>
-
-<!--Conteúdos Home Mobile-->
-<section class="mobile-only">
-  <section id="conteudo-aba">
-    <section id="conteudo-sobre">
-      <img src="../img/img2-home.jpeg" alt="Foto da organização CPC em atividade">
-      <h3>Sobre a organização</h3>
-      <p>Nosso objetivo é criar uma rede solidária onde as pessoas podem trocar serviços e produtos sem a necessidade de dinheiro. Aqui você pode oferecer suas habilidades, ajudar quem precisa e receber apoio em troca, tudo de uma forma simples e acessível.
-      Ideal para quem busca se conectar, compartilhar e transformar vidas na comunidade, nosso espaço é um ponto de encontro para aqueles em situação de <strong>vulnerabilidade</strong> e para todos que desejam fazer a diferença.<br>
-      Junte-se a nós e descubra o poder da colaboração!</p>
-
-      <img src="../img/img home-2.png" alt="Foto da organização" class="imagem-doacao">
-      <h3>Faça parte da mudança</h3>
-      <p>Com sua ajuda, podemos continuar a construir uma comunidade mais justa e sustentável, 
-        onde todos tenham a chance de participar e prosperar. Doe produtos, tempo ou habilidades e faça parte dessa transformação.</p>
+      </article>
     </section>
   </section>
- </section>
 
-    <section class="noticias-dashboard">
-  <header class="noticias-header">
-    <h2>Notícias</h2>
-    <p>
-      Monitorando em tempo real a transformação social através da economia colaborativa e troca de serviços.
-    </p>
-  </header>
+  <!-- Conteúdos Home Mobile -->
+  <section class="mobile-only">
+    <section id="conteudo-aba">
+      <section id="conteudo-sobre">
+        <img src="../img/img2-home.jpeg" alt="Foto da organização CPC em atividade">
+        <h3>Sobre a organização</h3>
+        <p>Nosso objetivo é criar uma rede solidária onde as pessoas podem trocar serviços e produtos sem a necessidade de dinheiro.</p>
+        <img src="../img/img home-2.png" alt="Foto da organização" class="imagem-doacao">
+        <h3>Faça parte da mudança</h3>
+        <p>Com sua ajuda, podemos continuar a construir uma comunidade mais justa e sustentável.</p>
+      </section>
+    </section>
+  </section>
 
-  <section class="noticias-grid">
+  <!-- DASHBOARD DE NOTÍCIAS / ESTATÍSTICAS -->
+  <section class="noticias-dashboard">
+    <header class="noticias-header">
+      <h2>Notícias</h2>
+      <p>Monitorando em tempo real a transformação social através da economia colaborativa e troca de serviços.</p>
+    </header>
 
-    <!-- CARD PRINCIPAL -->
-    <div class="noticia-card">
+    <section class="noticias-grid">
 
-      <h3>📊 Níveis de Pobreza Extrema</h3>
-
-      <div class="bloco">
-        <span>CENÁRIO GLOBAL</span>
-
-        <div class="linha">
-          <strong>9.2% da População</strong>
-          <small>Consolidado 2024</small>
+      <!-- CARD PRINCIPAL -->
+      <div class="noticia-card">
+        <h3>📊 Níveis de Pobreza Extrema</h3>
+        <div class="bloco">
+          <span>CENÁRIO GLOBAL</span>
+          <div class="linha">
+            <strong>9.2% da População</strong>
+            <small>Consolidado 2024</small>
+          </div>
+          <div class="barra"><div style="width: 45%"></div></div>
         </div>
+        <div class="bloco">
+          <span>CENÁRIO BRASIL</span>
+          <div class="linha">
+            <strong>5.8% da População</strong>
+            <small>Meta: 0%</small>
+          </div>
+          <div class="barra"><div style="width: 28%"></div></div>
+        </div>
+        <p class="descricao">
+          O Brasil apresenta avanços significativos, porém a concentração urbana ainda demanda intervenções focadas em micro-comunidades.
+        </p>
+      </div>
 
-        <div class="barra">
-          <div style="width: 45%"></div>
+      <!-- STATS - dados reais do banco -->
+      <div class="noticia-stats">
+        <div class="stat destaque">
+          <span>MEMBROS ATIVOS</span>
+          <h2 id="stat-membros"><%= membrosAtivos %></h2>
+        </div>
+        <div class="stat">
+          <span>TROCAS REALIZADAS</span>
+          <h3 id="stat-trocas"><%= trocasRealizadas %></h3>
+        </div>
+        <div class="stat">
+          <span>TOTAL DE DOAÇÕES</span>
+          <h3 id="stat-doacoes"><%= totalDoacoes %></h3>
         </div>
       </div>
 
-      <div class="bloco">
-        <span>CENÁRIO BRASIL</span>
+    </section>
 
-        <div class="linha">
-          <strong>5.8% da População</strong>
-          <small>Meta: 0%</small>
+    <!-- CARD VERDE -->
+    <section class="creditos">
+      <div class="creditos-box">
+        <h2>Como funcionam os Créditos?</h2>
+        <p>Créditos sociais são gerados através da prestação de serviços para a comunidade.
+          Ao oferecer seu tempo e talento, você acumula créditos que podem ser trocados por
+          serviços de outros membros ou produtos essenciais.</p>
+        <div class="botoes">
+          <a href="/novo-anuncio"><button class="btn-doar">Anunciar Agora</button></a>
+          <a href="/saibamais"><button class="btn-saiba">Saiba Mais</button></a>
         </div>
-
-        <div class="barra">
-          <div style="width: 28%"></div>
-        </div>
       </div>
-
-      <p class="descricao">
-        O Brasil apresenta avanços significativos, porém a concentração urbana ainda demanda intervenções focadas em micro-comunidades.
-      </p>
-
-    </div>
-
-    <!-- STATS -->
-    <div class="noticia-stats">
-
-      <div class="stat destaque">
-        <span>MEMBROS ATIVOS</span>
-        <h2>12,480</h2>
-      </div>
-
-      <div class="stat">
-        <span>TROCAS REALIZADAS</span>
-        <h3>45,210</h3>
-      </div>
-
-      <div class="stat">
-        <span>TOTAL DE DOAÇÕES</span>
-        <h3>R$ 1.2M</h3>
-      </div>
-
-    </div>
+    </section>
 
   </section>
 
-  <!-- CARD VERDE -->
-  <section class="creditos">
-    <div class="creditos-box">
-
-      <h2>Como funcionam os Créditos?</h2>
-
-      <p>
-        Créditos sociais são gerados através da prestação de serviços para a comunidade.
-        Ao oferecer seu tempo e talento, você acumula créditos que podem ser trocados por
-        serviços de outros membros ou produtos essenciais.
-      </p>
-
-      <div class="botoes">
-        <button class="btn-doar">Doe Agora</button>
-        <a href="/saibamais"><button class="btn-saiba">Saiba Mais</button></a>
-      </div>
-
-    </div>
-  </section>
-
-</section>
-
-  <!-- FIQUE POR DENTRO 
-  <section class="fique-por-dentro">
-    <h2>FIQUE POR DENTRO</h2>
-    <form action="/cadastro-newsletter" method="POST">
-      <input type="text" name="nome" placeholder="Primeiro nome" required>
-      <input type="email" name="email" placeholder="Email" required>
-      <button type="submit">CADASTRAR</button>
-    </form>
-  </section><br> -->
- 
   <%- include('../partials/footer.ejs') %>
- 
+
   <script src="../js/menu.js"></script>
+
+  <!-- Atualização dinâmica das estatísticas a cada 30s -->
+  <script>
+    async function atualizarStats() {
+      try {
+        const res = await fetch('/api/stats');
+        const data = await res.json();
+        const formatNum = n => n.toLocaleString('pt-BR');
+        document.getElementById('stat-membros').textContent = formatNum(data.membrosAtivos);
+        document.getElementById('stat-trocas').textContent = formatNum(data.trocasRealizadas);
+        document.getElementById('stat-doacoes').textContent = data.totalDoacoes;
+      } catch (e) {}
+    }
+    setInterval(atualizarStats, 30000);
+  </script>
   <br>
- 
+
 </body>
 </html>

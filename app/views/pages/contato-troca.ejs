@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contato Troca - Malcolm Eliseu Ribeiro</title>
+  <title>Contato - <%= anuncio ? anuncio.titulo : 'Anúncio' %> - CPC</title>
   <link rel="stylesheet" href="/css/contato-troca.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap">
 </head>
@@ -11,131 +11,86 @@
 <%- include('../partials/header.ejs') %>
 <body>
   <main>
-    <!-- Seção de Perfil do Usuário -->
+
+    <% if (!anuncio) { %>
+      <p style="text-align:center;padding:40px">Anúncio não encontrado. <a href="/todos">Voltar aos anúncios</a></p>
+    <% } else { %>
+
+    <!-- Perfil do Doador -->
     <section class="profile-section">
       <figure class="profile-card">
-        <img src="../img/img malcon.png" alt="Foto de perfil de Malcolm Eliseu Ribeiro" class="avatar">
+        <img src="<%= anuncio.foto %>" alt="Foto de perfil" class="avatar">
         <figcaption class="user-info">
-          <h1 class="name">Malcolm Eliseu Ribeiro</h1>
-          <p class="details" aria-label="Profissão e Trocas Realizadas">
-            <span class="profession">Marceneiro</span><br>
-            <span class="trades-count">20 Trocas Realizadas</span>
+          <h1 class="name"><%= anuncio.doadorNome %></h1>
+          <p class="details">
+            <span class="profession"><%= anuncio.titulo %></span><br>
+            <span class="trades-count"><%= anuncio.pontos %> Pontos · <%= anuncio.categoria %></span>
           </p>
         </figcaption>
       </figure>
     </section><br>
 
-    <!-- Seção de Carrossel de Imagens -->
-    <section class="carousel-section" aria-label="Galeria de Imagens do Perfil">
+    <!-- Carrossel -->
+    <section class="carousel-section">
       <section class="slider-container">
-        <!-- Inputs de rádio para controle do carrossel (mantidos para funcionalidade CSS) -->
-        <input type="radio" name="slider" id="slide1" checked aria-controls="image-track" aria-label="Ir para a imagem 1">
-        <input type="radio" name="slider" id="slide2" aria-controls="image-track" aria-label="Ir para a imagem 2">
-        <input type="radio" name="slider" id="slide3" aria-controls="image-track" aria-label="Ir para a imagem 3">
-        
+        <input type="radio" name="slider" id="slide1" checked>
+        <input type="radio" name="slider" id="slide2">
+        <input type="radio" name="slider" id="slide3">
         <section class="slider-img-wrapper">
           <section class="slider-track" id="image-track">
-            <img src="../img/img2-home.jpeg" class="slider-img" alt="Exemplo de trabalho 1">
-            <img src="../img/img home-2.png" class="slider-img" alt="Exemplo de trabalho 2">
-            <img src="../img/img cpc-verde.jpeg" class="slider-img" alt="Exemplo de trabalho 3">
+            <img src="<%= anuncio.foto %>" class="slider-img" alt="Imagem 1">
+            <img src="../img/img2-home.jpeg" class="slider-img" alt="Imagem 2">
+            <img src="../img/img cpc-verde.jpeg" class="slider-img" alt="Imagem 3">
           </section>
         </section>
-        
-        <section class="slider-circles" role="tablist" aria-label="Controles do Carrossel">
-          <label for="slide1" class="circle" role="tab" aria-selected="true"></label>
-          <label for="slide2" class="circle" role="tab" aria-selected="false"></label>
-          <label for="slide3" class="circle" role="tab" aria-selected="false"></label>
+        <section class="slider-circles">
+          <label for="slide1" class="circle"></label>
+          <label for="slide2" class="circle"></label>
+          <label for="slide3" class="circle"></label>
         </section>
       </section>
     </section>
 
-    <!-- Seção de Descrição -->
+    <!-- Descrição -->
     <section class="description-section">
       <h2>Descrição</h2>
-      <p>Nosso objetivo é criar uma rede solidária onde as pessoas podem trocar serviços e produtos sem a necessidade de dinheiro. 
-        Aqui você pode oferecer suas habilidades, ajudar quem precisa e receber apoio em troca, tudo de uma forma simples e acessível.
-        Ideal para quem busca se conectar, compartilhar e transformar vidas na comunidade, nosso espaço é um ponto de encontro para aqueles em situação de vunerabilidade e para todos que desejam fazer a diferença. 
-        Junte-se a nós e descubra o poder da colaboração!</p>
+      <p><%= anuncio.descricao %></p>
+      <p style="margin-top:10px"><strong>Localização:</strong> <%= anuncio.doadorLocal %></p>
+      <p><strong>Tipo:</strong> <%= anuncio.tipo === 'servico' ? 'Serviço' : 'Produto' %></p>
     </section>
 
-    <!-- Seção de Ação Principal -->
+    <!-- Ação -->
     <section class="action-section">
-      <a href="/resumo" class="start-trade-button-link">
+      <a href="/resumo/<%= anuncio.id %>" class="start-trade-button-link">
         <button type="button" class="start-trade-button"><strong>Iniciar Troca</strong></button>
       </a>
     </section>
+
+    <% } %>
   </main>
 
   <script>
-    // Script de funcionalidade do carrossel (mantido e ajustado para o novo HTML)
-    const slides = [
-      document.getElementById('slide1'),
-      document.getElementById('slide2'),
-      document.getElementById('slide3')
-    ];
-    let current = slides.findIndex(s => s.checked);
-    
-    // Auto-advance
+    const slides = [document.getElementById('slide1'), document.getElementById('slide2'), document.getElementById('slide3')];
+    let current = 0;
     setInterval(() => {
       slides[current].checked = false;
       current = (current + 1) % slides.length;
       slides[current].checked = true;
-      // Atualiza o estado ARIA para acessibilidade
-      slides.forEach((slide, index) => {
-        const label = document.querySelector(`label[for="${slide.id}"]`);
-        if (label) {
-          label.setAttribute('aria-selected', index === current ? 'true' : 'false');
-        }
-      });
     }, 2300);
-
-    // Swipe navigation
     const sliderWrapper = document.querySelector('.slider-img-wrapper');
     let startX = null;
-    let isDragging = false;
-
-    function onStart(e) {
-      isDragging = true;
-      startX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
-    }
-    function onEnd(e) {
-      if (!isDragging || startX === null) return;
-      let endX = e.type.startsWith('touch') ? e.changedTouches[0].clientX : e.clientX;
-      let diff = endX - startX;
-      
+    sliderWrapper && sliderWrapper.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+    sliderWrapper && sliderWrapper.addEventListener('touchend', e => {
+      if (startX === null) return;
+      const diff = e.changedTouches[0].clientX - startX;
       if (Math.abs(diff) > 50) {
         slides[current].checked = false;
-        if (diff < 0) {
-          // Swipe left: next slide
-          current = (current + 1) % slides.length;
-        } else {
-          // Swipe right: previous slide
-          current = (current - 1 + slides.length) % slides.length;
-        }
-        current = (current + slides.length) % slides.length; // Garante que o índice é positivo
+        current = diff < 0 ? (current + 1) % slides.length : (current - 1 + slides.length) % slides.length;
         slides[current].checked = true;
-        
-        // Atualiza o estado ARIA para acessibilidade
-        slides.forEach((slide, index) => {
-          const label = document.querySelector(`label[for="${slide.id}"]`);
-          if (label) {
-            label.setAttribute('aria-selected', index === current ? 'true' : 'false');
-          }
-        });
       }
-      isDragging = false;
       startX = null;
-    }
-    
-    sliderWrapper.addEventListener('mousedown', onStart);
-    sliderWrapper.addEventListener('touchstart', onStart);
-    document.addEventListener('mouseup', onEnd); // Usa document para capturar o fim do arrasto fora do wrapper
-    sliderWrapper.addEventListener('touchend', onEnd);
-    
-    // Previne o arrasto padrão em desktop
-    sliderWrapper.addEventListener('dragstart', (e) => e.preventDefault());
+    });
   </script>
 </body>
-
 <%- include('../partials/footer.ejs') %>
 </html>

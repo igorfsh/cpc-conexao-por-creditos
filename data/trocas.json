@@ -1,0 +1,46 @@
+[
+  {
+    "id": 1,
+    "anuncioId": 2,
+    "anuncioTitulo": "Marceneiro",
+    "solicitanteNome": "Ana Silva",
+    "solicitanteEmail": "ana@example.com",
+    "mensagem": "Olá, gostaria de trocar o serviço de marcenaria pelo leite infantil.",
+    "status": "concluida",
+    "dataSolicitacao": "2025-02-01T10:00:00.000Z",
+    "dataConclusao": "2025-02-05T10:00:00.000Z"
+  },
+  {
+    "id": 2,
+    "anuncioId": 11,
+    "anuncioTitulo": "Leite",
+    "solicitanteNome": "João Souza",
+    "solicitanteEmail": "joao@example.com",
+    "mensagem": "Preciso de leite para minha filha.",
+    "status": "concluida",
+    "dataSolicitacao": "2025-02-10T10:00:00.000Z",
+    "dataConclusao": "2025-02-12T10:00:00.000Z"
+  },
+  {
+    "id": 3,
+    "anuncioId": 3,
+    "anuncioTitulo": "Eletricista",
+    "solicitanteNome": "Maria Lima",
+    "solicitanteEmail": "maria@example.com",
+    "mensagem": "Preciso de serviço elétrico urgente.",
+    "status": "concluida",
+    "dataSolicitacao": "2025-03-01T10:00:00.000Z",
+    "dataConclusao": "2025-03-03T10:00:00.000Z"
+  },
+  {
+    "id": 4,
+    "anuncioId": 18,
+    "anuncioTitulo": "Mamadeira",
+    "solicitanteNome": "Igor Andrade",
+    "solicitanteEmail": "rm94917@estudante.fieb.edu.br",
+    "mensagem": "",
+    "status": "pendente",
+    "dataSolicitacao": "2026-05-17T18:49:38.244Z",
+    "dataConclusao": null
+  }
+]
