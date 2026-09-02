@@ -3,12 +3,14 @@ services:
     name: cpc-conexao-por-creditos
     runtime: node
     plan: free
-    buildCommand: npm install --omit=dev --no-audit --no-fund
+    buildCommand: npm install --omit=dev --no-audit --no-fund --workspaces=false
     startCommand: npm start
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
+      - key: NPM_CONFIG_WORKSPACES
+        value: "false"
       - key: SESSION_SECRET
         generateValue: true
       - key: APP_BASE_URL
