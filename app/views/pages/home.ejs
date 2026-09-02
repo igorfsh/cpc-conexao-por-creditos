@@ -5,70 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Página Inicial - CPC</title>
   <link rel="stylesheet" href="../css/home.css">
-
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap">
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-
 </head>
 
 <%- include('../partials/header.ejs') %>
 <body>
 
-<!-- ═══════════════════════════════════════════════
-     HERO
-     ═══════════════════════════════════════════════ -->
-<section class="hero">
-  <div class="hero-bg" aria-hidden="true">
-    <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="heroBase" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#184C3B"/>
-          <stop offset="55%" stop-color="#1F5D49"/>
-          <stop offset="100%" stop-color="#184C3B"/>
-        </linearGradient>
-        <radialGradient id="glowAmber" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#FFB703" stop-opacity="0.55"/>
-          <stop offset="100%" stop-color="#FFB703" stop-opacity="0"/>
-        </radialGradient>
-        <radialGradient id="glowClay" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#F97316" stop-opacity="0.45"/>
-          <stop offset="100%" stop-color="#F97316" stop-opacity="0"/>
-        </radialGradient>
-        <radialGradient id="glowMint" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#B2E5D9" stop-opacity="0.35"/>
-          <stop offset="100%" stop-color="#B2E5D9" stop-opacity="0"/>
-        </radialGradient>
-      </defs>
-      <rect width="1600" height="900" fill="url(#heroBase)"/>
-      <circle cx="1180" cy="230" r="340" fill="url(#glowAmber)"/>
-      <circle cx="1360" cy="620" r="300" fill="url(#glowClay)"/>
-      <circle cx="900" cy="740" r="260" fill="url(#glowMint)"/>
-      <g stroke="#E1F5EE" stroke-opacity="0.22" stroke-width="1.4" stroke-dasharray="3 8" fill="none">
-        <path d="M 980 180 C 1120 140, 1260 220, 1300 340"/>
-        <path d="M 1300 340 C 1340 470, 1260 560, 1130 590"/>
-        <path d="M 1130 590 C 1010 610, 930 540, 920 430"/>
-        <path d="M 920 430 C 910 300, 940 220, 980 180"/>
-        <path d="M 1300 340 C 1420 380, 1480 500, 1440 620"/>
-        <path d="M 1130 590 C 1180 690, 1300 740, 1420 700"/>
-        <path d="M 980 180 C 860 130, 760 150, 700 240"/>
-      </g>
-      <g fill="#FFFFFF">
-        <circle cx="980" cy="180" r="7"/>
-        <circle cx="1300" cy="340" r="10"/>
-        <circle cx="1130" cy="590" r="8"/>
-        <circle cx="920" cy="430" r="6"/>
-        <circle cx="1440" cy="620" r="7"/>
-        <circle cx="1420" cy="700" r="5"/>
-        <circle cx="700" cy="240" r="5"/>
-      </g>
-      <g fill="#FFB703">
-        <circle cx="1300" cy="340" r="4.5"/>
-        <circle cx="1130" cy="590" r="4"/>
-      </g>
-    </svg>
-  </div>
-
+<!-- BANNER + TEXTO -->
+<section class="banner-wrapper">
+  <section class="banner">
+    <img src="../img/img-banner.png" alt="Banner principal">
+  </section>
+  <section class="boas-vindas">
+    <h2>Conecte pessoas Compartilhe valor<br> Ganhe créditos</h2>
+    <p>No CPC, cada doação ou troca gera impacto e recompensa. Compartilhe produtos ou serviços, acumule créditos e encontre o que você precisa em uma comunidade que valoriza a solidariedade.</p>
+    <a href="/sobrenos" class="btn-banner">Conheça o CPC</a>
+  </section>
+</section>
 
 <section id="como-funciona" class="secao">
   <section class="secao-head">
@@ -186,114 +141,33 @@
       <a href="/login" class="btn btn-ghost">Já tenho conta</a>
     </section>
   </section>
-
-  <div class="hero-inner">
-    <p class="eyebrow">Rede solidária de trocas</p>
-    <h1>Troque o que você <em>tem</em><br>pelo que você <em>precisa</em>.<br>Sem dinheiro.</h1>
-    <p class="hero-desc">No CPC, cada doação ou troca vira crédito. Você oferece um item, um serviço ou um pouco do seu tempo — e usa os créditos para conseguir o que precisa com outras pessoas da comunidade.</p>
-    <div class="hero-actions">
-      <% if (!usuarioLogado) { %>
-        <a href="/login" class="btn btn-primary">Criar conta grátis →</a>
-      <% } else { %>
-        <a href="/servicos" class="btn btn-primary">Ver itens disponíveis →</a>
-      <% } %>
-      <a href="#como-funciona" class="btn btn-ghost">Ver como funciona</a>
-    </div>
-    <p class="hero-note">SEM DINHEIRO · SEM BUROCRACIA</p>
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════════════════
-     COMO FUNCIONA
-     ═══════════════════════════════════════════════ -->
-<section id="como-funciona" class="secao">
-  <div class="secao-head secao-head--centralizada">
-    <p class="eyebrow">O sistema de créditos</p>
-    <h2>Antes de escolher o que fazer, entenda como o ciclo funciona.</h2>
-    <p>Não é preciso ter dinheiro nem algo específico para dar em troca no mesmo instante. O crédito é o que conecta uma doação de hoje a uma necessidade de amanhã.</p>
-  </div>
-
-  <div class="steps">
-    <div class="step">
-      <div class="step-num">Passo 01</div>
-      <h3>Ofereça algo</h3>
-      <p>Um item que não usa mais, uma habilidade ou um pouco do seu tempo. Leva menos de 5 minutos para anunciar.</p>
-    </div>
-    <div class="step">
-      <div class="step-num">Passo 02</div>
-      <h3>Acumule créditos</h3>
-      <p>Cada oferta concluída gera créditos na sua conta. Eles ficam guardados até você precisar usar.</p>
-    </div>
-    <div class="step">
-      <div class="step-num">Passo 03</div>
-      <h3>Troque quando precisar</h3>
-      <p>Use os créditos para conseguir produtos ou serviços de outras pessoas da comunidade, sem gastar dinheiro.</p>
-    </div>
-  </div>
 </section>
 <% } %>
 
-<!-- ═══════════════════════════════════════════════
-     CATEGORIAS RÁPIDAS
-     ═══════════════════════════════════════════════ -->
-<section class="secao secao--categorias">
-  <div class="cat-grid">
-    <a href="/kids" class="cat-tile">
-      <span class="cat-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h14l1 7H4L5 3z"/><path d="M4 10c0 5 2 8 8 8s8-3 8-8"/><circle cx="9" cy="17" r="1"/><circle cx="15" cy="17" r="1"/></svg>
-      </span>
-      <span class="cat-label">Área Kids</span>
-      <span class="cat-sub">Produtos infantis</span>
-    </a>
-    <a href="/profissionais" class="cat-tile cat-tile--amber">
-      <span class="cat-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-      </span>
-      <span class="cat-label">Serviços</span>
-      <span class="cat-sub">Troque-se</span>
-    </a>
-    <a href="/alimentos" class="cat-tile cat-tile--clay">
-      <span class="cat-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M12 6v6l4 2"/></svg>
-      </span>
-      <span class="cat-label">Alimentação</span>
-      <span class="cat-sub">Doações de alimentos</span>
-    </a>
-    <a href="<%= usuarioLogado ? '/conta' : '/login' %>" class="cat-tile">
-      <span class="cat-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
-      </span>
-      <span class="cat-label">Perfil</span>
-      <span class="cat-sub">Sua conta CPC</span>
-    </a>
-  </div>
+<!-- ABAS -->
+<section class="abas">
+  <a href="/"><button id="btn-sobre" class="aba ativa">Conheça o CPC</button></a>
 </section>
 
-<!-- ═══════════════════════════════════════════════
-     DOAR X TROCAR
-     ═══════════════════════════════════════════════ -->
-<section id="caminhos" class="secao">
-  <div class="secao-head secao-head--centralizada">
-    <p class="eyebrow">Duas formas de participar</p>
-    <h2>Qual é o seu caso agora?</h2>
-    <p>As duas opções abaixo levam a lugares diferentes — escolha pelo que você quer fazer primeiro.</p>
-  </div>
-
-  <div class="paths">
-    <a href="/doe" class="path-card path-card--doar">
-      <span class="path-tag">Sem retorno esperado</span>
-      <h3>Quero doar</h3>
-      <p>Dê um item, um serviço ou seu tempo para quem precisa, de graça — sem receber créditos em troca. Ideal se você só quer ajudar.</p>
-      <span class="path-cta">Doar agora →</span>
-    </a>
-    <a href="/servicos" class="path-card path-card--trocar">
-      <span class="path-tag">Você ganha créditos</span>
-      <h3>Quero trocar</h3>
-      <p>Ofereça um produto ou serviço, acumule créditos e use para conseguir algo que você precisa de volta.</p>
-      <span class="path-cta">Ver itens disponíveis →</span>
-    </a>
-  </div>
+<!-- Conteúdos Home Desktop -->
+<section class="desktop-only">
+  <section class="container">
+    <article class="card">
+      <img src="../img/img2-home.jpeg" alt="Foto da organização CPC em atividade">
+      <h3>Sobre a organização</h3>
+      <p>Nosso objetivo é criar uma rede solidária onde pessoas possam trocar serviços e produtos sem a necessidade de dinheiro. Aqui você pode oferecer suas habilidades, ajudar quem precisa e receber apoio em troca, tudo de uma forma simples e acessível.
+      Ideal para quem busca se conectar, compartilhar e transformar vidas na comunidade, nosso espaço é um ponto de encontro para aqueles em situação de <strong>vulnerabilidade</strong> e para todos que desejam fazer a diferença.<br>
+      Junte-se a nós e descubra o poder da colaboração!</p>
+    </article>
+    <article class="card">
+      <img src="../img/img home-2.png" alt="Foto da organização">
+      <h3>Faça parte da mudança</h3>
+      <p>Com sua ajuda, podemos continuar construindo uma comunidade mais justa e sustentável, onde todos tenham a chance de participar e prosperar. Doe produtos, tempo ou habilidades e faça parte dessa transformação.</p>
+    </article>
+  </section>
 </section>
+
+
 
 <!-- Conteúdos Home Mobile -->
 <section class="mobile-only">
@@ -307,29 +181,14 @@
       <p>Com sua ajuda, podemos continuar a construir uma comunidade mais justa e sustentável.</p>
     </section>
   </section>
-
-<!-- ═══════════════════════════════════════════════
-     CTA DE CADASTRO
-     ═══════════════════════════════════════════════ -->
-<% if (!usuarioLogado) { %>
-<section id="cadastro" class="secao">
-  <div class="cta-band">
-    <p class="eyebrow eyebrow--claro">Comece agora</p>
-    <h2>Crie sua conta e faça sua primeira oferta hoje.</h2>
-    <p>Leva menos de 2 minutos. Você pode entrar com e-mail ou com uma conta que já tem.</p>
-    <div class="hero-actions" style="justify-content:center;">
-      <a href="/login" class="btn btn-primary">Criar conta grátis →</a>
-      <a href="/login" class="btn btn-ghost">Já tenho conta</a>
-    </div>
-  </div>
-
 </section>
-<% } %>
 
 <!-- ═══════════════════════════════════════════════
-     NOSSO IMPACTO (mantido igual — já é funcional)
+     SEÇÃO: NOSSO IMPACTO (substitui .noticias-dashboard)
      ═══════════════════════════════════════════════ -->
 <section class="impact">
+
+  <!-- Cabeçalho -->
   <section class="impact__header">
     <span class="impact__label">NOSSO IMPACTO</span>
     <h2 class="impact__title">Transformando vidas<br>em números reais</h2>
@@ -339,7 +198,9 @@
     </p>
   </section>
 
+  <!-- Cards de estatísticas -->
   <section class="impact__stats">
+
     <section class="stat-card">
       <section class="stat-card__icon">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
@@ -403,9 +264,13 @@
         acumulado
       </section>
     </section>
+
   </section>
 
+  <!-- Grade inferior -->
   <section class="impact__bottom">
+
+    <!-- Card de barras de pobreza -->
     <section class="impact-info-card">
       <h3 class="impact-info-card__title">Por que o CPC existe?</h3>
 
@@ -444,6 +309,7 @@
       </p>
     </section>
 
+    <!-- Card CTA -->
     <section class="impact-cta-card">
       <span class="impact-cta-card__badge">FAÇA PARTE</span>
       <h3 class="impact-cta-card__title">Como funcionam os Créditos?</h3>
@@ -456,77 +322,12 @@
         <a href="/saibamais" class="impact-btn">Saiba mais</a>
       </section>
     </section>
+
   </section>
 </section>
 
-<!-- ═══════════════════════════════════════════════
-     SOBRE
-     ═══════════════════════════════════════════════ -->
-<section id="sobre" class="secao secao--sobre">
-  <div class="sobre-grid">
-    <div class="sobre-visual" role="img" aria-label="Ilustração de uma rede comunitária de pessoas conectadas">
-      <svg viewBox="0 0 500 375" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="aboutBase" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#4C7967"/>
-            <stop offset="100%" stop-color="#0F6E56"/>
-          </linearGradient>
-          <radialGradient id="aboutGlowAmber" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#FFB703" stop-opacity="0.5"/>
-            <stop offset="100%" stop-color="#FFB703" stop-opacity="0"/>
-          </radialGradient>
-          <radialGradient id="aboutGlowClay" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stop-color="#F97316" stop-opacity="0.45"/>
-            <stop offset="100%" stop-color="#F97316" stop-opacity="0"/>
-          </radialGradient>
-        </defs>
-        <rect width="500" height="375" fill="url(#aboutBase)"/>
-        <circle cx="120" cy="90" r="140" fill="url(#aboutGlowAmber)"/>
-        <circle cx="380" cy="280" r="150" fill="url(#aboutGlowClay)"/>
-        <g stroke="#FFFFFF" stroke-opacity="0.28" stroke-width="1.3" fill="none">
-          <path d="M 250 90 L 150 150"/>
-          <path d="M 250 90 L 340 150"/>
-          <path d="M 250 90 L 250 190"/>
-          <path d="M 150 150 L 100 240"/>
-          <path d="M 150 150 L 250 190"/>
-          <path d="M 340 150 L 400 240"/>
-          <path d="M 340 150 L 250 190"/>
-          <path d="M 250 190 L 175 280"/>
-          <path d="M 250 190 L 325 280"/>
-          <path d="M 100 240 L 175 280"/>
-          <path d="M 400 240 L 325 280"/>
-          <path d="M 175 280 L 325 280"/>
-        </g>
-        <g fill="#FFFFFF">
-          <circle cx="250" cy="90" r="10"/>
-          <circle cx="150" cy="150" r="8"/>
-          <circle cx="340" cy="150" r="8"/>
-          <circle cx="250" cy="190" r="9"/>
-          <circle cx="100" cy="240" r="7"/>
-          <circle cx="400" cy="240" r="7"/>
-          <circle cx="175" cy="280" r="8"/>
-          <circle cx="325" cy="280" r="8"/>
-        </g>
-        <g fill="#FFB703">
-          <circle cx="250" cy="90" r="4"/>
-          <circle cx="250" cy="190" r="4"/>
-        </g>
-        <g fill="#F97316">
-          <circle cx="175" cy="280" r="3.5"/>
-          <circle cx="325" cy="280" r="3.5"/>
-        </g>
-      </svg>
-    </div>
-    <div>
-      <p class="eyebrow">Sobre o CPC</p>
-      <h2>Uma rede solidária onde ninguém precisa de dinheiro para participar.</h2>
-      <p>O CPC nasceu para conectar pessoas em situação de vulnerabilidade a quem tem algo para oferecer — um produto, uma habilidade ou um pouco de tempo. Em vez de dinheiro, o que circula é confiança, convertida em créditos.</p>
-      <p>Cada troca fortalece a rede. Quanto mais pessoas participam, mais fácil fica encontrar exatamente o que você precisa, quando precisa.</p>
-    </div>
-  </div>
-</section>
-
 <script src="../js/menu.js"></script>
+
 <script>
   async function atualizarStats() {
     try {
@@ -542,5 +343,4 @@
 </script>
 
 </body>
-<%- include('../partials/footer.ejs') %>
 </html>

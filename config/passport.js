@@ -15,12 +15,12 @@ const appBaseUrl =
   `http://localhost:${process.env.APP_PORT || process.env.PORT || 3000}`;
 
 // Se não houver variável de ambiente específica, usa a do Render ou a base URL do app
-const googleCallbackURL = process.env.GOOGLE_CALLBACK_URL || "https://cpc-conexao-por-creditos.onrender.com/auth/google/callback" || `${appBaseUrl}/auth/google/callback`;
+const googleCallbackURL = process.env.GOOGLE_CALLBACK_URL || `${appBaseUrl}/auth/google/callback`;
  
 // Configurações do GitHub
 const githubClientID = process.env.GITHUB_CLIENT_ID;
 const githubClientSecret = process.env.GITHUB_CLIENT_SECRET;
-const githubCallbackURL = process.env.GITHUB_CALLBACK_URL || "https://cpc-conexao-por-creditos.onrender.com/auth/github/callback" || `${appBaseUrl}/auth/github/callback`;
+const githubCallbackURL = process.env.GITHUB_CALLBACK_URL || `${appBaseUrl}/auth/github/callback`;
 
 const googleConfigured = Boolean(googleClientID && googleClientSecret);
 const githubConfigured = Boolean(githubClientID && githubClientSecret);
