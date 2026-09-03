@@ -14,7 +14,7 @@ services:
       - key: SESSION_SECRET
         generateValue: true
       - key: APP_BASE_URL
-        value: https://s-slq0.onrender.com
+        value: https://cpc-conexao-por-creditos-qlq0.onrender.com
       - key: DB_HOST
         sync: false
       - key: DB_USER
@@ -42,6 +42,6 @@ services:
       - key: GITHUB_CALLBACK_URL
         sync: false
       - key: WEBAUTHN_RP_ID
-        value: s-slq0.onrender.com
+        value: cpc-conexao-por-creditos-qlq0.onrender.com
       - key: WEBAUTHN_ORIGIN
-        value: https://s-slq0.onrender.com
+        value: https://cpc-conexao-por-creditos-qlq0.onrender.com
