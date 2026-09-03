@@ -71,12 +71,19 @@ Acesse: `http://localhost:3000` 🌐
 ]
 ```
 
-### Produção (Futuro)
-Quando quiser usar MySQL:
+### Produção
+Para usar MySQL em produção:
 1. Instale MySQL
 2. Configure credenciais em `.env`
 3. Execute `node config/init-db.js`
-4. O modelo detecta automaticamente e usa MySQL
+4. O modelo usa MySQL automaticamente quando `DB_HOST` e `DB_NAME` estão definidos
+
+Para o login por Face ID ou biometria digital no Render, configure também:
+
+- `WEBAUTHN_RP_ID`: somente o domínio público, sem `https://` e sem caminho
+- `WEBAUTHN_ORIGIN`: a origem pública completa, por exemplo `https://cpc-conexao-por-creditos.onrender.com`
+
+A tabela `passkeys` precisa ser criada pelo `config/database.sql`. Não use `data/passkeys.json` para credenciais em produção, pois o filesystem do Render pode ser reiniciado.
 
 ---
 

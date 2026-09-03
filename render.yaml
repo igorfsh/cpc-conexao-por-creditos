@@ -42,6 +42,6 @@ services:
       - key: GITHUB_CALLBACK_URL
         sync: false
       - key: WEBAUTHN_RP_ID
-        sync: false
+        value: cpc-conexao-por-creditos.onrender.com
       - key: WEBAUTHN_ORIGIN
-        sync: false
+        value: https://cpc-conexao-por-creditos.onrender.com

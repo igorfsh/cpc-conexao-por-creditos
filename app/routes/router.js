@@ -44,7 +44,9 @@ router.get("/", (req, res) => {
 const prepararAnuncio = async (anuncio, usuariosPorId = new Map()) => {
   if (!anuncio) return null;
 
-  const fotoDoItem = anuncio.foto || (Array.isArray(anuncio.imagens) ? anuncio.imagens[0] : null) || "/img/img malcon.png";
+  const fotoDoItem = (Array.isArray(anuncio.imagens) ? anuncio.imagens[0] : null)
+    || anuncio.foto
+    || "/img/img malcon.png";
 
   return {
     ...anuncio,

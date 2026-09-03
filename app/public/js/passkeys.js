@@ -7,7 +7,6 @@
 
   const prepararOpcoes = (opcoes) => {
     opcoes.challenge = converterBase64Url(opcoes.challenge);
-    if (opcoes.rp) opcoes.rp.id = window.location.hostname;
     if (opcoes.user?.id) opcoes.user.id = converterBase64Url(opcoes.user.id);
     if (opcoes.allowCredentials) {
       opcoes.allowCredentials = opcoes.allowCredentials.map((credencial) => ({

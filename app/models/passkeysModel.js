@@ -2,11 +2,12 @@ const fs = require("fs");
 const path = require("path");
 
 let pool = null;
-let usarJSON = true;
+let usarJSON = !process.env.DB_HOST || !process.env.DB_NAME;
 try {
   pool = require("../../config/pool_conexoes");
 } catch (err) {
   pool = null;
+  usarJSON = true;
 }
 
 const dbPath = path.join(__dirname, "../../data/passkeys.json");

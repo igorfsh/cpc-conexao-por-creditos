@@ -2,6 +2,7 @@
   "use strict";
 
   let installPrompt;
+  const installInviteKey = "cpc-pwa-install-invite-seen";
   const banner = document.getElementById("pwa-install");
   const installButton = document.getElementById("pwa-install-button");
   const closeButton = document.getElementById("pwa-install-close");
@@ -15,9 +16,16 @@
   const isStandalone = window.matchMedia("(display-mode: standalone)").matches
     || window.navigator.standalone === true;
   const isIos = /iphone|ipad|ipod/i.test(window.navigator.userAgent)
-    && !window.MSStream;
+    || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const installInviteSeen = window.localStorage.getItem(installInviteKey) === "true";
 
-  if (!banner || !installButton || !closeButton || isStandalone) return;
+  if (!banner || !installButton || !closeButton || isStandalone || installInviteSeen) return;
+
+  const markInstallInviteAsSeen = () => {
+    window.localStorage.setItem(installInviteKey, "true");
+    banner.hidden = true;
+    installPrompt = null;
+  };
 
   if (isIos) {
     banner.querySelector("strong").textContent = "Adicione o CPC à sua tela inicial";
@@ -39,18 +47,16 @@
     }
 
     if (!installPrompt) return;
+    markInstallInviteAsSeen();
     installPrompt.prompt();
     await installPrompt.userChoice;
-    installPrompt = null;
-    banner.hidden = true;
   });
 
   closeButton.addEventListener("click", () => {
-    banner.hidden = true;
+    markInstallInviteAsSeen();
   });
 
   window.addEventListener("appinstalled", () => {
-    installPrompt = null;
-    banner.hidden = true;
+    markInstallInviteAsSeen();
   });
 }());

@@ -3,7 +3,7 @@ const path = require("path");
 const bcrypt = require("bcryptjs");
 
 let pool = null;
-let usarJSON = true;
+let usarJSON = !process.env.DB_HOST || !process.env.DB_NAME;
 let tentouMySQL = false;
 
 try {

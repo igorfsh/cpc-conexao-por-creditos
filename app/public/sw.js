@@ -1,4 +1,4 @@
-const CACHE_NAME = "cpc-shell-v2";
+const CACHE_NAME = "cpc-shell-v3";
 const APP_SHELL = [
   "/",
   "/manifest.json",
