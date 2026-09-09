@@ -14,19 +14,17 @@ const appBaseUrl =
   process.env.APP_URL ||
   `http://localhost:${process.env.APP_PORT || process.env.PORT || 3000}`;
 
-const googleCallbackURL =
-  process.env.GOOGLE_CALLBACK_URL ||
-  "https://cpc-conexao-por-creditos.onrender.com/auth/google/callback";
+const googleCallbackURL = process.env.GOOGLE_CALLBACK_URL || `${appBaseUrl}/auth/google/callback`;
  
 // Configurações do GitHub
 const githubClientID = process.env.GITHUB_CLIENT_ID;
 const githubClientSecret = process.env.GITHUB_CLIENT_SECRET;
-const githubCallbackURL = process.env.GITHUB_CALLBACK_URL || "https://cpc-conexao-por-creditos.onrender.com/auth/github/callback" || `${appBaseUrl}/auth/github/callback`;
+const githubCallbackURL = process.env.GITHUB_CALLBACK_URL || `${appBaseUrl}/auth/github/callback`;
 
 const googleConfigured = Boolean(googleClientID && googleClientSecret);
 const githubConfigured = Boolean(githubClientID && githubClientSecret);
  
-const findOrCreateSocialUser = async ({ provider, providerId, nome, email, foto }) => {
+const findOrCreateSocialUser = async ({ provider, providerId, nome, email, foto, emailVerificado }) => {
   if (!provider || !providerId) {
     throw new Error("Provider e providerId são obrigatórios");
   }
@@ -35,21 +33,22 @@ const findOrCreateSocialUser = async ({ provider, providerId, nome, email, foto 
   console.log(`🔍 Buscando usuário social: provider=${provider}, providerId=${providerId}, email=${emailNormalizado}`);
  
   let usuario = await usuariosModel.findByProviderId(provider, providerId);
+
+  if (usuario && usuario.status && usuario.status !== "ativo") {
+    throw new Error("Esta conta está inativa.");
+  }
  
-  if (!usuario && emailNormalizado) {
-    console.log(`🔍 Usuário não encontrado por providerId, buscando por email: ${emailNormalizado}`);
+  if (!usuario && emailNormalizado && emailVerificado) {
+    console.log(`🔍 Vínculo seguro por e-mail verificado: ${emailNormalizado}`);
     usuario = await usuariosModel.findByEmail(emailNormalizado);
     if (usuario) {
-      console.log(`✅ Usuário encontrado por email: ${usuario.nome}`);
-      await usuariosModel.linkSocialProvider(
-        usuario.id,
-        provider,
-        providerId,
-        foto || usuario.foto
-      );
-      usuario.provider = provider;
-      usuario.providerId = providerId;
-      usuario.foto = foto || usuario.foto || null;
+      if (usuario.status && usuario.status !== "ativo") {
+        throw new Error("Esta conta está inativa.");
+      }
+      if (usuario.provider && usuario.provider !== "local" && usuario.provider !== provider) {
+        throw new Error("Esta conta já está vinculada a outro provedor social.");
+      }
+      usuario = await usuariosModel.linkSocialProvider(usuario.id, provider, providerId, foto);
     }
   }
  
@@ -75,7 +74,8 @@ const findOrCreateSocialUser = async ({ provider, providerId, nome, email, foto 
       console.error(`❌ Falha ao recuperar usuário após criação!`);
     }
   } else {
-    console.log(`✅ Usuário já existe: ${usuario.nome} (ID: ${usuario.id})`);
+    usuario = await usuariosModel.updateSocialLogin(usuario.id, { nome, email: emailNormalizado, foto });
+    console.log(`✅ Usuário social atualizado: ${usuario.nome} (ID: ${usuario.id})`);
   }
  
   return usuario;
@@ -110,6 +110,7 @@ if (googleConfigured) {
             nome: profile.displayName || profile.name?.givenName || "Usuário Google",
             email,
             foto: profile.photos?.[0]?.value || null,
+            emailVerificado: profile._json?.email_verified === true || profile.emails?.[0]?.verified === true,
           });
  
           return done(null, usuario);
@@ -146,6 +147,7 @@ if (githubConfigured) {
             nome: profile.displayName || profile.username || "Usuário GitHub",
             email: email || fallbackEmail,
             foto: profile.photos?.[0]?.value || null,
+            emailVerificado: profile.emails?.[0]?.verified === true,
           });
  
           return done(null, usuario);

@@ -7,16 +7,28 @@ const router = express.Router();
  
 // Inicia fluxo de autenticação Google
 router.get("/google", (req, res, next) => {
+  res.set("Cache-Control", "no-store");
   if (!googleConfigured) {
     return res.redirect("/login");
   }
-  passport.authenticate("google", {
-    scope: ["profile", "email"],
-  })(req, res, next);
+
+  req.session.oauthStartedAt = Date.now();
+  req.session.save((sessionError) => {
+    if (sessionError) {
+      console.error("❌ Falha ao iniciar sessão OAuth Google:", sessionError);
+      return res.redirect("/login");
+    }
+
+    passport.authenticate("google", {
+      scope: ["profile", "email"],
+      prompt: "select_account",
+    })(req, res, next);
+  });
 });
  
 // Callback do Google
 router.get("/google/callback", (req, res, next) => {
+  res.set("Cache-Control", "no-store");
   if (!googleConfigured) {
     console.warn("Google OAuth não configurado, redirect /login");
     return res.redirect("/login");

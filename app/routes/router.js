@@ -213,7 +213,10 @@ router.post("/api/passkeys/login/opcoes", obterOpcoesLogin);
 router.post("/api/passkeys/login/verificar", verificarLogin);
 
 router.get("/logout", (req, res) => {
-  req.session.destroy(() => res.redirect("/"));
+  req.logout((logoutError) => {
+    if (logoutError) console.error("Erro ao encerrar sessão Passport:", logoutError);
+    req.session.destroy(() => res.redirect("/"));
+  });
 });
 
 router.post(

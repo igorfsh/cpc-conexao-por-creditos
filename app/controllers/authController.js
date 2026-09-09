@@ -20,6 +20,8 @@ module.exports = {
         email: req.user.email,
         foto: req.user.foto || null,
         provider: req.user.provider || "local",
+        perfil: req.user.perfil || "user",
+        status: req.user.status || "ativo",
       };
  
       console.log(`📋 Sessão atualizada para usuário: ${req.user.nome}`);
@@ -32,8 +34,10 @@ module.exports = {
           return res.redirect("/login");
         }
        
-        console.log("✅ Sessão salva com sucesso, redirecionando para /");
-        return res.redirect("/");
+        const destino = req.session.redirectAfterLogin || (req.user.perfil === "admin" ? "/adm" : "/");
+        delete req.session.redirectAfterLogin;
+        console.log(`✅ Sessão salva com sucesso, redirecionando para ${destino}`);
+        return res.redirect(destino);
       });
     } catch (err) {
       console.error("❌ Falha no callback de OAuth:", err);

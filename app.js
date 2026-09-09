@@ -30,10 +30,12 @@ const authRoutes = require("./app/routes/auth");
 app.use(session({
   secret: sessionSecret || "seu-secret-seguro-aqui",
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
   cookie: {
     secure: isProduction,
-    sameSite: "lax",
+    httpOnly: true,
+    sameSite: isProduction ? "none" : "lax",
+    path: "/",
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
 }));
