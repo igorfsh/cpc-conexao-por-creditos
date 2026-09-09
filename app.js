@@ -8,16 +8,32 @@ require("dotenv").config();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+const isProduction =
+  process.env.NODE_ENV === "production" ||
+  process.env.RENDER === "true" ||
+  process.env.GOOGLE_CALLBACK_URL?.startsWith("https://");
+
+const sessionSecret = process.env.SESSION_SECRET;
+
+if (isProduction && !sessionSecret) {
+  throw new Error("SESSION_SECRET é obrigatório em produção.");
+}
+
+if (isProduction) {
+  app.set("trust proxy", 1);
+}
+
 const passport = require("passport");
 require("./config/passport");
 const authRoutes = require("./app/routes/auth");
 
 app.use(session({
-  secret: process.env.SESSION_SECRET || "seu-secret-seguro-aqui",
+  secret: sessionSecret || "seu-secret-seguro-aqui",
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false,
+    secure: isProduction,
+    sameSite: "lax",
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
 }));

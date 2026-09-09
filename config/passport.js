@@ -14,8 +14,9 @@ const appBaseUrl =
   process.env.APP_URL ||
   `http://localhost:${process.env.APP_PORT || process.env.PORT || 3000}`;
 
-// Se não houver variável de ambiente específica, usa a do Render ou a base URL do app
-const googleCallbackURL = process.env.GOOGLE_CALLBACK_URL || "https://cpc-conexao-por-creditos.onrender.com/auth/google/callback" || `${appBaseUrl}/auth/google/callback`;
+const googleCallbackURL =
+  process.env.GOOGLE_CALLBACK_URL ||
+  "https://cpc-conexao-por-creditos.onrender.com/auth/google/callback";
  
 // Configurações do GitHub
 const githubClientID = process.env.GITHUB_CLIENT_ID;
@@ -40,6 +41,15 @@ const findOrCreateSocialUser = async ({ provider, providerId, nome, email, foto 
     usuario = await usuariosModel.findByEmail(emailNormalizado);
     if (usuario) {
       console.log(`✅ Usuário encontrado por email: ${usuario.nome}`);
+      await usuariosModel.linkSocialProvider(
+        usuario.id,
+        provider,
+        providerId,
+        foto || usuario.foto
+      );
+      usuario.provider = provider;
+      usuario.providerId = providerId;
+      usuario.foto = foto || usuario.foto || null;
     }
   }
  

@@ -10,10 +10,14 @@ CREATE TABLE IF NOT EXISTS usuarios (
   email VARCHAR(100) UNIQUE NOT NULL,
   senha CHAR(60) DEFAULT NULL,
   foto VARCHAR(255) DEFAULT NULL,
+  perfil VARCHAR(50) NOT NULL DEFAULT 'user',
   provider VARCHAR(50) NOT NULL DEFAULT 'local',
   provider_id VARCHAR(255) DEFAULT NULL,
   data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE usuarios
+  ADD COLUMN IF NOT EXISTS perfil VARCHAR(50) NOT NULL DEFAULT 'user';
 
 -- Índice para buscas por email
 CREATE INDEX idx_email ON usuarios(email);

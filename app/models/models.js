@@ -3,7 +3,7 @@ const path = require("path");
 const bcrypt = require("bcryptjs");
 
 let pool = null;
-let usarJSON = true;
+let usarJSON = !(process.env.DB_HOST && process.env.DB_NAME);
 let tentouMySQL = false;
 
 try {
@@ -124,6 +124,29 @@ const usuariosModel = {
       () => {
         const usuarios = lerUsuarios();
         return usuarios.find(u => u.provider === provider && u.providerId === providerId) || null;
+      }
+    );
+  },
+
+  linkSocialProvider: async (id, provider, providerId, foto = null) => {
+    return await withFallback(
+      async () => {
+        await pool.query(
+          "UPDATE usuarios SET provider = ?, provider_id = ?, foto = COALESCE(?, foto) WHERE id = ?",
+          [provider, providerId, foto, id]
+        );
+        return usuariosModel.findById(id);
+      },
+      () => {
+        const usuarios = lerUsuarios();
+        const indice = usuarios.findIndex(usuario => usuario.id === id);
+        if (indice === -1) return null;
+
+        usuarios[indice].provider = provider;
+        usuarios[indice].providerId = providerId;
+        if (foto) usuarios[indice].foto = foto;
+        salvarUsuarios(usuarios);
+        return usuarios[indice];
       }
     );
   },
