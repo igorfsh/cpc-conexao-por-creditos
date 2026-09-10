@@ -1,0 +1,25 @@
+{
+  "name": "CPC - Conexão por Créditos",
+  "short_name": "CPC",
+  "description": "Rede solidária de trocas sem dinheiro.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f7f4ed",
+  "theme_color": "#184c3b",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/img/icons/icon-green-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/img/icons/icon-green-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

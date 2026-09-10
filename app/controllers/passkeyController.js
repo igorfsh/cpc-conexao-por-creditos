@@ -14,8 +14,9 @@ const obterConfiguracaoWebAuthn = (req) => {
   const hostname = host.replace(/:\d+$/, "");
   const protocolo = req.headers["x-forwarded-proto"]?.split(",")[0] || req.protocol;
   const origemDaRequisicao = `${protocolo}://${host}`;
+  const origemBase = process.env.APP_BASE_URL?.replace(/\/$/, "");
   const rpConfigurado = process.env.WEBAUTHN_RP_ID;
-  const origemConfigurada = process.env.WEBAUTHN_ORIGIN;
+  const origemConfigurada = process.env.WEBAUTHN_ORIGIN || origemBase;
   const rpID = rpConfigurado || hostname;
   const origin = origemConfigurada || origemDaRequisicao;
   return { rpID, origin };

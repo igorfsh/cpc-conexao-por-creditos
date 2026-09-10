@@ -5,9 +5,6 @@ const upload = require("./app/middlewares/upload");
 const { uploadImagem } = require("./app/controllers/uploadController");
 require("dotenv").config();
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
 const isProduction =
   process.env.NODE_ENV === "production" ||
   process.env.RENDER === "true" ||
@@ -22,6 +19,13 @@ if (isProduction && !sessionSecret) {
 if (isProduction) {
   app.set("trust proxy", 1);
 }
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
 
 const passport = require("passport");
 require("./config/passport");
