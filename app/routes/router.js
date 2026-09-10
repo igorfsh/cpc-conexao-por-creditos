@@ -44,9 +44,7 @@ router.get("/", (req, res) => {
 const prepararAnuncio = async (anuncio, usuariosPorId = new Map()) => {
   if (!anuncio) return null;
 
-  const fotoDoItem = (Array.isArray(anuncio.imagens) ? anuncio.imagens[0] : null)
-    || anuncio.foto
-    || "/img/img malcon.png";
+  const fotoDoItem = anuncio.foto || (Array.isArray(anuncio.imagens) ? anuncio.imagens[0] : null) || "/img/img malcon.png";
 
   return {
     ...anuncio,
@@ -215,7 +213,10 @@ router.post("/api/passkeys/login/opcoes", obterOpcoesLogin);
 router.post("/api/passkeys/login/verificar", verificarLogin);
 
 router.get("/logout", (req, res) => {
-  req.session.destroy(() => res.redirect("/"));
+  req.logout((logoutError) => {
+    if (logoutError) console.error("Erro ao encerrar sessão Passport:", logoutError);
+    req.session.destroy(() => res.redirect("/"));
+  });
 });
 
 router.post(

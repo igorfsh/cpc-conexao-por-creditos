@@ -92,7 +92,7 @@ const usuariosModel = {
       },
       () => {
         const usuarios = lerUsuarios();
-        return usuarios.find(u => u.id === id) || null;
+        return usuarios.find(u => String(u.id) === String(id)) || null;
       }
     );
   },
@@ -106,7 +106,7 @@ const usuariosModel = {
       },
       () => {
         const usuarios = lerUsuarios();
-        return usuarios.find(u => u.email === email.toLowerCase()) || null;
+        return usuarios.find(u => u.email?.toLowerCase() === email.toLowerCase()) || null;
       }
     );
   },
@@ -124,6 +124,81 @@ const usuariosModel = {
       () => {
         const usuarios = lerUsuarios();
         return usuarios.find(u => u.provider === provider && u.providerId === providerId) || null;
+      }
+    );
+  },
+
+  linkSocialProvider: async (id, provider, providerId, foto = null) => {
+    return await withFallback(
+      async () => {
+        await pool.query(
+          "UPDATE usuarios SET provider = ?, provider_id = ?, foto = COALESCE(?, foto), ultimo_login = CURRENT_TIMESTAMP, status = 'ativo' WHERE id = ?",
+          [provider, providerId, foto, id]
+        );
+        return usuariosModel.findById(id);
+      },
+      () => {
+        const usuarios = lerUsuarios();
+        const indice = usuarios.findIndex(usuario => usuario.id === id);
+        if (indice === -1) return null;
+
+        usuarios[indice].provider = provider;
+        usuarios[indice].providerId = providerId;
+        if (foto) usuarios[indice].foto = foto;
+        usuarios[indice].ultimoLogin = new Date().toISOString();
+        usuarios[indice].status = "ativo";
+        salvarUsuarios(usuarios);
+        return usuarios[indice];
+      }
+    );
+  },
+
+  updateSocialLogin: async (id, dados = {}) => {
+    const nome = dados.nome?.trim() || null;
+    const email = dados.email?.toLowerCase() || null;
+    const foto = dados.foto || null;
+    return await withFallback(
+      async () => {
+        await pool.query(
+          `UPDATE usuarios
+           SET nome = COALESCE(NULLIF(?, ''), nome),
+               email = COALESCE(?, email),
+               foto = COALESCE(?, foto),
+               ultimo_login = CURRENT_TIMESTAMP,
+               status = 'ativo'
+           WHERE id = ?`,
+          [nome, email, foto, id]
+        );
+        return usuariosModel.findById(id);
+      },
+      () => {
+        const usuarios = lerUsuarios();
+        const indice = usuarios.findIndex(usuario => String(usuario.id) === String(id));
+        if (indice === -1) return null;
+        if (nome) usuarios[indice].nome = nome;
+        if (email) usuarios[indice].email = email;
+        if (foto) usuarios[indice].foto = foto;
+        usuarios[indice].ultimoLogin = new Date().toISOString();
+        usuarios[indice].status = "ativo";
+        salvarUsuarios(usuarios);
+        return usuarios[indice];
+      }
+    );
+  },
+
+  updateLastLogin: async (id) => {
+    return await withFallback(
+      async () => {
+        await pool.query("UPDATE usuarios SET ultimo_login = CURRENT_TIMESTAMP WHERE id = ?", [id]);
+        return true;
+      },
+      () => {
+        const usuarios = lerUsuarios();
+        const usuario = usuarios.find(item => String(item.id) === String(id));
+        if (!usuario) return false;
+        usuario.ultimoLogin = new Date().toISOString();
+        salvarUsuarios(usuarios);
+        return true;
       }
     );
   },
@@ -177,7 +252,9 @@ const usuariosModel = {
           perfil: usuarioValido.perfil,   // ✅ NOVO
           provider: usuarioValido.provider,
           providerId: usuarioValido.providerId,
-          dataCriacao: new Date().toISOString()
+          dataCriacao: new Date().toISOString(),
+          ultimoLogin: usuarioValido.provider === "local" ? null : new Date().toISOString(),
+          status: "ativo"
         };
         usuarios.push(novoUsuario);
         salvarUsuarios(usuarios);
@@ -263,7 +340,9 @@ const mapRowToUsuario = (row) => ({
   perfil: row.perfil || "user",   // ✅ NOVO
   provider: row.provider || "local",
   providerId: row.provider_id || row.providerId || null,
-  dataCriacao: row.data_criacao || row.dataCriacao
+  dataCriacao: row.data_criacao || row.dataCriacao,
+  ultimoLogin: row.ultimo_login || row.ultimoLogin || null,
+  status: row.status || "ativo"
 });
 
 module.exports = usuariosModel;

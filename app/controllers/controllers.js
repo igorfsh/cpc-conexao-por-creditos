@@ -35,7 +35,8 @@ const cadastroController = async (req, res) => {
       : await usuariosModel.findById(usuarioCriado.insertId);
     if (!usuario) throw new Error("Usuário criado, mas não localizado");
     trocasModel.incrementarMembro();
-    req.session.usuario = { id: usuario.id, nome: usuario.nome, email: usuario.email, perfil: usuario.perfil || "user" };
+    await usuariosModel.updateLastLogin(usuario.id);
+    req.session.usuario = { id: usuario.id, nome: usuario.nome, email: usuario.email, foto: usuario.foto || null, perfil: usuario.perfil || "user", status: usuario.status || "ativo" };
     req.session.usuarioId = usuario.id;
     const destino = req.session.redirectAfterLogin || "/";
     delete req.session.redirectAfterLogin;
@@ -61,8 +62,12 @@ const loginController = async (req, res) => {
     const usuarioDigitado = req.body.usuarioDigitado.toLowerCase();
     const usuario = await usuariosModel.findByCredentials(usuarioDigitado, req.body.senhaDigitada);
     if (usuario) {
+      if (usuario.status && usuario.status !== "ativo") {
+        return res.render("pages/login", { erro: "Esta conta está inativa.", sucesso: false, valores: req.body, erroValidacao: {}, msgErro: {} });
+      }
+      await usuariosModel.updateLastLogin(usuario.id);
       req.session.usuarioId = usuario.id;
-      req.session.usuario = { id: usuario.id, nome: usuario.nome, email: usuario.email, foto: usuario.foto || null, perfil: usuario.perfil || "user" };
+      req.session.usuario = { id: usuario.id, nome: usuario.nome, email: usuario.email, foto: usuario.foto || null, perfil: usuario.perfil || "user", status: usuario.status || "ativo" };
       if (usuario.perfil === "admin") return res.redirect("/adm");
       const destino = req.session.redirectAfterLogin || "/";
       delete req.session.redirectAfterLogin;

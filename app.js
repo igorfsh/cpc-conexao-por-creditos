@@ -1,18 +1,27 @@
 const express = require("express");
-const compression = require("compression");
 const session = require("express-session");
 const app = express();
 const upload = require("./app/middlewares/upload");
 const { uploadImagem } = require("./app/controllers/uploadController");
 require("dotenv").config();
 
-if (process.env.NODE_ENV === "production") {
+const isProduction =
+  process.env.NODE_ENV === "production" ||
+  process.env.RENDER === "true" ||
+  process.env.GOOGLE_CALLBACK_URL?.startsWith("https://");
+
+const sessionSecret = process.env.SESSION_SECRET;
+
+if (isProduction && !sessionSecret) {
+  throw new Error("SESSION_SECRET é obrigatório em produção.");
+}
+
+if (isProduction) {
   app.set("trust proxy", 1);
 }
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(compression());
 
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
@@ -23,11 +32,14 @@ require("./config/passport");
 const authRoutes = require("./app/routes/auth");
 
 app.use(session({
-  secret: process.env.SESSION_SECRET || "seu-secret-seguro-aqui",
+  secret: sessionSecret || "seu-secret-seguro-aqui",
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
   cookie: {
-    secure: process.env.NODE_ENV === "production",
+    secure: isProduction,
+    httpOnly: true,
+    sameSite: isProduction ? "none" : "lax",
+    path: "/",
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
 }));
@@ -43,10 +55,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.static("./app/public", {
-  maxAge: process.env.NODE_ENV === "production" ? "1d" : 0,
-  etag: true,
-}));
+app.use(express.static("./app/public"));
 
 app.set("view engine", "ejs");
 app.set("views", "./app/views");
@@ -58,7 +67,7 @@ app.use("/auth", authRoutes);
 app.use("/adm", rotaAdm);       // ✅ NOVO — antes do "/"
 app.use("/", rotaPrincipal);
 
-const porta = process.env.PORT || process.env.APP_PORT || 3000;
+const porta = process.env.APP_PORT || process.env.PORT || 3000;
 
 app.listen(porta, () => {
   console.log(`Servidor ouvindo na porta ${porta}\nhttp://localhost:${porta}`);
