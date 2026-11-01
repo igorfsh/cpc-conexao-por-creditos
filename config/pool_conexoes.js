@@ -4,9 +4,12 @@
 const fs = require("fs");
 const mysql = require("mysql2/promise");
 
+// Valores colados no painel do Render às vezes vêm com espaços ou aspas em volta.
+const limpar = (valor) => (valor == null ? valor : String(valor).trim().replace(/^(["'])(.*)\1$/, "$2"));
+
 const lerConfiguracao = () => {
   if (process.env.DATABASE_URL) {
-    const url = new URL(process.env.DATABASE_URL);
+    const url = new URL(limpar(process.env.DATABASE_URL));
     const sslNaUrl = /^(true|1|required|require|verify_identity|verify_ca)$/i
       .test(url.searchParams.get("ssl") || url.searchParams.get("ssl-mode") || url.searchParams.get("sslmode") || "");
     return {
@@ -19,11 +22,11 @@ const lerConfiguracao = () => {
     };
   }
   return {
-    host: process.env.DB_HOST || "localhost",
-    port: parseInt(process.env.DB_PORT, 10) || 3306,
-    user: process.env.DB_USER || "root",
-    password: process.env.DB_PASSWORD || "",
-    database: process.env.DB_NAME || "cpc",
+    host: limpar(process.env.DB_HOST) || "localhost",
+    port: parseInt(limpar(process.env.DB_PORT), 10) || 3306,
+    user: limpar(process.env.DB_USER) || "root",
+    password: limpar(process.env.DB_PASSWORD) || "",
+    database: limpar(process.env.DB_NAME) || "cpc",
     sslNaUrl: false,
   };
 };
@@ -32,9 +35,9 @@ const lerConfiguracao = () => {
 // certificado; DB_SSL_CA (conteúdo do .pem ou caminho do arquivo) é para provedores
 // com certificado próprio, como o Aiven.
 const lerSSL = (sslNaUrl, host) => {
-  // O TiDB Cloud sempre exige criptografia: liga sozinho, a menos que DB_SSL=false seja explícito.
-  const tidb = /\.tidbcloud\.com$/i.test(host || "") && !/^(false|0)$/i.test(process.env.DB_SSL || "");
-  const ligado = tidb || sslNaUrl || /^(true|1|required)$/i.test(process.env.DB_SSL || "");
+  // O TiDB Cloud recusa qualquer conexão sem criptografia: liga sempre, mesmo com DB_SSL=false.
+  const tidb = /\.tidbcloud\.com$/i.test(host || "");
+  const ligado = tidb || sslNaUrl || /^(true|1|required)$/i.test(limpar(process.env.DB_SSL) || "");
   if (!ligado) return undefined;
   const ssl = { minVersion: "TLSv1.2", rejectUnauthorized: true };
   const ca = process.env.DB_SSL_CA;
