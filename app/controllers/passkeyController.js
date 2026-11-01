@@ -6,6 +6,9 @@ const {
 } = require("@simplewebauthn/server");
 const usuariosModel = require("../models/models");
 const passkeysModel = require("../models/passkeysModel");
+const { biometriaPersistente } = require("../../config/banco");
+
+const MSG_BIOMETRIA_INDISPONIVEL = "O cadastro de Face ID/digital está temporariamente indisponível. Tente novamente mais tarde.";
 
 const rpName = "Conexão por Créditos";
 const obterConfiguracaoWebAuthn = (req) => {
@@ -35,6 +38,8 @@ const definirSessao = (req, usuario) => {
 };
 
 const obterOpcoesRegistro = async (req, res) => {
+  // Sem armazenamento permanente, a biometria seria apagada no próximo reinício do servidor.
+  if (!biometriaPersistente()) return res.status(503).json({ erro: MSG_BIOMETRIA_INDISPONIVEL });
   try {
     const { rpID } = obterConfiguracaoWebAuthn(req);
     const usuario = usuarioDaSessao(req);
@@ -66,6 +71,7 @@ const obterOpcoesRegistro = async (req, res) => {
 };
 
 const verificarRegistro = async (req, res) => {
+  if (!biometriaPersistente()) return res.status(503).json({ erro: MSG_BIOMETRIA_INDISPONIVEL });
   const usuario = usuarioDaSessao(req);
   const challenge = req.session.passkeyRegistrationChallenge;
   const { rpID, origin } = obterConfiguracaoWebAuthn(req);
@@ -96,26 +102,37 @@ const verificarRegistro = async (req, res) => {
     delete req.session.passkeyRegistrationChallenge;
     delete req.session.passkeyRegistrationReplace;
     console.error("Erro ao registrar passkey:", err);
-    res.status(400).json({ erro: `Não foi possível ativar a biometria: ${err.message}` });
+    // Erro de banco (ex.: MySQL fora do ar) não é culpa do usuário nem deve expor detalhes internos.
+    const erroDeBanco = Boolean(err.code || err.sqlMessage);
+    res.status(erroDeBanco ? 503 : 400).json({
+      erro: erroDeBanco
+        ? "Não foi possível salvar sua biometria agora. Tente novamente em instantes."
+        : `Não foi possível ativar a biometria: ${err.message}`,
+    });
   }
 };
 
 const obterOpcoesLogin = async (req, res) => {
-  const { rpID } = obterConfiguracaoWebAuthn(req);
-  const identificador = String(req.body.identificador || "").trim().toLowerCase();
-  if (!identificador) return res.status(400).json({ erro: "Informe seu email ou usuário." });
-  const usuario = await usuariosModel.findByUsuarioOuEmail(identificador);
-  if (!usuario) return res.status(404).json({ erro: "Usuário não encontrado." });
-  const credenciais = await passkeysModel.findByUserId(usuario.id);
-  if (!credenciais.length) return res.status(400).json({ erro: "Cadastre sua biometria primeiro em Minha conta, após entrar com sua senha." });
-  const options = await generateAuthenticationOptions({
-    rpID,
-    allowCredentials: credenciais.map((credencial) => ({ id: credencial.credentialId, transports: credencial.transports })),
-    userVerification: "required",
-  });
-  req.session.passkeyAuthenticationChallenge = options.challenge;
-  req.session.passkeyAuthenticationUserId = usuario.id;
-  res.json(options);
+  try {
+    const { rpID } = obterConfiguracaoWebAuthn(req);
+    const identificador = String(req.body.identificador || "").trim().toLowerCase();
+    if (!identificador) return res.status(400).json({ erro: "Informe seu email ou usuário." });
+    const usuario = await usuariosModel.findByUsuarioOuEmail(identificador);
+    if (!usuario) return res.status(404).json({ erro: "Usuário não encontrado." });
+    const credenciais = await passkeysModel.findByUserId(usuario.id);
+    if (!credenciais.length) return res.status(400).json({ erro: "Cadastre sua biometria primeiro em Minha conta, após entrar com sua senha." });
+    const options = await generateAuthenticationOptions({
+      rpID,
+      allowCredentials: credenciais.map((credencial) => ({ id: credencial.credentialId, transports: credencial.transports })),
+      userVerification: "required",
+    });
+    req.session.passkeyAuthenticationChallenge = options.challenge;
+    req.session.passkeyAuthenticationUserId = usuario.id;
+    res.json(options);
+  } catch (err) {
+    console.error("Erro ao iniciar login por passkey:", err);
+    res.status(503).json({ erro: "Não foi possível iniciar o login por biometria agora. Tente novamente em instantes." });
+  }
 };
 
 const verificarLogin = async (req, res) => {

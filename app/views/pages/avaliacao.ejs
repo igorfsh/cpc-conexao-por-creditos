@@ -3,45 +3,194 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Avalie sua experiência - CPC</title>
-  <link rel="stylesheet" href="../css/avaliacao.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap">
+  <title>Avalie suas trocas - CPC</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/cpc-palette.css">
+  <link rel="stylesheet" href="/css/avaliacao.css">
+  <link rel="stylesheet" href="/css/footer.css">
 </head>
+<body class="av-body">
+  <%- include('../partials/header.ejs') %>
 
-<%- include('../partials/header.ejs') %>
-<body>
-  <main>
-        <h1>Últimas trocas</h1>
-        <% if (sucesso) { %><p class="feedback feedback-success">Avaliação salva com sucesso.</p><% } %>
-        <% if (erro) { %><p class="feedback feedback-error">Não foi possível salvar essa avaliação.</p><% } %>
+  <%
+    const ROTULOS = ['', 'Péssima', 'Ruim', 'Regular', 'Boa', 'Excelente'];
+    const formatarData = (iso) => new Date(iso).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'America/Sao_Paulo' });
+    const statusTroca = (troca) => troca.status === 'concluida'
+      ? { classe: 'av-status--ok', texto: 'Concluída' }
+      : troca.status === 'cancelada'
+        ? { classe: 'av-status--cancelada', texto: 'Cancelada' }
+        : { classe: 'av-status--pendente', texto: 'Em andamento' };
+    const total = pendentes.length + avaliadas.length;
 
-        <section class="card-list">
-            <% if (trocas.length === 0) { %>
-                <p class="empty-state">Você ainda não possui trocas para avaliar.</p>
+    // Formulário de nota (usado para avaliar e para alterar uma avaliação)
+    function formularioNota(troca, editando) {
+      const id = troca.id;
+      const notaAtual = troca.avaliacaoNota || 0;
+  %>
+      <form class="av-form" action="/avaliacao/<%= id %>" method="POST" data-avaliacao>
+        <fieldset class="av-estrelas-grupo">
+          <legend class="av-legenda">
+            <%= editando ? 'Nova nota' : 'Sua nota' %><span class="av-oculto"> para <%= troca.anuncioTitulo %></span>
+          </legend>
+          <div class="av-estrelas">
+            <% for (let nota = 1; nota <= 5; nota++) { %>
+              <input class="av-oculto-input" type="radio" name="nota" value="<%= nota %>" id="t<%= id %>-n<%= nota %><%= editando ? '-e' : '' %>" <%= notaAtual === nota ? 'checked' : '' %> required>
+              <label class="av-estrela" for="t<%= id %>-n<%= nota %><%= editando ? '-e' : '' %>" data-rotulo="<%= ROTULOS[nota] %>">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2.8l2.83 5.73 6.32.92-4.57 4.46 1.08 6.29L12 17.23l-5.66 2.97 1.08-6.29L2.85 9.45l6.32-.92L12 2.8z"/></svg>
+                <span class="av-oculto"><%= nota %> <%= nota === 1 ? 'estrela' : 'estrelas' %> — <%= ROTULOS[nota] %></span>
+              </label>
             <% } %>
-            <% trocas.forEach(function(troca, index) { %>
-                <form class="card" action="/avaliacao/<%= troca.id %>" method="POST">
-                    <img src="<%= troca.foto || '../img/img home-2.png' %>" alt="Imagem de <%= troca.anuncioTitulo %>">
-                    <section class="info">
-                        <h2><%= troca.anuncioTitulo %></h2>
-                        <p><%= troca.doadorNome %></p>
-                        <p><%= new Date(troca.dataSolicitacao).toLocaleDateString('pt-BR') %></p>
-                        <section class="rating" aria-label="Avalie de 1 a 5 estrelas">
-                            <% [5, 4, 3, 2, 1].forEach(function(nota) { %>
-                                <input type="radio" name="nota" value="<%= nota %>" id="troca<%= troca.id %>-nota<%= nota %>" <%= troca.avaliacaoNota === nota ? 'checked' : '' %> <%= troca.avaliacaoNota ? 'disabled' : '' %>>
-                                <label for="troca<%= troca.id %>-nota<%= nota %>"><%= nota <= (troca.avaliacaoNota || 0) ? '★' : '★' %></label>
-                            <% }) %>
-                        </section>
-                        <button class="save-rating" type="submit" title="Salvar avaliação" <%= troca.avaliacaoNota ? 'disabled' : '' %>>
-                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>
-                        </button>
-                        <% if (troca.avaliacaoNota) { %><small class="saved-rating">Avaliação salva: <%= troca.avaliacaoNota %>/5</small><% } %>
-                    </section>
-                </form>
-            <% }) %>
-        </section>
+          </div>
+          <p class="av-rotulo-nota" aria-live="polite" data-rotulo-nota><%= notaAtual ? ROTULOS[notaAtual] : 'Toque em uma estrela' %></p>
+        </fieldset>
 
+        <label class="av-comentario">
+          <span>Comentário <small>(opcional)</small></span>
+          <textarea name="comentario" rows="2" maxlength="300" placeholder="Como foi a troca? Conte em poucas palavras." data-comentario><%= troca.avaliacaoComentario || '' %></textarea>
+          <small class="av-contador" data-contador aria-hidden="true"><%= (troca.avaliacaoComentario || '').length %>/300</small>
+        </label>
+
+        <button type="submit" class="av-botao" data-salvar>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m5 12.5 4.5 4.5L19 7"/></svg>
+          <%= editando ? 'Salvar nova avaliação' : 'Salvar avaliação' %>
+        </button>
+      </form>
+  <% } %>
+
+  <main class="av-page">
+    <header class="av-topo">
+      <p class="av-eyebrow">Avaliações</p>
+      <h1>Como foram suas trocas?</h1>
+      <p class="av-lead">Sua avaliação ajuda a comunidade a trocar com confiança e dá destaque a quem faz um bom trabalho. Leva menos de um minuto.</p>
+
+      <% if (total) { %>
+        <ul class="av-resumo" aria-label="Resumo">
+          <li><strong><%= pendentes.length %></strong> aguardando avaliação</li>
+          <li><strong><%= avaliadas.length %></strong> <%= avaliadas.length === 1 ? 'avaliada' : 'avaliadas' %></li>
+        </ul>
+      <% } %>
+    </header>
+
+    <% if (!total) { %>
+      <section class="av-vazio">
+        <span class="av-vazio__icone" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 2.8l2.83 5.73 6.32.92-4.57 4.46 1.08 6.29L12 17.23l-5.66 2.97 1.08-6.29L2.85 9.45l6.32-.92L12 2.8z"/></svg>
+        </span>
+        <h2>Você ainda não fez nenhuma troca</h2>
+        <p>Quando você solicitar uma troca, ela aparece aqui para você avaliar.</p>
+        <a href="/todos" class="av-botao">Explorar anúncios</a>
+      </section>
+    <% } %>
+
+    <% if (pendentes.length) { %>
+    <section class="av-secao" aria-labelledby="av-pendentes">
+      <h2 id="av-pendentes" class="av-secao__titulo">Aguardando sua avaliação</h2>
+      <ul class="av-lista">
+        <% pendentes.forEach((troca) => { const status = statusTroca(troca); %>
+          <li class="av-card <%= erroId === troca.id ? 'av-card--erro' : '' %>" id="troca-<%= troca.id %>">
+            <article aria-labelledby="titulo-<%= troca.id %>">
+              <div class="av-card__topo">
+                <div class="av-card__foto">
+                  <img src="<%= troca.fotoItem || '/img/img home-2.webp' %>" alt="" loading="lazy">
+                </div>
+                <div class="av-card__info">
+                  <h3 id="titulo-<%= troca.id %>"><%= troca.anuncioTitulo %></h3>
+                  <p>com <strong><%= troca.doadorNome %></strong></p>
+                  <p class="av-card__meta">
+                    <time datetime="<%= troca.dataSolicitacao %>"><%= formatarData(troca.dataSolicitacao) %></time>
+                    <span class="av-status <%= status.classe %>"><%= status.texto %></span>
+                  </p>
+                </div>
+              </div>
+              <% if (erroId === troca.id) { %>
+                <p class="av-alerta av-alerta--erro" role="alert">Escolha de 1 a 5 estrelas antes de salvar.</p>
+              <% } %>
+              <% formularioNota(troca, false) %>
+            </article>
+          </li>
+        <% }) %>
+      </ul>
+    </section>
+    <% } %>
+
+    <% if (avaliadas.length) { %>
+    <section class="av-secao" aria-labelledby="av-avaliadas">
+      <h2 id="av-avaliadas" class="av-secao__titulo">Já avaliadas</h2>
+      <ul class="av-lista av-lista--compacta">
+        <% avaliadas.forEach((troca) => { %>
+          <li class="av-card av-card--avaliada <%= salvaId === troca.id ? 'av-card--salva' : '' %> <%= erroId === troca.id ? 'av-card--erro' : '' %>" id="troca-<%= troca.id %>">
+            <article aria-labelledby="titulo-<%= troca.id %>">
+              <div class="av-card__topo">
+                <div class="av-card__foto">
+                  <img src="<%= troca.fotoItem || '/img/img home-2.webp' %>" alt="" loading="lazy">
+                </div>
+                <div class="av-card__info">
+                  <h3 id="titulo-<%= troca.id %>"><%= troca.anuncioTitulo %></h3>
+                  <p>com <strong><%= troca.doadorNome %></strong> · <time datetime="<%= troca.dataSolicitacao %>"><%= formatarData(troca.dataSolicitacao) %></time></p>
+                  <p class="av-nota-lida">
+                    <span class="av-nota-lida__estrelas" aria-hidden="true">
+                      <% for (let n = 1; n <= 5; n++) { %><svg viewBox="0 0 24 24" class="<%= n <= troca.avaliacaoNota ? 'is-cheia' : '' %>"><path d="M12 2.8l2.83 5.73 6.32.92-4.57 4.46 1.08 6.29L12 17.23l-5.66 2.97 1.08-6.29L2.85 9.45l6.32-.92L12 2.8z"/></svg><% } %>
+                    </span>
+                    <span><span class="av-oculto">Sua nota: <%= troca.avaliacaoNota %> de 5 — </span><%= ROTULOS[troca.avaliacaoNota] %></span>
+                  </p>
+                </div>
+              </div>
+
+              <% if (salvaId === troca.id) { %>
+                <p class="av-alerta av-alerta--ok" role="status">✓ Avaliação salva. Obrigado por ajudar a comunidade!</p>
+              <% } %>
+              <% if (erroId === troca.id) { %>
+                <p class="av-alerta av-alerta--erro" role="alert">Não foi possível salvar. Escolha de 1 a 5 estrelas e tente de novo.</p>
+              <% } %>
+              <% if (troca.avaliacaoComentario) { %>
+                <blockquote class="av-citacao">“<%= troca.avaliacaoComentario %>”</blockquote>
+              <% } %>
+
+              <details class="av-editar" <%= erroId === troca.id ? 'open' : '' %>>
+                <summary>Editar avaliação</summary>
+                <% formularioNota(troca, true) %>
+              </details>
+            </article>
+          </li>
+        <% }) %>
+      </ul>
+    </section>
+    <% } %>
   </main>
+
+  <%- include('../partials/footer.ejs') %>
+
+  <script>
+    (function () {
+      document.querySelectorAll('[data-avaliacao]').forEach(function (form) {
+        var rotulo = form.querySelector('[data-rotulo-nota]');
+        var botao = form.querySelector('[data-salvar]');
+        var comentario = form.querySelector('[data-comentario]');
+        var contador = form.querySelector('[data-contador]');
+        var radios = form.querySelectorAll('input[name="nota"]');
+
+        function atualizar() {
+          var marcado = form.querySelector('input[name="nota"]:checked');
+          var label = marcado && form.querySelector('label[for="' + marcado.id + '"]');
+          rotulo.textContent = label ? label.getAttribute('data-rotulo') : 'Toque em uma estrela';
+          botao.disabled = !marcado;
+        }
+        radios.forEach(function (radio) { radio.addEventListener('change', atualizar); });
+        if (comentario && contador) {
+          comentario.addEventListener('input', function () { contador.textContent = comentario.value.length + '/300'; });
+        }
+        atualizar();
+      });
+
+      // Leva o foco para o cartão que acabou de ser salvo (ou com erro), para quem usa teclado/leitor de tela.
+      var alvo = location.hash && document.getElementById(location.hash.slice(1));
+      var destaque = document.querySelector('.av-card--salva, .av-card--erro') || (alvo && alvo.classList.contains('av-card') ? alvo : null);
+      if (destaque) {
+        destaque.setAttribute('tabindex', '-1');
+        destaque.focus({ preventScroll: false });
+      }
+    })();
+  </script>
 </body>
-<%- include('../partials/footer.ejs') %>
 </html>

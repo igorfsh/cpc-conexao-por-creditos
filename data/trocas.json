@@ -143,9 +143,9 @@
     "solicitanteNome": "Igor Andrade",
     "solicitanteEmail": "rm94917@estudante.fieb.edu.br",
     "mensagem": "",
-    "status": "pendente",
+    "status": "concluida",
     "dataSolicitacao": "2026-07-27T22:28:15.658Z",
-    "dataConclusao": null,
+    "dataConclusao": "2026-10-29T10:41:20.073Z",
     "avaliacaoNota": 4,
     "avaliacaoData": "2026-08-21T10:30:11.953Z"
   },
@@ -172,9 +172,9 @@
     "solicitanteEmail": "rm94917@estudante.fieb.edu.br",
     "pontos": 0,
     "mensagem": "",
-    "status": "pendente",
+    "status": "concluida",
     "dataSolicitacao": "2026-08-27T22:36:19.237Z",
-    "dataConclusao": null
+    "dataConclusao": "2026-10-29T10:41:11.222Z"
   },
   {
     "id": 15,
@@ -218,10 +218,11 @@
     "solicitanteEmail": "rm94917@estudante.fieb.edu.br",
     "pontos": 0,
     "mensagem": "",
-    "status": "pendente",
+    "status": "concluida",
     "dataSolicitacao": "2026-08-29T21:01:57.890Z",
-    "dataConclusao": null,
+    "dataConclusao": "2026-10-29T10:41:14.969Z",
     "avaliacaoNota": 4,
-    "avaliacaoData": "2026-08-29T21:02:24.676Z"
+    "avaliacaoData": "2026-10-31T23:13:08.025Z",
+    "avaliacaoComentario": ""
   }
 ]

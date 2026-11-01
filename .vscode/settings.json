@@ -1,0 +1,12 @@
+{
+  // Só a porta do app (3000) é encaminhada; as outras (internas do VS Code etc.) são ignoradas.
+  "remote.portsAttributes": {
+    "3000": {
+      "label": "CPC (localhost:3000)",
+      "onAutoForward": "notify"
+    }
+  },
+  "remote.otherPortsAttributes": {
+    "onAutoForward": "ignore"
+  }
+}

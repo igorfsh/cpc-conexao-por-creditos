@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <%- include('../../partials/tema-inicial.ejs') %>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anúncios — CPC Admin</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap">
+  <link rel="icon" href="/img/logo-black.png">
+  <link rel="stylesheet" href="/css/cpc-palette.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+
+  <%- include('../../partials/adm-topbar', { ativo: 'anuncios' }) %>
+
+  <main class="page adm-page">
+    <header class="adm-header">
+      <section>
+        <p class="hero-label">gerenciar</p>
+        <h1>Anúncios</h1>
+        <p class="adm-sub"><%= anuncios.length %> anúncios ativos na plataforma</p>
+      </section>
+    </header>
+
+    <section class="adm-toolbar">
+      <input type="search" class="adm-search" id="busca" placeholder="Buscar por título, doador ou local…" aria-label="Buscar anúncios">
+      <section class="adm-chips" role="group" aria-label="Filtrar por categoria">
+        <button type="button" class="chip active" data-filtro="">todos <span><%= contagem.total %></span></button>
+        <button type="button" class="chip" data-filtro="alimentos">alimentos <span><%= contagem.alimentos %></span></button>
+        <button type="button" class="chip" data-filtro="profissionais">profissionais <span><%= contagem.profissionais %></span></button>
+        <button type="button" class="chip" data-filtro="infantil">infantil <span><%= contagem.infantil %></span></button>
+      </section>
+    </section>
+
+    <section class="card adm-table-wrap">
+      <% if (!anuncios.length) { %>
+        <p class="empty">Nenhum anúncio ativo.</p>
+      <% } else { %>
+        <table class="adm-table">
+          <thead>
+            <tr><th>Anúncio</th><th>Categoria</th><th>Créditos</th><th>Doador</th><th>Criado em</th><th class="col-acoes">Ações</th></tr>
+          </thead>
+          <tbody>
+            <% anuncios.forEach(function(a) { %>
+              <tr data-filtro="<%= a.categoria %>" data-busca="<%= [a.titulo, a.doadorNome, a.doadorLocal].join(' ').toLowerCase() %>">
+                <td data-label="Anúncio">
+                  <section class="item-cell">
+                    <span class="pending-icon" style="background:var(--cpc-mint-pale)">
+                      <% if (a.categoria === 'alimentos') { %>🥦<% } else if (a.categoria === 'infantil') { %>🧒<% } else { %>🔧<% } %>
+                    </span>
+                    <section>
+                      <p class="item-title"><%= a.titulo %></p>
+                      <small class="item-desc"><%= a.descricao %></small>
+                    </section>
+                  </section>
+                </td>
+                <td data-label="Categoria"><span class="tag"><%= a.categoria %></span> <span class="tag tag-muted"><%= a.tipo === 'servico' ? 'serviço' : 'produto' %></span></td>
+                <td data-label="Créditos"><strong><%= a.pontos %></strong></td>
+                <td data-label="Doador"><%= a.doadorNome %><br><small class="muted"><%= a.doadorLocal %></small></td>
+                <td data-label="Criado em"><%= a.data %></td>
+                <td class="col-acoes">
+                  <section class="row-actions">
+                    <button type="button" class="btn-approve js-editar"
+                      data-id="<%= a.id %>"
+                      data-titulo="<%= a.titulo %>"
+                      data-descricao="<%= a.descricao %>"
+                      data-categoria="<%= a.categoria %>"
+                      data-tipo="<%= a.tipo || 'produto' %>"
+                      data-pontos="<%= a.pontos %>">editar</button>
+                    <form action="/adm/anuncios/deletar/<%= a.id %>" method="POST" data-confirmar="Remover o anúncio “<%= a.titulo %>”? Ele deixará de aparecer no site.">
+                      <button class="btn-reject" type="submit">remover</button>
+                    </form>
+                  </section>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <p class="empty" id="semResultado" hidden>Nenhum anúncio corresponde ao filtro.</p>
+      <% } %>
+    </section>
+  </main>
+
+  <!-- MODAL DE EDIÇÃO -->
+  <dialog class="adm-dialog" id="dialogEditar">
+    <form method="POST" id="formEditar">
+      <header class="dialog-header">
+        <h2>Editar anúncio</h2>
+        <button type="button" class="dialog-close" data-fechar aria-label="Fechar">×</button>
+      </header>
+      <label>Título
+        <input type="text" name="titulo" required maxlength="120">
+      </label>
+      <label>Descrição
+        <textarea name="descricao" rows="4" required></textarea>
+      </label>
+      <section class="form-row">
+        <label>Categoria
+          <select name="categoria" required>
+            <option value="alimentos">Alimentação</option>
+            <option value="profissionais">Profissionais</option>
+            <option value="infantil">Infantil (Kids)</option>
+            <option value="todos">Outros</option>
+          </select>
+        </label>
+        <label>Tipo
+          <select name="tipo" required>
+            <option value="produto">Produto</option>
+            <option value="servico">Serviço</option>
+          </select>
+        </label>
+        <label>Créditos
+          <input type="number" name="pontos" min="0" step="1" required>
+        </label>
+      </section>
+      <footer class="dialog-footer">
+        <button type="button" class="btn-ghost" data-fechar>cancelar</button>
+        <button type="submit" class="btn-primary">salvar alterações</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <script src="/js/adm.js"></script>
+  <script>
+    (function () {
+      var dialog = document.getElementById('dialogEditar');
+      var form = document.getElementById('formEditar');
+      document.querySelectorAll('.js-editar').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var d = btn.dataset;
+          form.action = '/adm/anuncios/editar/' + d.id;
+          form.titulo.value = d.titulo;
+          form.descricao.value = d.descricao;
+          form.categoria.value = d.categoria;
+          form.tipo.value = d.tipo;
+          form.pontos.value = d.pontos;
+          dialog.showModal();
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

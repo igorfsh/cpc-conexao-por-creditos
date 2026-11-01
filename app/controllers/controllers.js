@@ -10,13 +10,13 @@ const cadastroController = async (req, res) => {
       erroValidacao[erro.path] = "input-error";
       msgErro[erro.path] = erro.msg;
     });
-    return res.render("pages/login", { valores: req.body, erroValidacao, msgErro, erro: null, sucesso: false });
+    return res.render("pages/login", { modo: "cadastro", valores: req.body, erroValidacao, msgErro, erro: null, sucesso: false });
   }
 
   try {
     const existe = await usuariosModel.findByEmail(req.body.email);
     if (existe) {
-      return res.render("pages/login", {
+      return res.render("pages/login", { modo: "cadastro",
         valores: req.body,
         erroValidacao: { email: "input-error" },
         msgErro: { email: "*Email já cadastrado!" },
@@ -43,7 +43,7 @@ const cadastroController = async (req, res) => {
     return res.redirect(destino);
   } catch (err) {
     console.error("Erro ao cadastrar:", err);
-    return res.render("pages/login", { erro: "Erro ao cadastrar. Tente novamente.", sucesso: false, valores: req.body, erroValidacao: {}, msgErro: {} });
+    return res.render("pages/login", { modo: "cadastro", erro: "Erro ao cadastrar. Tente novamente.", sucesso: false, valores: req.body, erroValidacao: {}, msgErro: {} });
   }
 };
 

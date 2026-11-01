@@ -2,18 +2,20 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
+  <%- include('../partials/tema-inicial.ejs') %>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Entrar | Conexão por Crédito</title>
   <link rel="stylesheet" href="/css/cpc-palette.css">
   <link rel="icon" href="../img/logo-black.png">
   <link rel="stylesheet" href="../css/login.css" />
+  <link rel="stylesheet" href="/css/footer.css">
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-  <script src="https://kit.fontawesome.com/a81368914c.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
 
-<section class="container" id="container">
+<% const modoCadastro = locals.modo === 'cadastro'; %>
+<section class="container <%= modoCadastro ? 'right-panel-active' : '' %>" id="container">
 
   <!-- ================= LOGIN ================= -->
   <section class="form-container sign-in-container">
@@ -27,14 +29,16 @@
 
       <input type="hidden" name="redirect" value="<%= locals.redirect || '' %>">
 
-      <% if (erro) { %>
-        <p class="msg-erro"><%= erro %></p>
+      <% if (erro && !modoCadastro) { %>
+        <p class="msg-erro" role="alert"><%= erro %></p>
       <% } %>
 
       <input 
         type="text" 
         name="usuarioDigitado" 
-        placeholder="Usuário"
+        placeholder="E-mail ou nome"
+        aria-label="E-mail ou nome de usuário"
+        autocomplete="username"
         value="<%= valores?.usuarioDigitado || '' %>"
         class="<%= erroValidacao?.usuarioDigitado ? 'input-error' : (valores?.usuarioDigitado ? 'input-success' : '') %>">
 
@@ -46,6 +50,8 @@
         type="password" 
         name="senhaDigitada" 
         placeholder="Senha"
+        aria-label="Senha"
+        autocomplete="current-password"
         class="<%= erroValidacao?.senhaDigitada ? 'input-error' : '' %>">
 
       <% if (msgErro?.senhaDigitada) { %>
@@ -58,12 +64,7 @@
       <button type="button" class="passkey-button" id="entrarBiometria"><span id="textoLoginBiometria">Entrar com Face ID ou biometria digital</span></button>
       <p class="passkey-message" id="mensagemBiometria" role="status"></p>
 
-      <p>ou entre com</p>
-
-      <section class="social-container">
-        <a href="/auth/google" class="social" title="Entrar com Google"><i class="bx bxl-google"></i></a>
-        <a href="/auth/github" class="social" title="Entrar com GitHub"><i class="bx bxl-github"></i></a>
-      </section>
+      <%- include('../partials/login-social.ejs', { textoChamada: 'ou entre com', acao: 'Entrar' }) %>
 
       <section class="mobile-toggle">
         <p>Não tem conta?</p>
@@ -88,12 +89,17 @@
       <% if (sucesso) { %>
         <p class="msg-sucesso"><%= sucesso %></p>
       <% } %>
+      <% if (erro && modoCadastro) { %>
+        <p class="msg-erro" role="alert"><%= erro %></p>
+      <% } %>
 
       <!-- NOME -->
       <input 
         type="text" 
         name="nome" 
-        placeholder="Usuário"
+        placeholder="Nome completo (nome e sobrenome)"
+        aria-label="Nome completo"
+        autocomplete="name"
         value="<%= valores?.nome || '' %>"
         class="<%= erroValidacao?.nome ? 'input-error' : (valores?.nome ? 'input-success' : '') %>">
 
@@ -106,6 +112,8 @@
         type="email" 
         name="email" 
         placeholder="Email"
+        aria-label="E-mail"
+        autocomplete="email"
         value="<%= valores?.email || '' %>"
         class="<%= erroValidacao?.email ? 'input-error' : (valores?.email ? 'input-success' : '') %>">
 
@@ -117,7 +125,9 @@
       <input 
         type="password" 
         name="senha" 
-        placeholder="Senha"
+        placeholder="Senha (mínimo 6 caracteres)"
+        aria-label="Senha"
+        autocomplete="new-password"
         minlength="6"
         aria-describedby="forca-senha"
         class="<%= erroValidacao?.senha ? 'input-error' : '' %>">
@@ -140,6 +150,8 @@
         type="password" 
         name="confirmarSenha" 
         placeholder="Confirmar senha"
+        aria-label="Confirmar senha"
+        autocomplete="new-password"
         class="<%= erroValidacao?.confirmarSenha ? 'input-error' : '' %>">
 
       <% if (msgErro?.confirmarSenha) { %>
@@ -148,14 +160,7 @@
 
       <button type="submit">Cadastrar</button>
 
-      <p>ou cadastre-se com</p>
-
-      <section class="social-container">
-        <a href="/auth/google" class="social" title="Entrar com Google"><i class="bx bxl-google"></i></a>
-        <a href="/auth/facebook" class="social" title="Entrar com Facebook"><i class="bx bxl-facebook"></i></a>
-        <a href="/auth/github" class="social" title="Entrar com GitHub"><i class="bx bxl-github"></i></a>
-        <a href="/auth/linkedin" class="social" title="Entrar com LinkedIn"><i class="bx bxl-linkedin"></i></a>
-      </section>
+      <%- include('../partials/login-social.ejs', { textoChamada: 'ou cadastre-se com', acao: 'Cadastrar' }) %>
 
       <section class="mobile-toggle">
         <p>Já tem uma conta?</p>

@@ -356,3 +356,21 @@ main {
   main { margin-top: 20px; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
   .rt-header { border-radius: 20px 20px 0 0; margin: 0; }
 }
+
+.rt-aviso--proprio {
+  margin-bottom: 12px;
+  background: #fff4e5;
+  border-color: #f5cf99;
+  color: #8a4b00;
+  font-size: calc(13px * var(--a11y-escala, 1));
+}
+
+.rt-btn-wa--indisponivel {
+  background: #eef2ef;
+  color: #4a554e;
+  cursor: default;
+  font-size: calc(13px * var(--a11y-escala, 1));
+  font-weight: 600;
+  text-align: center;
+}
+.rt-btn-wa--indisponivel:hover { background: #eef2ef; }

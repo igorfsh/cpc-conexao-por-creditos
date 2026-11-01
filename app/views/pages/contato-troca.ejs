@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/footer.css">
 </head>
 
 <%- include('../partials/header.ejs') %>
@@ -21,7 +22,7 @@
     <!-- Perfil do Doador -->
     <section class="profile-section">
       <figure class="profile-card">
-        <img src="<%= anuncio.fotoExibicao %>" alt="Foto de perfil de <%= anuncio.doadorNome %>" class="avatar">
+        <img src="<%= anuncio.fotoAnunciante %>" alt="Foto de perfil de <%= anuncio.doadorNome %>" class="avatar">
         <figcaption class="user-info">
           <h1 class="name"><%= anuncio.doadorNome %></h1>
           <p class="details">
@@ -32,18 +33,8 @@
       </figure>
     </section><br>
 
-    <% const defaultSliderImages = {
-         profissionais: ['/img/servicos.jpeg', '/img/img2-home.jpeg', '/img/img home-2.png'],
-         alimentos: ['/img/img alimentacao.jpeg', '/img/leite.webp', '/img/img2-home.jpeg'],
-         infantil: ['/img/img kids.jpeg', '/img/img2-home.jpeg', '/img/img home-2.png'],
-         default: ['/img/img2-home.jpeg', '/img/img cpc-verde.jpeg', '/img/servicos.jpeg']
-       };
-       const imagensPadrao = defaultSliderImages[anuncio.categoria] || defaultSliderImages.default;
-       // Se o anúncio tem fotos próprias (enviadas no cadastro), usa elas;
-       // completa com imagens padrão da categoria caso tenham enviado menos de 3.
-       const imagensProprias = Array.isArray(anuncio.imagens) ? anuncio.imagens.filter(Boolean) : [];
-       const sliderImages = [0, 1, 2].map(i => imagensProprias[i] || imagensPadrao[i]);
-    %>
+    <% // Fotos do item, completadas com imagens da categoria (fotoAnuncioService)
+       const sliderImages = anuncio.imagensCarrossel; %>
     <!-- Carrossel -->
     <section class="carousel-section">
       <section class="slider-container">
@@ -75,9 +66,26 @@
 
     <!-- Ação -->
     <section class="action-section">
-      <a href="/resumo/<%= anuncio.id %>" class="start-trade-button-link">
-        <button type="button" class="start-trade-button"><strong>Iniciar Troca</strong></button>
-      </a>
+      <% if (locals.proprioAnuncio) { %>
+        <section class="dono-anuncio" aria-labelledby="dono-titulo">
+          <% if (locals.editado) { %>
+            <p class="dono-anuncio__sucesso" role="status">✓ Alterações salvas.</p>
+          <% } %>
+          <p class="dono-anuncio__titulo" id="dono-titulo">Este anúncio é seu</p>
+          <p class="dono-anuncio__texto">Você não pode trocar com você mesmo, mas pode atualizar as informações quando quiser.</p>
+          <div class="dono-anuncio__acoes">
+            <a href="/anuncio/<%= anuncio.id %>/editar" class="dono-anuncio__editar">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 20h4L19 9a2.83 2.83 0 0 0-4-4L4 16v4z"/><path d="m13.5 6.5 4 4"/></svg>
+              Editar anúncio
+            </a>
+            <a href="/conta" class="dono-anuncio__voltar">Voltar para minha conta</a>
+          </div>
+        </section>
+      <% } else { %>
+        <a href="/resumo/<%= anuncio.id %>" class="start-trade-button-link">
+          <button type="button" class="start-trade-button"><strong>Iniciar Troca</strong></button>
+        </a>
+      <% } %>
     </section>
 
     <% } %>
@@ -105,6 +113,6 @@
       startX = null;
     });
   </script>
+  <%- include('../partials/footer.ejs') %>
 </body>
-<%- include('../partials/footer.ejs') %>
 </html>

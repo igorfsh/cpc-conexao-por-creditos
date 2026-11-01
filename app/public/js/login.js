@@ -155,9 +155,18 @@ function atualizarForcaSenha() {
   rotuloForcaSenha.textContent = avaliacao.texto;
 }
 
+// Mesma regra do servidor (router.js): nome e sobrenome, só letras.
+const NOME_COMPLETO = /^[A-Za-zÀ-ÖØ-öø-ÿ'`´.-]+(?:\s+[A-Za-zÀ-ÖØ-öø-ÿ'`´.-]+)+$/;
+function erroNome(valor) {
+  const nome = valor.trim();
+  if (nome.split(/\s+/).filter(Boolean).length < 2) return "Informe seu nome e sobrenome.";
+  if (!NOME_COMPLETO.test(nome)) return "Use seu nome real, só com letras (sem números ou apelidos).";
+  return null;
+}
+
 // validação em tempo real
 usuarioCad.addEventListener('input', () => {
-  if (usuarioCad.value.trim().length >= 3) {
+  if (!erroNome(usuarioCad.value)) {
     limparErro(usuarioCad);
     marcarSucesso(usuarioCad);
   }
@@ -208,8 +217,8 @@ cadastroForm.addEventListener('submit', (e) => {
   }
 
   // validações normais (somente se não estiver vazio)
-  if (!usuarioCadVazia && usuarioCad.value.trim().length < 3) {
-    mostrarErro(usuarioCad, "Mínimo 3 caracteres!");
+  if (!usuarioCadVazia && erroNome(usuarioCad.value)) {
+    mostrarErro(usuarioCad, erroNome(usuarioCad.value));
     valido = false;
   } else if (!usuarioCadVazia) {
     marcarSucesso(usuarioCad);

@@ -1,182 +1,308 @@
-/* Arquivo GERADO automaticamente por gerar_modo_escuro.py - nao editar a mao.
-   Mapeia cores neutras (branco/preto/cinza) do site para equivalentes escuras
-   quando o modo escuro esta ativo. Cores da marca (verde, laranja, vermelho,
-   azul etc.) e textos/bordas claros propositais sobre fundo colorido NAO
-   sao alterados. */
+/* Arquivo GERADO por gerar_modo_escuro.py - não editar à mão (ajustes vão em modo-escuro-manual.css).
+   Cada regra só vale nas páginas que carregam o .css de origem. */
 
-
-/* origem: avaliacao.css */
-html.a11y-dark .card { background-color: #414141 !important; }
-html.a11y-dark .info p { color: #b5b5b5 !important; }
 
 /* origem: como-funciona.css */
-html.a11y-dark .funciona p { color: #d2d2d2 !important; }
-html.a11y-dark .funciona h3 { color: #ffffff !important; }
-html.a11y-dark .passo h4 { color: #ffffff !important; }
-html.a11y-dark .passo p { color: #d2d2d2 !important; }
-html.a11y-dark .creditos { background-color: #202020 !important; }
-html.a11y-dark .creditos h3 { color: #ffffff !important; }
-html.a11y-dark .creditos p { color: #d2d2d2 !important; }
-html.a11y-dark .creditos li { color: #ffffff !important; }
-html.a11y-dark .rodape { background-color: #202020 !important; }
-html.a11y-dark .institucional a { color: #ffffff !important; }
+html.a11y-dark:has(link[href$="/como-funciona.css"]) .funciona h2 { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/como-funciona.css"]) .funciona p { color: #d2d4d3 !important; }
+html.a11y-dark:has(link[href$="/como-funciona.css"]) .funciona h3 { color: #e9ebea !important; }
+html.a11y-dark:has(link[href$="/como-funciona.css"]) .passo img { background-color: #1e2f29 !important; }
+html.a11y-dark:has(link[href$="/como-funciona.css"]) .passo h4 { color: #e9ebea !important; }
+html.a11y-dark:has(link[href$="/como-funciona.css"]) .passo p { color: #d2d4d3 !important; }
+html.a11y-dark:has(link[href$="/como-funciona.css"]) .creditos { background-color: #161a18 !important; }
+html.a11y-dark:has(link[href$="/como-funciona.css"]) .creditos h3 { color: #e9ebea !important; }
+html.a11y-dark:has(link[href$="/como-funciona.css"]) .creditos p { color: #d2d4d3 !important; }
+html.a11y-dark:has(link[href$="/como-funciona.css"]) .creditos li { color: #e9ebea !important; }
+html.a11y-dark:has(link[href$="/como-funciona.css"]) .rodape { background-color: #161a18 !important; border-top-color: #3b544b !important; }
+html.a11y-dark:has(link[href$="/como-funciona.css"]) .institucional a { color: #e9ebea !important; }
 
 /* origem: conta.css */
-html.a11y-dark body { background-color: #2a272a !important; color: #e9e7e7 !important; }
-html.a11y-dark .profile p { color: #c5c0c5 !important; }
-html.a11y-dark .amount { color: #f0f0f0 !important; }
-html.a11y-dark .resumo-creditos__item { background-color: #202020 !important; }
-html.a11y-dark .historico-card { background-color: #202020 !important; }
-html.a11y-dark .historico-card:hover { border-color: #555057 !important; background-color: #252325 !important; }
-html.a11y-dark .historico-card__titulo { color: #e8e8e8 !important; }
-html.a11y-dark .historico-card__data { color: #867e86 !important; }
-html.a11y-dark .historico-vazio { color: #867e86 !important; background-color: #202020 !important; }
-html.a11y-dark .trade-card, html.a11y-dark .proposal-card { background-color: #202020 !important; }
-html.a11y-dark .trade-card:hover, html.a11y-dark .proposal-card:hover { border-color: #555057 !important; background-color: #2b2a2b !important; }
-html.a11y-dark .profile { background-color: #202020 !important; }
-html.a11y-dark .balance-card { background-color: #262326 !important; }
-html.a11y-dark .trades-section { background-color: #202020 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) body { background-color: #1f2321 !important; color: #dddfde !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .profile p { color: #cacccb !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .passkey-panel { border-color: #3b5442 !important; background-color: #161a18 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .passkey-icon { background-color: #1e2f29 !important; color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .passkey-status { color: #b8bab9 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .passkey-status.is-active { color: #abe3d1 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .passkey-message { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .passkey-message.error { color: #e6aca8 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .amount { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .resumo-creditos__item { background-color: #161a18 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .resumo-creditos__valor { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .resumo-creditos__label { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .historico-secao h2 { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .historico-card { background-color: #161a18 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .historico-card:hover { border-color: #515452 !important; background-color: #1a1e1c !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .historico-card__titulo { color: #dddfde !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .historico-card__com-quem { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .historico-card__com-quem strong { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .historico-card__data { color: #aaacab !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .historico-card__creditos { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .historico-vazio { color: #aaacab !important; background-color: #161a18 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .trades-section h2, html.a11y-dark:has(link[href$="/conta.css"]) .proposals-section h2, html.a11y-dark:has(link[href$="/conta.css"]) .history-section h2 { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .trade-card, html.a11y-dark:has(link[href$="/conta.css"]) .proposal-card { background-color: #161a18 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .trade-card:hover, html.a11y-dark:has(link[href$="/conta.css"]) .proposal-card:hover { border-color: #515452 !important; background-color: #202422 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .trade-type { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .profile { background-color: #161a18 !important; border-color: #3b5442 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .photo-trigger img { border-color: #3b544b !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .profile-header h1 { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .profile-header > p:not(.profile-eyebrow) { color: #b9bbba !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .profile-eyebrow { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .provider-label { background-color: #1e2f29 !important; color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .profile-message.success { background-color: #1e2f29 !important; color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .profile-message.error { background-color: #2f201e !important; color: #e6ada8 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .balance-card { border-color: #3b5442 !important; background-color: #1b1f1d !important; color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .balance-icon { background-color: #1e2f29 !important; border-color: #3b5441 !important; color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .balance-label { color: #b9bbba !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .balance-unit { color: #b9bbba !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .trades-section { background-color: #161a18 !important; border-color: #3b5442 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .trades-section h2 { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .trade-card { border-color: #3b5442 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .logout-section { border-top-color: #3b5442 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .dados-section { background-color: #161a18 !important; border-color: #3b5442 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .dados-section h2 { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .dados-campo { color: #b9bbba !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .dados-dica { color: #b9bbba !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .dados-campo input { border-color: #3b5442 !important; background-color: #1b1f1d !important; color: #dddfde !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .dados-campo input:focus { background-color: #161a18 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .dados-perigo { border-color: #543d3b !important; background-color: #1b1f1d !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .dados-perigo strong { color: #e6ada8 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .dados-perigo p { color: #b9bbba !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .dados-cancelar { background-color: #232725 !important; color: #dddfde !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .excluir-dialog h3 { color: #e6ada8 !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .excluir-dialog p { color: #cacccb !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .trade-card--link:hover { background-color: #1c201e !important; }
+html.a11y-dark:has(link[href$="/conta.css"]) .trade-acao { color: #abe3d1 !important; }
 
 /* origem: contato-troca.css */
-html.a11y-dark body { background-color: #202020 !important; }
-html.a11y-dark .slider-img-wrapper { background-color: #282726 !important; }
-html.a11y-dark .slider-img { background-color: #282726 !important; }
+html.a11y-dark:has(link[href$="/contato-troca.css"]) body { color: #d2d4d3 !important; background-color: #161a18 !important; }
+html.a11y-dark:has(link[href$="/contato-troca.css"]) .slider-img-wrapper { background-color: #1d211f !important; }
+html.a11y-dark:has(link[href$="/contato-troca.css"]) .slider-img { background-color: #1d211f !important; }
+html.a11y-dark:has(link[href$="/contato-troca.css"]) #slide1:checked ~ .slider-circles label[for="slide1"], html.a11y-dark:has(link[href$="/contato-troca.css"]) #slide2:checked ~ .slider-circles label[for="slide2"], html.a11y-dark:has(link[href$="/contato-troca.css"]) #slide3:checked ~ .slider-circles label[for="slide3"] { border-color: #3b544e !important; }
+html.a11y-dark:has(link[href$="/contato-troca.css"]) .description-section h2 { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/contato-troca.css"]) .dono-anuncio { border-color: #3b5441 !important; background-color: #1e2f29 !important; }
+html.a11y-dark:has(link[href$="/contato-troca.css"]) .dono-anuncio__sucesso { background-color: #161a18 !important; color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/contato-troca.css"]) .dono-anuncio__titulo { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/contato-troca.css"]) .dono-anuncio__texto { color: #cacccb !important; }
+html.a11y-dark:has(link[href$="/contato-troca.css"]) .dono-anuncio__voltar { color: #abe3d1 !important; }
 
 /* origem: dashboard.css */
-html.a11y-dark body { background-color: #2a2a2d !important; color: #e8e8e8 !important; }
-html.a11y-dark .card { background-color: #202020 !important; }
-html.a11y-dark .hero-meta { color: #acadb0 !important; }
-html.a11y-dark body { background: #202020 !important; color: #e9e7e7 !important; }
-html.a11y-dark .secao { background-color: #202020 !important; color: #e9e7e7 !important; }
-html.a11y-dark .secao-head h2,
-html.a11y-dark .step h3,
-html.a11y-dark .path-card h3,
-html.a11y-dark .boas-vindas h2,
-html.a11y-dark .card h3,
-html.a11y-dark #conteudo-aba h3 { color: #f0f0f0 !important; }
-html.a11y-dark .secao-head p,
-html.a11y-dark .step p { color: #d2d2d2 !important; }
-html.a11y-dark .step { background-color: #292929 !important; border-color: #454545 !important; }
-html.a11y-dark .path-card--doar { background-color: #292929 !important; }
-html.a11y-dark .path-card--doar p { color: #e1e1e1 !important; }
-html.a11y-dark .stat-value { color: #e8e8e8 !important; }
-html.a11y-dark .sec-title { color: #e8e8e8 !important; }
-html.a11y-dark .bar-peak strong { color: #e8e8e8 !important; }
-html.a11y-dark .pending-item { background-color: #27272a !important; }
-html.a11y-dark .pending-info p { color: #e8e8e8 !important; }
-html.a11y-dark .cat-header span { color: #a6a6a6 !important; }
-html.a11y-dark .cat-header strong { color: #e8e8e8 !important; }
-html.a11y-dark .cat-track { background-color: #2d2d30 !important; }
-html.a11y-dark .feed-title { color: #e8e8e8 !important; }
-html.a11y-dark .bottom-value { color: #e8e8e8 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) body { background-color: #1d211f !important; color: #dddfde !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .card { background-color: #161a18 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .hero-meta { color: #bfc1c0 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .stat-label { color: #acaead !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .stat-value { color: #dddfde !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .delta-up { color: #abe3d1 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .delta-neutral { color: #acaead !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .delta-down { color: #e6a8a8 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .bottom-value small { color: #acaead !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .cat-total p { color: #acaead !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .cat-total strong { color: #dddfde !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .sec-title { color: #dddfde !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .sec-title a { color: #abe3d1 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .bar { background-color: #1e2f29 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .bar-peak p { color: #acaead !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .bar-peak strong { color: #dddfde !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .pending-item { background-color: #1d211f !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .pending-info p { color: #dddfde !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .pending-info small { color: #acaead !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .btn-approve { background-color: #1e2f29 !important; color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .btn-reject { background-color: #2f1e1e !important; color: #e6a8a8 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .cat-header span { color: #bbbdbc !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .cat-header strong { color: #dddfde !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .cat-track { background-color: #232725 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .feed-title { color: #dddfde !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .feed-user { color: #acaead !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .bottom-label { color: #acaead !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .bottom-value { color: #dddfde !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .tag-green { background-color: #1e2f29 !important; color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .adm-alert-ok { background-color: #1e2f29 !important; color: #aae4d1 !important; border-color: #3b544e !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .adm-alert-erro { background-color: #2f1e1e !important; color: #e6a8a8 !important; border-color: #543b3b !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .adm-header .hero-label { color: #abe3d1 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .adm-header h1 { color: #dddfde !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .adm-sub { color: #b3b5b4 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .adm-search { background-color: #161a18 !important; color: #dddfde !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .chip { background-color: #161a18 !important; color: #c3c5c4 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .adm-table th, html.a11y-dark:has(link[href$="/dashboard.css"]) .adm-table td { color: #d5d7d6 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .adm-table th { background-color: #1a1e1c !important; color: #b8bab9 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .adm-table tbody tr:hover { background-color: #191d1b !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .item-title { color: #dddfde !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .item-desc { color: #acaead !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .muted { color: #a4a6a5 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .empty { color: #acaead !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .user-avatar { background-color: #1e2f29 !important; color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .tag { background-color: #1e2f29 !important; color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .tag-muted { background-color: #202422 !important; color: #bfc1c0 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .tag-pendente { color: #e6d4a8 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .tag-concluida { background-color: #1e2f29 !important; color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .tag-cancelada { background-color: #2f1e1e !important; color: #e6a8a8 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .dialog-header h2 { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .dialog-close { color: #acaead !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .adm-dialog label { color: #c3c5c4 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .adm-dialog input, html.a11y-dark:has(link[href$="/dashboard.css"]) .adm-dialog textarea, html.a11y-dark:has(link[href$="/dashboard.css"]) .adm-dialog select { color: #dddfde !important; background-color: #161a18 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .btn-ghost { background-color: #202422 !important; color: #c3c5c4 !important; }
+html.a11y-dark:has(link[href$="/dashboard.css"]) .btn-ghost:hover { background-color: #292d2b !important; }
 
 /* origem: doe.css */
-html.a11y-dark body { background-color: #292728 !important; }
-html.a11y-dark .doe-intro { color: #d2d2d2 !important; }
-html.a11y-dark .doe-card { background-color: #202020 !important; }
-html.a11y-dark .doe-card p { color: #b5b5b5 !important; }
-html.a11y-dark .beneficios li { background-color: #202020 !important; }
-html.a11y-dark .beneficios p { color: #a6a6a6 !important; }
-html.a11y-dark .doe-nota { color: #979797 !important; background-color: #2f282b !important; }
+html.a11y-dark:has(link[href$="/doe.css"]) body { background-color: #1d211f !important; }
+html.a11y-dark:has(link[href$="/doe.css"]) .container h2 { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/doe.css"]) .doe-intro { color: #d2d4d3 !important; }
+html.a11y-dark:has(link[href$="/doe.css"]) .doe-card { background-color: #161a18 !important; }
+html.a11y-dark:has(link[href$="/doe.css"]) .doe-card h3 { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/doe.css"]) .doe-card p { color: #c3c5c4 !important; }
+html.a11y-dark:has(link[href$="/doe.css"]) .beneficios h2 { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/doe.css"]) .beneficios li { background-color: #161a18 !important; }
+html.a11y-dark:has(link[href$="/doe.css"]) .beneficios h3 { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/doe.css"]) .beneficios p { color: #bbbdbc !important; }
+html.a11y-dark:has(link[href$="/doe.css"]) .doe-nota { color: #b3b5b4 !important; background-color: #212523 !important; }
 
-/* origem: footer.css */
-html.a11y-dark footer { background-color: #2c2c2c !important; }
-html.a11y-dark .footer-links a { color: #ffffff !important; }
+/* origem: header.css */
+html.a11y-dark:has(link[href$="/header.css"]) .pwa-install { color: #aae4d1 !important; background-color: #1e2f29 !important; }
+html.a11y-dark:has(link[href$="/header.css"]) .pwa-install__content p { color: #aae4d1 !important; }
 
 /* origem: home.css */
-html.a11y-dark .icone-card { border-color: #858585 !important; background-color: #272727 !important; }
-html.a11y-dark .icone-label { color: #e8e8e8 !important; }
-html.a11y-dark .abas { border-bottom-color: #4d4d4d !important; border-top-color: #4d4d4d !important; }
-html.a11y-dark #conteudo-aba p { color: #ffffff !important; }
-html.a11y-dark .card { background-color: #202020 !important; }
-html.a11y-dark .card p { color: #b5b5b5 !important; }
-html.a11y-dark footer { background-color: #2c2c2c !important; }
-html.a11y-dark .footer-links a { color: #ffffff !important; }
-html.a11y-dark .acao-card { background-color: #202020 !important; }
-html.a11y-dark .acao-card__desc { color: #b5b5b5 !important; }
-html.a11y-dark .impact { background-color: #202020 !important; }
-html.a11y-dark .impact__title { color: #ffffff !important; }
-html.a11y-dark .impact__subtitle { color: #e8e8e8 !important; }
-html.a11y-dark .stat-card { background-color: #202020 !important; border-color: #424242 !important; }
-html.a11y-dark .stat-card__value { color: #f0f0f0 !important; }
-html.a11y-dark .impact-info-card { background-color: #202020 !important; border-color: #424242 !important; }
-html.a11y-dark .impact-info-card__title { color: #f6f6f6 !important; }
-html.a11y-dark .impact-bar-item__name { color: #e4e0db !important; }
-html.a11y-dark .impact-bar-item__value { color: #f0f0f0 !important; }
-html.a11y-dark .impact-bar-item__value--progress { color: #e0e0df !important; }
-html.a11y-dark .impact-bar-track { background-color: #373531 !important; }
-html.a11y-dark .impact-info-card__source { color: #c4c4c2 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) body { background-color: #161a18 !important; color: #e1e3e2 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .side-menu { background-color: #1e2f29 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .icone-card { background-color: #1d211f !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .icone-card:hover { background-color: #1e2f29 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .icone-circle { background-color: #1e2f29 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .icone-label { color: #dddfde !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .icone-desc { color: #acaead !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .abas { border-bottom-color: #4b4e4c !important; border-top-color: #4b4e4c !important; }
+html.a11y-dark:has(link[href$="/home.css"]) #conteudo-aba { background-color: #1e2f29 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) #conteudo-aba p { color: #e9ebea !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .card { background-color: #161a18 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .card p { color: #c3c5c4 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) footer { background-color: #222624 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .footer-links a { color: #e9ebea !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .acao-principal__titulo { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .acao-card { background-color: #161a18 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .acao-card__titulo { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .acao-card__desc { color: #c3c5c4 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .secao { background-color: #161a18 !important; color: #dddfde !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .secao-head h2 { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .secao-head p { color: #c2c4c3 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .eyebrow { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .btn-ghost { color: #e1e3e2 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .path-card--doar { background-color: #161a18 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .path-card--doar .path-tag { background-color: #1e2f29 !important; color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .path-card p { color: #e9ebea !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .step { border-color: #363937 !important; background-color: #161a18 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .step-num { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .step h3 { color: #dddfde !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .step p { color: #c2c4c3 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .cta-band .btn-ghost { border-color: #4b4e4c !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .cta-band .btn-ghost:hover { background-color: #161a18 !important; color: #e1e3e2 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .impact { background-color: #161a18 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .impact__label { color: #abe3d1 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .impact__title { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .impact__subtitle { color: #dddfde !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .stat-card { background-color: #161a18 !important; border-color: #424543 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .stat-card__icon { background-color: #1e2f29 !important; color: #abe3d1 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .stat-card__value { color: #e1e3e2 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .stat-card__label { color: #b5b7b6 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .stat-card__badge { background-color: #1e2f29 !important; color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .impact-info-card { background-color: #161a18 !important; border-color: #424543 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .impact-info-card__title { color: #e4e6e5 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .impact-bar-item__name { color: #d9dbda !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .impact-bar-item__value { color: #e1e3e2 !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .impact-bar-item__value--progress { color: #d9dbda !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .impact-bar-track { background-color: #292d2b !important; }
+html.a11y-dark:has(link[href$="/home.css"]) .impact-info-card__source { color: #cacccb !important; }
 
 /* origem: login.css */
-html.a11y-dark .container { background-color: #202020 !important; }
-html.a11y-dark form { background-color: #202020 !important; }
-html.a11y-dark input { background-color: #464646 !important; }
-html.a11y-dark a { color: #d2d2d2 !important; }
-html.a11y-dark .social-container a { border-color: #3e3e3e !important; color: #d2d2d2 !important; }
-html.a11y-dark .mobile-toggle p { color: #b5b5b5 !important; }
+html.a11y-dark:has(link[href$="/login.css"]) body { background: linear-gradient(120deg, #1e2f29, #1d211f) !important; }
+html.a11y-dark:has(link[href$="/login.css"]) .container { background-color: #161a18 !important; }
+html.a11y-dark:has(link[href$="/login.css"]) form { background-color: #161a18 !important; }
+html.a11y-dark:has(link[href$="/login.css"]) input { background-color: #3a3e3c !important; }
+html.a11y-dark:has(link[href$="/login.css"]) .password-strength__bar:nth-child(2) { background-color: #2f2a1e !important; }
+html.a11y-dark:has(link[href$="/login.css"]) .password-strength__label { color: #b7b9b8 !important; }
+html.a11y-dark:has(link[href$="/login.css"]) .passkey-message { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/login.css"]) .passkey-message.error { color: #e6aca8 !important; }
+html.a11y-dark:has(link[href$="/login.css"]) a { color: #d2d4d3 !important; }
+html.a11y-dark:has(link[href$="/login.css"]) .social-container a { border-color: #3e413f !important; color: #d2d4d3 !important; }
+html.a11y-dark:has(link[href$="/login.css"]) .social-container a:hover { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/login.css"]) .mobile-toggle p { color: #c3c5c4 !important; }
+html.a11y-dark:has(link[href$="/login.css"]) .msgSucesso { color: #abe3d1 !important; }
+html.a11y-dark:has(link[href$="/login.css"]) .msg-info { background-color: #1e2f29 !important; color: #aae4d1 !important; }
 
-/* origem: noticia.css */
-html.a11y-dark .noticia { background-color: #202020 !important; }
-html.a11y-dark .noticia p { color: #e1e1e1 !important; }
-html.a11y-dark .fique-por-dentro input { border-color: #4d4d4d !important; }
-html.a11y-dark .fique-por-dentro button { color: #ffffff !important; }
-html.a11y-dark .rodape { background-color: #202020 !important; }
-html.a11y-dark .institucional ul li a { color: #ffffff !important; }
-
-/* origem: obrigado.css */
-html.a11y-dark body { background-color: #202020 !important; color: #ffffff !important; }
-html.a11y-dark .content { background-color: #202020 !important; }
-html.a11y-dark .main-content { background-color: #202020 !important; }
+/* origem: novo-anuncio.css */
+html.a11y-dark:has(link[href$="/novo-anuncio.css"]) .form-anuncio { background-color: #161a18 !important; }
+html.a11y-dark:has(link[href$="/novo-anuncio.css"]) .form-anuncio h2 { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/novo-anuncio.css"]) .form-anuncio label { color: #d4d6d5 !important; }
+html.a11y-dark:has(link[href$="/novo-anuncio.css"]) .form-anuncio input, html.a11y-dark:has(link[href$="/novo-anuncio.css"]) .form-anuncio select, html.a11y-dark:has(link[href$="/novo-anuncio.css"]) .form-anuncio textarea { border-color: #4b4e4c !important; }
+html.a11y-dark:has(link[href$="/novo-anuncio.css"]) .msg-erro { background-color: #2f201e !important; color: #e6a8a8 !important; }
+html.a11y-dark:has(link[href$="/novo-anuncio.css"]) .msg-sucesso { background-color: #1e2f29 !important; color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/novo-anuncio.css"]) body { background-color: #1e2220 !important; }
+html.a11y-dark:has(link[href$="/novo-anuncio.css"]) .btn-voltar { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/novo-anuncio.css"]) .campo-imagens-preview img { border-color: #4b4e4c !important; }
+html.a11y-dark:has(link[href$="/novo-anuncio.css"]) .whatsapp-status { color: #acaead !important; }
+html.a11y-dark:has(link[href$="/novo-anuncio.css"]) .whatsapp-status.is-valido { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/novo-anuncio.css"]) .whatsapp-status.is-invalido { color: #e6a8a8 !important; }
+html.a11y-dark:has(link[href$="/novo-anuncio.css"]) .whatsapp-teste { color: #abe3d1 !important; }
+html.a11y-dark:has(link[href$="/novo-anuncio.css"]) .fotos-atuais-titulo { color: #bbbdbc !important; }
 
 /* origem: resumo-troca.css */
-html.a11y-dark .rt-pontos-row { background-color: #202020 !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]), html.a11y-dark:has(link[href$="/resumo-troca.css"]) body { background-color: #1f2321 !important; color: #dddfde !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) .rt-card { background-color: #161a18 !important; border-color: #3b543b !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) .rt-card-label { color: #abe3d1 !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) .rt-avatar { background-color: #1e2f29 !important; border-color: #3b544e !important; color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) .rt-doador-nome { color: #dddfde !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) .rt-doador-meta { color: #b3b5b4 !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) .rt-troca-img { background-color: #1e2f29 !important; border-color: #3b544e !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) .rt-troca-nome { color: #cacccb !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) .rt-troca-sub { color: #b3b5b4 !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) .rt-seta { color: #abe3d1 !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) .rt-tag { background-color: #1e2f29 !important; color: #aae4d1 !important; border-color: #3b544e !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) .rt-pontos-destaque { background-color: #1e2f29 !important; border-color: #3b544e !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) .rt-pontos-valor { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) .rt-pontos-row { background-color: #161a18 !important; border-color: #3b543b !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) .rt-pontos-row-label { color: #b3b5b4 !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) .rt-pontos-row-value { color: #abe3d1 !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) .rt-pontos-row-value.insuf { color: #e6aea8 !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) .rt-step { border-bottom-color: #3b543b !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) .rt-step-num { background-color: #1e2f29 !important; border-color: #3b544e !important; color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) .rt-step-title { color: #dddfde !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) .rt-step-desc { color: #b3b5b4 !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) .rt-aviso { background-color: #1e2f29 !important; border-color: #3b544e !important; color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) .rt-termos { color: #b3b5b4 !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) .rt-termos a { color: #abe3d1 !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) .rt-aviso--proprio { background-color: #2f281e !important; border-color: #544a3b !important; color: #e6caa8 !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) .rt-btn-wa--indisponivel { background-color: #232725 !important; color: #c5c7c6 !important; }
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) .rt-btn-wa--indisponivel:hover { background-color: #232725 !important; }
 
 /* origem: saibamais.css */
-html.a11y-dark .conteudo { color: #e1e1e1 !important; }
-html.a11y-dark .conteudo h1 { color: #ffffff !important; }
+html.a11y-dark:has(link[href$="/saibamais.css"]) .conteudo { color: #dadcdb !important; }
+html.a11y-dark:has(link[href$="/saibamais.css"]) .conteudo h1 { color: #e9ebea !important; }
+html.a11y-dark:has(link[href$="/saibamais.css"]) .cadastro-link { color: #aae4d1 !important; }
 
 /* origem: servicos.css */
-html.a11y-dark .btn { color: #ffffff !important; background-color: #292929 !important; }
+html.a11y-dark:has(link[href$="/servicos.css"]) .alimentos { background-color: #292d2b !important; }
 
 /* origem: sobrenos.css */
-html.a11y-dark h2, html.a11y-dark h3 { color: #f0f0f0 !important; }
-html.a11y-dark .circulo1 { background-color: #3b3b3b !important; color: #ffffff !important; }
-html.a11y-dark footer { background-color: #2c2c2c !important; }
-html.a11y-dark .footer-links a { color: #ffffff !important; }
+html.a11y-dark:has(link[href$="/sobrenos.css"]) h2, html.a11y-dark:has(link[href$="/sobrenos.css"]) h3 { color: #e1e3e2 !important; }
+html.a11y-dark:has(link[href$="/sobrenos.css"]) h2 { color: #aae4d1 !important; }
+html.a11y-dark:has(link[href$="/sobrenos.css"]) .circulo1 { background-color: #303432 !important; color: #e9ebea !important; }
+html.a11y-dark:has(link[href$="/sobrenos.css"]) footer { background-color: #222624 !important; }
+html.a11y-dark:has(link[href$="/sobrenos.css"]) .footer-links a { color: #e9ebea !important; }
 
 /* origem: todos.css */
-html.a11y-dark #divBusca { background-color: #393939 !important; }
-html.a11y-dark .filter-btn { color: #e0e0e0 !important; }
-html.a11y-dark .service-card { background-color: #202020 !important; }
-html.a11y-dark .service-info p { color: #b5b5b5 !important; }
-
-/* origem: app/views/pages/novo-anuncio.ejs */
-html.a11y-dark .form-anuncio { background-color: #202020 !important; }
-html.a11y-dark .form-anuncio label { color: #d5d6d6 !important; }
-html.a11y-dark .form-anuncio input, html.a11y-dark .form-anuncio select, html.a11y-dark .form-anuncio textarea { border-color: #4d4d4d !important; }
-html.a11y-dark body { background-color: #292929 !important; }
-html.a11y-dark .campo-imagens-preview img { border-color: #4d4d4d !important; }
+html.a11y-dark:has(link[href$="/todos.css"]) #divBusca { background-color: #2e3230 !important; }
+html.a11y-dark:has(link[href$="/todos.css"]) .filter-btn { border-color: #3b544e !important; color: #d9dbda !important; }
+html.a11y-dark:has(link[href$="/todos.css"]) .service-card { background-color: #161a18 !important; }
+html.a11y-dark:has(link[href$="/todos.css"]) .service-info p { color: #c3c5c4 !important; }
 
 /* origem: variáveis CSS (:root) - resumo-troca.css */
-html.a11y-dark {
-    --bg-page: #202020;
-    --bg-card: #2a2a2a;
-    --text-dark: #e1e1e1;
-    --text-mid: #c7c7c7;
-    --text-light: #b0b0b0;
-    --border: #4d4d4d;
+html.a11y-dark:has(link[href$="/resumo-troca.css"]) {
+    --bg-page: #1b1d1c;
+    --bg-card: #242826;
+    --text-dark: #e6ebe8;
+    --text-mid: #c3ccc6;
+    --text-light: #a7b2ab;
+    --border: #3a443e;
 }
 
 /* origem: variáveis CSS (:root) - contato-troca.css
-   (--color-text-light não é sobrescrito de propósito: é usado só no
-   botão "Iniciar Troca", que tem fundo laranja fixo em --color-secondary,
-   então o texto precisa continuar escuro para manter contraste ali) */
-html.a11y-dark {
-    --color-text-dark: #e1e1e1;
-}
-
-/* O botão do banner mantém o verde da marca sobre o fundo claro. */
-html.a11y-dark .btn-banner,
-html.a11y-dark .btn-banner:hover {
-    color: #065f46 !important;
+   (--color-text-light fica: é o texto do botão laranja "Iniciar Troca") */
+html.a11y-dark:has(link[href$="/contato-troca.css"]) {
+    --color-text-dark: #e6ebe8;
 }

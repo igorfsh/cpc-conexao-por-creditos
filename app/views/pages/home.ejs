@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap">
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/footer.css">
 </head>
 
 <%- include('../partials/header.ejs') %>
@@ -16,7 +17,7 @@
 <!-- BANNER + TEXTO -->
 <section class="banner-wrapper">
   <section class="banner">
-    <img src="../img/img-banner.png" alt="Banner principal">
+    <img src="../img/img-banner.webp" alt="Banner principal">
   </section>
   <section class="boas-vindas">
     <h2>Conecte pessoas Compartilhe valor<br> Ganhe créditos</h2>
@@ -160,7 +161,7 @@
       Junte-se a nós e descubra o poder da colaboração!</p>
     </article>
     <article class="card">
-      <img src="../img/img home-2.png" alt="Foto da organização">
+      <img src="../img/img home-2.webp" alt="Foto da organização">
       <h3>Faça parte da mudança</h3>
       <p>Com sua ajuda, podemos continuar construindo uma comunidade mais justa e sustentável, onde todos tenham a chance de participar e prosperar. Doe produtos, tempo ou habilidades e faça parte dessa transformação.</p>
     </article>
@@ -176,7 +177,7 @@
       <img src="../img/img2-home.jpeg" alt="Foto da organização CPC em atividade">
       <h3>Sobre a organização</h3>
       <p>Nosso objetivo é criar uma rede solidária onde as pessoas podem trocar serviços e produtos sem a necessidade de dinheiro.</p>
-      <img src="../img/img home-2.png" alt="Foto da organização" class="imagem-doacao">
+      <img src="../img/img home-2.webp" alt="Foto da organização" class="imagem-doacao">
       <h3>Faça parte da mudança</h3>
       <p>Com sua ajuda, podemos continuar a construir uma comunidade mais justa e sustentável.</p>
     </section>
@@ -186,7 +187,7 @@
 <!-- ═══════════════════════════════════════════════
      SEÇÃO: NOSSO IMPACTO (substitui .noticias-dashboard)
      ═══════════════════════════════════════════════ -->
-<section class="impact">
+<section class="impact" id="impacto">
 
   <!-- Cabeçalho -->
   <section class="impact__header">
@@ -341,6 +342,6 @@
   }
   setInterval(atualizarStats, 30000);
 </script>
+  <%- include('../partials/footer.ejs') %>
 </body>
-<%- include('../partials/footer.ejs') %>
 </html>

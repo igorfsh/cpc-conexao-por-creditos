@@ -91,8 +91,17 @@
       salvarEstado(estado);
     });
 
+    var timerTransicao;
+    function trocarComTransicao() {
+      var html = document.documentElement;
+      html.classList.add("a11y-transicao");
+      clearTimeout(timerTransicao);
+      timerTransicao = setTimeout(function () { html.classList.remove("a11y-transicao"); }, 450);
+    }
+
     toggleTema.addEventListener("click", function () {
       estado.escuro = !estado.escuro;
+      trocarComTransicao();
       aplicarEstado(estado);
       salvarEstado(estado);
     });
@@ -110,6 +119,7 @@
     });
 
     reset.addEventListener("click", function () {
+      if (estado.escuro) trocarComTransicao();
       estado = estadoPadrao();
       aplicarEstado(estado);
       salvarEstado(estado);

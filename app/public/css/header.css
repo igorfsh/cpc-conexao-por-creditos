@@ -331,7 +331,7 @@
         text-decoration: none;
     }
 
-    .logo {
+    .main-header .logo {
         position: absolute;
         left: 50%;
         transform: translateX(-50%);

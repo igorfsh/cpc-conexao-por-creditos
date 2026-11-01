@@ -15,7 +15,16 @@ services:
         generateValue: true
       - key: APP_BASE_URL
         value: https://cpc-conexao-por-creditos-qlq0.onrender.com
+      # Banco MySQL permanente (contas e Face ID/digital). Use DATABASE_URL OU as variáveis DB_* abaixo.
+      - key: DATABASE_URL
+        sync: false
       - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_SSL
+        value: "true"
+      - key: DB_SSL_CA
         sync: false
       - key: DB_USER
         sync: false
@@ -40,6 +49,22 @@ services:
       - key: GITHUB_CLIENT_SECRET
         sync: false
       - key: GITHUB_CALLBACK_URL
+        sync: false
+      - key: FACEBOOK_APP_ID
+        sync: false
+      - key: FACEBOOK_APP_SECRET
+        sync: false
+      - key: LINKEDIN_CLIENT_ID
+        sync: false
+      - key: LINKEDIN_CLIENT_SECRET
+        sync: false
+      - key: APPLE_CLIENT_ID
+        sync: false
+      - key: APPLE_TEAM_ID
+        sync: false
+      - key: APPLE_KEY_ID
+        sync: false
+      - key: APPLE_PRIVATE_KEY
         sync: false
       - key: WEBAUTHN_RP_ID
         value: cpc-conexao-por-creditos-qlq0.onrender.com

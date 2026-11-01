@@ -152,16 +152,32 @@ html.a11y-font-5 { --a11y-escala: 1.48; font-size: 148%; }
    o mesmo princípio usado em sistemas de acessibilidade como o do
    Sicredi: o "colorido" da marca não muda, só o fundo/texto neutro.
    A lista completa e específica de cada página está no arquivo
-   modo-escuro-gerado.css (gerado automaticamente a partir do CSS do
+   modo-escuro.css (gerado automaticamente a partir do CSS do
    site - ver script gerar_modo_escuro.py).
    ===================================================================== */
 
 /* Base/fallback: garante fundo escuro mesmo em elementos não cobertos
    pelo arquivo gerado */
+html.a11y-dark {
+  color-scheme: dark; /* campos nativos, barras de rolagem e autofill no tema escuro */
+}
 html.a11y-dark,
 html.a11y-dark body {
-  background-color: #0d0d0d;
-  color: #f3f3f3;
+  background-color: #151816;
+  color: #eef2ef;
+}
+
+/* Troca de tema suave: só durante o clique no botão, para não atrasar outras animações */
+html.a11y-transicao,
+html.a11y-transicao *,
+html.a11y-transicao *::before,
+html.a11y-transicao *::after {
+  transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease,
+    fill 0.35s ease, stroke 0.35s ease, box-shadow 0.35s ease !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.a11y-transicao,
+  html.a11y-transicao * { transition: none !important; }
 }
 
 /* O próprio widget de acessibilidade e o chat mantêm suas cores de marca

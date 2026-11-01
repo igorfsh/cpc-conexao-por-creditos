@@ -4,6 +4,10 @@ const trocasModel = require("../models/trocasModel");
 const anunciosModel = require("../models/anunciosModel");
 const passkeysModel = require("../models/passkeysModel");
 const imageService = require("../services/imageService");
+const fotos = require("../services/fotoAnuncioService");
+const { biometriaPersistente } = require("../../config/banco");
+const { extrairCidadeUF } = require("../services/enderecoService");
+const { validarTelefone } = require("../public/js/telefone");
 
 const anuncianteBase = "Malcolm Eliseu Ribeiro";
 
@@ -35,6 +39,7 @@ const exibirConta = async (req, res) => {
       (anuncio) => String(anuncio.doadorId) === String(usuario.id)
     ).map((anuncio) => ({
       ...anuncio,
+      fotoCapa: fotos.fotoCapa(anuncio),
       fotoPerfil: anuncio.doadorNome === anuncianteBase
         ? (anuncio.foto || "/img/img malcon.png")
         : (usuario.foto || "/img/img perfil-white.png"),
@@ -43,11 +48,19 @@ const exibirConta = async (req, res) => {
     return res.render("pages/conta", {
       usuario,
       passkeys,
+      biometriaDisponivel: biometriaPersistente(),
       meusTrocas: meusTrocasComPerfil,
       meusAnuncios,
       totalTrocas: meusTrocasComPerfil.length,
       querySucesso: req.query.sucesso === "foto",
       queryErro: req.query.erro === "foto",
+      dadosSucesso: req.query.sucesso === "dados",
+      dadosErro: req.query.erro === "dados" ? "Não foi possível salvar seus dados."
+        : req.query.erro === "email-invalido" ? "Informe um e-mail válido."
+        : req.query.erro === "email-em-uso" ? "Esse e-mail já está em uso por outra conta."
+        : req.query.erro === "telefone-invalido" ? "Telefone inválido. Use DDD + número, ex.: (11) 91234-5678."
+        : req.query.erro === "excluir" ? "Não foi possível excluir a conta."
+        : null,
     });
   } catch (err) {
     console.error("Erro ao carregar conta:", err);
@@ -78,4 +91,54 @@ const atualizarFoto = async (req, res) => {
   }
 };
 
-module.exports = { exibirConta, atualizarFoto };
+const atualizarDados = async (req, res) => {
+  const email = (req.body.email || "").trim().toLowerCase();
+  const telefoneDigitado = (req.body.telefone || "").trim();
+  const endereco = (req.body.endereco || "").trim().slice(0, 255);
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return res.redirect("/conta?erro=email-invalido#meus-dados");
+  const validacao = validarTelefone(telefoneDigitado);
+  if (telefoneDigitado && !validacao.valido) return res.redirect("/conta?erro=telefone-invalido#meus-dados");
+  const telefone = validacao.valido ? validacao.formatado : "";
+
+  try {
+    const existente = await usuariosModel.findByEmail(email);
+    if (existente && String(existente.id) !== String(req.session.usuario.id)) {
+      return res.redirect("/conta?erro=email-em-uso#meus-dados");
+    }
+
+    const usuario = await usuariosModel.updateDados(req.session.usuario.id, { email, telefone, endereco });
+    if (!usuario) return res.redirect("/conta?erro=dados#meus-dados");
+    req.session.usuario.email = usuario.email;
+    anunciosModel.atualizarContatoDoador(usuario.id, {
+      whatsapp: validacao.valido ? validacao.whatsapp : null,
+      local: extrairCidadeUF(endereco),
+    });
+    return res.redirect("/conta?sucesso=dados#meus-dados");
+  } catch (err) {
+    console.error("Erro ao atualizar dados da conta:", err);
+    return res.redirect("/conta?erro=dados#meus-dados");
+  }
+};
+
+const excluirConta = async (req, res) => {
+  const id = req.session.usuario.id;
+  if (req.session.usuario.perfil === "admin") return res.redirect("/adm");
+
+  try {
+    await passkeysModel.deleteByUserId(id);
+    anunciosModel.deletarPorDoador(id);
+    const ok = await usuariosModel.delete(id);
+    if (!ok) return res.redirect("/conta?erro=excluir#meus-dados");
+
+    req.logout((logoutError) => {
+      if (logoutError) console.error("Erro ao encerrar sessão Passport:", logoutError);
+      req.session.destroy(() => res.redirect("/?conta=excluida"));
+    });
+  } catch (err) {
+    console.error("Erro ao excluir conta:", err);
+    return res.redirect("/conta?erro=excluir#meus-dados");
+  }
+};
+
+module.exports = { exibirConta, atualizarFoto, atualizarDados, excluirConta };

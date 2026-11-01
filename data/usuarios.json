@@ -12,7 +12,10 @@
     "email": "rm94917@estudante.fieb.edu.br",
     "senha": "21052008",
     "dataCriacao": "2026-04-21T13:11:12.582Z",
-    "foto": "/img/perfis/perfil-3-1787135363294.webp"
+    "foto": "/img/perfis/perfil-3-1793492644184.webp",
+    "ultimoLogin": "2026-11-01T00:19:40.839Z",
+    "telefone": "(11) 95450-0030",
+    "endereco": "Rua Vanda, 57, Parque dos Camargos, Barueri - SP."
   },
   {
     "id": 5,
@@ -33,7 +36,8 @@
     "foto": null,
     "provider": "local",
     "providerId": null,
-    "dataCriacao": "2026-01-01T00:00:00.000Z"
+    "dataCriacao": "2026-01-01T00:00:00.000Z",
+    "ultimoLogin": "2026-10-31T22:44:52.419Z"
   },
   {
     "id": 6,

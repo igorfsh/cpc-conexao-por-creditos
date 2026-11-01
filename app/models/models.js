@@ -2,31 +2,8 @@ const fs = require("fs");
 const path = require("path");
 const bcrypt = require("bcryptjs");
 
-let pool = null;
-let usarJSON = !process.env.DB_HOST || !process.env.DB_NAME;
-let tentouMySQL = false;
-
-try {
-  pool = require("../../config/pool_conexoes");
-  tentouMySQL = true;
-} catch (err) {
-  console.log("⚠️  MySQL indisponível na inicialização, usando JSON");
-  tentouMySQL = false;
-}
-
-const withFallback = async (mysqlFn, jsonFn) => {
-  try {
-    if (tentouMySQL && !usarJSON) {
-      return await mysqlFn();
-    } else {
-      return jsonFn();
-    }
-  } catch (err) {
-    console.log("⚠️  Falha no MySQL, alternando para JSON:", err.message);
-    usarJSON = true;
-    return jsonFn();
-  }
-};
+// Com banco configurado tudo vai para o MySQL; sem banco, para data/usuarios.json (config/banco.js).
+const { pool, executar: withFallback } = require("../../config/banco");
 
 const dbPath = path.join(__dirname, "../../data/usuarios.json");
 const dbDir = path.dirname(dbPath);
@@ -112,76 +89,87 @@ const usuariosModel = {
   },
 
   findByProviderId: async (provider, providerId) => {
+    const id = String(providerId);
     return await withFallback(
       async () => {
         const [linhas] = await pool.query(
-          "SELECT * FROM usuarios WHERE provider = ? AND provider_id = ?",
-          [provider, providerId]
+          `SELECT u.* FROM usuarios u
+           LEFT JOIN usuario_provedores p ON p.usuario_id = u.id
+           WHERE (u.provider = ? AND u.provider_id = ?) OR (p.provider = ? AND p.provider_id = ?)
+           LIMIT 1`,
+          [provider, id, provider, id]
         );
         if (!linhas || linhas.length === 0) return null;
         return mapRowToUsuario(linhas[0]);
       },
       () => {
         const usuarios = lerUsuarios();
-        return usuarios.find(u => u.provider === provider && u.providerId === providerId) || null;
+        return usuarios.find(u =>
+          (u.provider === provider && String(u.providerId) === id)
+          || (u.provedores || []).some(p => p.provider === provider && String(p.providerId) === id)
+        ) || null;
       }
     );
   },
 
+  // Vincula um provedor social a uma conta existente sem desfazer vínculos anteriores.
   linkSocialProvider: async (id, provider, providerId, foto = null) => {
+    const providerIdTexto = String(providerId);
     return await withFallback(
       async () => {
         await pool.query(
-          "UPDATE usuarios SET provider = ?, provider_id = ?, foto = COALESCE(?, foto), ultimo_login = CURRENT_TIMESTAMP, status = 'ativo' WHERE id = ?",
-          [provider, providerId, foto, id]
+          "INSERT IGNORE INTO usuario_provedores (usuario_id, provider, provider_id) VALUES (?, ?, ?)",
+          [id, provider, providerIdTexto]
+        );
+        await pool.query(
+          `UPDATE usuarios
+           SET provider = IF(provider IS NULL OR provider = 'local', ?, provider),
+               provider_id = IF(provider_id IS NULL, ?, provider_id),
+               foto = COALESCE(foto, ?)
+           WHERE id = ?`,
+          [provider, providerIdTexto, foto, id]
         );
         return usuariosModel.findById(id);
       },
       () => {
         const usuarios = lerUsuarios();
-        const indice = usuarios.findIndex(usuario => usuario.id === id);
-        if (indice === -1) return null;
+        const usuario = usuarios.find(u => String(u.id) === String(id));
+        if (!usuario) return null;
 
-        usuarios[indice].provider = provider;
-        usuarios[indice].providerId = providerId;
-        if (foto) usuarios[indice].foto = foto;
-        usuarios[indice].ultimoLogin = new Date().toISOString();
-        usuarios[indice].status = "ativo";
+        usuario.provedores = usuario.provedores || [];
+        if (!usuario.provedores.some(p => p.provider === provider)) {
+          usuario.provedores.push({ provider, providerId: providerIdTexto, vinculadoEm: new Date().toISOString() });
+        }
+        if (!usuario.provider || usuario.provider === "local") {
+          usuario.provider = provider;
+          usuario.providerId = providerIdTexto;
+        }
+        if (!usuario.foto && foto) usuario.foto = foto;
         salvarUsuarios(usuarios);
-        return usuarios[indice];
+        return usuario;
       }
     );
   },
 
+  // Login social de conta já existente: não sobrescreve nome/e-mail editados pelo usuário.
   updateSocialLogin: async (id, dados = {}) => {
-    const nome = dados.nome?.trim() || null;
-    const email = dados.email?.toLowerCase() || null;
     const foto = dados.foto || null;
     return await withFallback(
       async () => {
         await pool.query(
-          `UPDATE usuarios
-           SET nome = COALESCE(NULLIF(?, ''), nome),
-               email = COALESCE(?, email),
-               foto = COALESCE(?, foto),
-               ultimo_login = CURRENT_TIMESTAMP,
-               status = 'ativo'
-           WHERE id = ?`,
-          [nome, email, foto, id]
+          "UPDATE usuarios SET foto = COALESCE(foto, ?), ultimo_login = CURRENT_TIMESTAMP WHERE id = ?",
+          [foto, id]
         );
         return usuariosModel.findById(id);
       },
       () => {
         const usuarios = lerUsuarios();
-        const indice = usuarios.findIndex(usuario => String(usuario.id) === String(id));
-        if (indice === -1) return null;
-        if (nome) usuarios[indice].nome = nome;
-        if (email) usuarios[indice].email = email;
-        if (foto) usuarios[indice].foto = foto;
-        usuarios[indice].ultimoLogin = new Date().toISOString();
-        usuarios[indice].status = "ativo";
+        const usuario = usuarios.find(u => String(u.id) === String(id));
+        if (!usuario) return null;
+        if (!usuario.foto && foto) usuario.foto = foto;
+        usuario.ultimoLogin = new Date().toISOString();
         salvarUsuarios(usuarios);
-        return usuarios[indice];
+        return usuario;
       }
     );
   },
@@ -214,7 +202,7 @@ const usuariosModel = {
       // ✅ NOVO: preserva perfil ao criar (padrão "user")
       perfil: dados.perfil || "user",
       provider: dados.provider || "local",
-      providerId: dados.providerId || null,
+      providerId: dados.providerId ? String(dados.providerId) : null,
     };
 
     if (usuarioValido.provider === "local" && !usuarioValido.senha) {
@@ -252,6 +240,9 @@ const usuariosModel = {
           perfil: usuarioValido.perfil,   // ✅ NOVO
           provider: usuarioValido.provider,
           providerId: usuarioValido.providerId,
+          provedores: usuarioValido.providerId
+            ? [{ provider: usuarioValido.provider, providerId: usuarioValido.providerId, vinculadoEm: new Date().toISOString() }]
+            : [],
           dataCriacao: new Date().toISOString(),
           ultimoLogin: usuarioValido.provider === "local" ? null : new Date().toISOString(),
           status: "ativo"
@@ -328,6 +319,47 @@ const usuariosModel = {
         return true;
       }
     );
+  },
+
+  updateDados: async (id, dados = {}) => {
+    const email = dados.email.trim().toLowerCase();
+    const telefone = dados.telefone?.trim() || null;
+    const endereco = dados.endereco?.trim() || null;
+    return await withFallback(
+      async () => {
+        await pool.query(
+          "UPDATE usuarios SET email = ?, telefone = ?, endereco = ? WHERE id = ?",
+          [email, telefone, endereco, id]
+        );
+        return usuariosModel.findById(id);
+      },
+      () => {
+        const usuarios = lerUsuarios();
+        const usuario = usuarios.find(u => String(u.id) === String(id));
+        if (!usuario) return null;
+        usuario.email = email;
+        usuario.telefone = telefone;
+        usuario.endereco = endereco;
+        salvarUsuarios(usuarios);
+        return usuario;
+      }
+    );
+  },
+
+  delete: async (id) => {
+    return await withFallback(
+      async () => {
+        const [result] = await pool.query("DELETE FROM usuarios WHERE id = ?", [id]);
+        return result.affectedRows > 0;
+      },
+      () => {
+        const usuarios = lerUsuarios();
+        const restantes = usuarios.filter(u => String(u.id) !== String(id));
+        if (restantes.length === usuarios.length) return false;
+        salvarUsuarios(restantes);
+        return true;
+      }
+    );
   }
 };
 
@@ -337,6 +369,8 @@ const mapRowToUsuario = (row) => ({
   nome: row.nome,
   email: row.email,
   foto: row.foto || null,
+  telefone: row.telefone || null,
+  endereco: row.endereco || null,
   perfil: row.perfil || "user",   // ✅ NOVO
   provider: row.provider || "local",
   providerId: row.provider_id || row.providerId || null,

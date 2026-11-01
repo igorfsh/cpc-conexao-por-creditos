@@ -82,6 +82,7 @@ const trocasModel = {
     const trocas = lerTrocas();
     const idx = trocas.findIndex(t => t.id === parseInt(id));
     if (idx === -1) return false;
+    if (trocas[idx].status === 'concluida') return trocas[idx];
     trocas[idx].status = 'concluida';
     trocas[idx].dataConclusao = new Date().toISOString();
     salvarTrocas(trocas);
@@ -95,7 +96,25 @@ const trocasModel = {
     return trocas[idx];
   },
 
-  avaliar: (id, email, nota) => {
+  cancelar: (id) => {
+    const trocas = lerTrocas();
+    const idx = trocas.findIndex(t => t.id === parseInt(id));
+    if (idx === -1 || trocas[idx].status !== 'pendente') return false;
+    trocas[idx].status = 'cancelada';
+    trocas[idx].dataConclusao = new Date().toISOString();
+    salvarTrocas(trocas);
+    return trocas[idx];
+  },
+
+  delete: (id) => {
+    const trocas = lerTrocas();
+    const restantes = trocas.filter(t => t.id !== parseInt(id));
+    if (restantes.length === trocas.length) return false;
+    salvarTrocas(restantes);
+    return true;
+  },
+
+  avaliar: (id, email, nota, comentario = "") => {
     const notaNumerica = Number(nota);
     if (!Number.isInteger(notaNumerica) || notaNumerica < 1 || notaNumerica > 5) return null;
 
@@ -106,6 +125,7 @@ const trocasModel = {
     if (idx === -1) return null;
 
     trocas[idx].avaliacaoNota = notaNumerica;
+    trocas[idx].avaliacaoComentario = String(comentario || "").trim().slice(0, 300);
     trocas[idx].avaliacaoData = new Date().toISOString();
     salvarTrocas(trocas);
     return trocas[idx];

@@ -35,27 +35,15 @@ async function initializeDatabase() {
     // Selecionar banco de dados
     await connection.query(`USE ${dbName}`);
 
-    // Ler arquivo SQL e executar
-    const sqlPath = path.join(__dirname, "database.sql");
-    const sql = fs.readFileSync(sqlPath, "utf8");
-
-    // Dividir statements e executar cada um
-    const statements = sql
-      .split(";")
-      .map((s) => s.trim())
-      .filter((s) => s && !s.startsWith("--"));
-
-    console.log(`\n📋 Executando ${statements.length} comandos SQL...`);
-
-    for (const statement of statements) {
-      if (statement) {
-        await connection.query(statement);
-      }
-    }
-
+    // As tabelas são criadas/atualizadas pelo mesmo código que roda ao iniciar o app.
+    await connection.end();
+    connection = null;
+    const { prepararBanco } = require("./banco");
+    const estado = await prepararBanco();
+    if (!estado.pronto) throw new Error(estado.erro || "falha ao preparar o banco");
     console.log("\n✅ Banco de dados inicializado com sucesso!");
-    console.log(`🎉 Tabelas criadas: usuarios, produtos, trocas`);
-
+    console.log("🎉 Tabelas: usuarios, usuario_provedores, passkeys");
+    process.exit(0);
   } catch (error) {
     console.error("❌ Erro ao inicializar banco de dados:", error.message);
     process.exit(1);

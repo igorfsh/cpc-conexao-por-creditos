@@ -2,73 +2,23 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <%- include('../partials/tema-inicial.ejs') %>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Novo Anúncio - CPC</title>
   <link rel="stylesheet" href="/css/cpc-palette.css">
   <link rel="stylesheet" href="/css/login.css">
+  <link rel="stylesheet" href="/css/footer.css">
   <link rel="icon" href="../img/logo-black.png">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap">
-  <style>
-    .form-anuncio { max-width: 480px; margin: 40px auto; padding: 32px; background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.10); }
-
-    .form-anuncio h2 { color: var(--cpc-primary); margin-bottom: 24px; text-align: center; }
-    .form-anuncio label { display: block; font-size: calc(13px * var(--a11y-escala, 1)); font-weight: 600; color: #302f2f; margin-bottom: 4px; margin-top: 14px; }
-    .form-anuncio input, .form-anuncio select, .form-anuncio textarea {
-      width: 100%; padding: 10px 14px; border: 1.5px solid #ccc; border-radius: 8px;
-      font-family: Poppins, sans-serif; font-size: calc(14px * var(--a11y-escala, 1)); box-sizing: border-box; transition: border 0.2s;
-    }
-    .form-anuncio input:focus, .form-anuncio select:focus, .form-anuncio textarea:focus { border-color: var(--cpc-sage); outline: none; }
-    .form-anuncio button[type=submit] {
-      width: 100%; margin-top: 22px; padding: 13px; background: var(--cpc-primary-light); color: #fff;
-      border: none; border-radius: 10px; font-size: calc(16px * var(--a11y-escala, 1)); font-weight: 700; cursor: pointer; transition: background 0.2s;
-    }
-    .form-anuncio button[type=submit]:hover { background: var(--cpc-primary); }
-    .msg-erro { background: #fdecea; color: #c62828; border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: calc(14px * var(--a11y-escala, 1)); }
-    .msg-sucesso { background: var(--cpc-mint-pale); color: var(--cpc-primary); border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: calc(14px * var(--a11y-escala, 1)); }
-    body { background: #f5f5f5; font-family: Poppins, sans-serif;
-    }
-    .btn-voltar {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin: -8px 0 18px;
-      padding: 6px 0;
-      border: 0;
-      background: transparent;
-      color: var(--cpc-primary);
-      font: inherit;
-      font-size: calc(14px * var(--a11y-escala, 1));
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .btn-voltar:hover { text-decoration: underline; }
-    .campo-imagens { margin-top: 14px; }
-    .campo-imagens-preview { display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
-    .campo-imagens-preview img { width: 36px; height: 76px; object-fit: cover; border-radius: 8px; border: 1.5px solid #ccc; }
-    .msg-erro { background: #fdecea; color: #c62828; border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: calc(14px * var(--a11y-escala, 1)); }
-    .msg-sucesso { background: var(--cpc-mint-pale); color: var(--cpc-primary); border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: calc(14px * var(--a11y-escala, 1)); }
-    body { background: #f5f5f5; font-family: Poppins, sans-serif; }
-
-    @media (min-width: 769px) and (max-width: 1200px) {
-      .form-anuncio { max-width: 430px; margin: 24px auto; padding: 24px; border-radius: 14px; }
-      .form-anuncio h2 { margin-bottom: 18px; }
-      .form-anuncio label { margin-top: 10px; }
-      .form-anuncio input, .form-anuncio select, .form-anuncio textarea { padding: 9px 12px; }
-    }
-
-    @media (max-width: 480px) {
-      .form-anuncio { margin: 16px auto; padding: 20px 16px; border-radius: 12px; max-width: calc(100% - 24px); }
-      .campo-imagens-preview img { width: 64px; height: 64px; }
-      .btn-voltar { margin-top: -4px; }
-    }
-  </style>
+  <link rel="stylesheet" href="/css/novo-anuncio.css">
 </head>
 
 <body>
 
+  <% const edicao = locals.anuncioEdicao || null; %>
   <section class="form-anuncio">
-    <h2>Cadastrar Anúncio</h2> 
-    <p style="text-align:center;color:#666;font-size: calc(13px * var(--a11y-escala, 1));margin-bottom:20px">Ofereça um produto ou serviço para a comunidade</p>
+    <h2><%= edicao ? 'Editar anúncio' : 'Cadastrar Anúncio' %></h2>
+    <p style="text-align:center;color:#666;font-size: calc(13px * var(--a11y-escala, 1));margin-bottom:20px"><%= edicao ? 'Altere só o que quiser — o resto continua como está.' : 'Ofereça um produto ou serviço para a comunidade' %></p>
 
     <% if (erro) { %>
       <section class="msg-erro">⚠️ <%= erro %></section>
@@ -77,26 +27,30 @@
       <section class="msg-sucesso">✅ <%= sucesso %> <a href="/todos">Ver anúncios</a></section>
     <% } %>
 
-    <form action="/novo-anuncio" method="POST" enctype="multipart/form-data">
+    <form id="formAnuncio" action="<%= edicao ? '/anuncio/' + edicao.id + '/editar' : '/novo-anuncio' %>" method="POST" enctype="multipart/form-data" data-edicao="<%= edicao ? '1' : '' %>">
 
+      <% if (edicao) { %>
+        <a class="btn-voltar" href="/contato/<%= edicao.id %>">← Voltar ao anúncio</a>
+      <% } else { %>
       <button type="button" class="btn-voltar" id="btnVoltar" onclick="if (document.referrer && document.referrer.indexOf(window.location.host) !== -1) { history.back(); } else { window.location.href = '/todos'; }">
         ← Voltar
       </button>
+      <% } %>
 
-      <label for="titulo">Título do anúncio *</label>
+      <label for="titulo">Título do anúncio</label>
       <input type="text" id="titulo" name="titulo" placeholder="Ex: Encanador, Arroz 5kg, Berço..." value="<%= valores.titulo || '' %>" required>
 
-      <label for="descricao">Descrição *</label>
+      <label for="descricao">Descrição</label>
       <textarea id="descricao" name="descricao" rows="3" placeholder="Descreva o que está oferecendo..." required><%= valores.descricao || '' %></textarea>
 
-      <label for="tipo">Tipo *</label>
+      <label for="tipo">Tipo</label>
       <select id="tipo" name="tipo" required>
         <option value="">Selecione...</option>
         <option value="produto" <%= valores.tipo === 'produto' ? 'selected' : '' %>>Produto</option>
         <option value="servico" <%= valores.tipo === 'servico' ? 'selected' : '' %>>Serviço</option>
       </select>
       
-      <label for="categoria">Categoria *</label>
+      <label for="categoria">Categoria</label>
       <select id="categoria" name="categoria" required>
         <option value="">Selecione...</option>
         <option value="profissionais" <%= valores.categoria === 'profissionais' ? 'selected' : '' %>>Profissionais</option>
@@ -108,28 +62,104 @@
       <input type="text" id="doadorLocal" name="doadorLocal" placeholder="Ex: Barueri-SP" value="<%= valores.doadorLocal || '' %>">
 
       <label for="whatsapp">WhatsApp para contato</label>
-      <input type="tel" id="whatsapp" name="whatsapp" placeholder="Ex: +55 11 99999-9999" value="<%= valores.whatsapp || '' %>" required>
-      <small style="font-size: calc(11px * var(--a11y-escala, 1));color:#888;margin-top:2px;display:block">O cliente usará este número para combinar a troca</small>
+      <input type="tel" id="whatsapp" name="whatsapp" placeholder="(11) 91234-5678" value="<%= valores.whatsapp || '' %>" inputmode="tel" autocomplete="tel-national" maxlength="20" aria-describedby="whatsappStatus" required>
+      <p class="whatsapp-status" id="whatsappStatus" role="status">O cliente usará este número para combinar a troca.</p>
+      <a class="whatsapp-teste" id="whatsappTeste" href="#" target="_blank" rel="noopener" hidden>Testar no WhatsApp ↗</a>
+      <label class="whatsapp-confirmar">
+        <input type="checkbox" name="confirmarWhatsapp" id="confirmarWhatsapp" value="1" <%= valores.confirmarWhatsapp ? 'checked' : '' %> required>
+        <span>Confirmo que este número é meu WhatsApp e pode ser usado para contato.</span>
+      </label>
 
-<section class="campo-imagens">
-        <label for="imagens">Fotos do produto/serviço (obrigatório: 3 imagens)</label>
-        <input type="file" id="imagens" name="imagens" accept="image/*" multiple required>
-        <small style="font-size: calc(11px * var(--a11y-escala, 1));color:#888;margin-top:2px;display:block">É obrigatório enviar exatamente 3 fotos do item que será doado.</small>
+      <section class="campo-imagens">
+        <% if (edicao) { %>
+          <label for="imagens">Fotos do seu produto ou serviço</label>
+          <% const fotosAtuais = (edicao.imagens && edicao.imagens.length) ? edicao.imagens : (edicao.foto ? [edicao.foto] : []); %>
+          <% if (fotosAtuais.length) { %>
+            <p class="fotos-atuais-titulo" id="fotosAtuaisTitulo">Fotos atuais</p>
+            <div class="campo-imagens-preview fotos-atuais" aria-labelledby="fotosAtuaisTitulo">
+              <% fotosAtuais.forEach((foto, i) => { %><img src="<%= foto.replace(/^\.\.\//, '/') %>" alt="Foto atual <%= i + 1 %> de <%= edicao.titulo %>"><% }) %>
+            </div>
+          <% } %>
+          <input type="file" id="imagens" name="imagens" accept="image/*" multiple aria-describedby="dicaImagens">
+          <small id="dicaImagens" style="font-size: calc(11px * var(--a11y-escala, 1));color:#888;margin-top:2px;display:block">Para trocar as fotos, envie 3 novas imagens. Sem enviar nada, as fotos atuais continuam.</small>
+        <% } else { %>
+          <label for="imagens">Fotos do seu produto ou serviço (obrigatório: 3 imagens)</label>
+          <input type="file" id="imagens" name="imagens" accept="image/*" multiple required aria-describedby="dicaImagens">
+          <small id="dicaImagens" style="font-size: calc(11px * var(--a11y-escala, 1));color:#888;margin-top:2px;display:block">É obrigatório enviar exatamente 3 fotos do item que será doado.</small>
+        <% } %>
+        <div class="campo-imagens-preview" id="previewImagens" aria-live="polite"></div>
       </section>
 
-      <button type="submit">Publicar Anúncio</button>
+      <button type="submit"><%= edicao ? 'Salvar alterações' : 'Publicar Anúncio' %></button>
     </form>
 
-    <p style="text-align:center;margin-top:16px;font-size: calc(13px * var(--a11y-escala, 1))"><a href="/todos" style="color:var(--cpc-primary-light)">← Ver todos os anúncios</a></p>
+    <p style="text-align:center;margin-top:16px;font-size: calc(13px * var(--a11y-escala, 1))">
+      <% if (edicao) { %>
+        <a href="/conta" style="color:var(--cpc-primary-light)">Cancelar e voltar para minha conta</a>
+      <% } else { %>
+        <a href="/todos" style="color:var(--cpc-primary-light)">← Ver todos os anúncios</a>
+      <% } %>
+    </p>
   </section>
 
   <%- include('../partials/acessibilidade.ejs') %>
   <%- include('../partials/chat-ia.ejs') %>
 
+  <script src="/js/telefone.js"></script>
   <script>
+    (function () {
+      var campo = document.getElementById('whatsapp');
+      var status = document.getElementById('whatsappStatus');
+      var teste = document.getElementById('whatsappTeste');
+      var confirmar = document.getElementById('confirmarWhatsapp');
+      if (!campo || !window.CPCTelefone) return;
+      var ultimoValido = null;
+
+      function atualizar(mostrarErro) {
+        var resultado = CPCTelefone.validarTelefone(campo.value);
+        campo.classList.toggle('is-invalido', !resultado.valido && mostrarErro);
+        status.className = 'whatsapp-status' + (resultado.valido ? ' is-valido' : (mostrarErro ? ' is-invalido' : ''));
+        status.textContent = resultado.valido
+          ? '✓ Número válido: +55 ' + resultado.formatado
+          : (mostrarErro ? resultado.erro : 'O cliente usará este número para combinar a troca.');
+        teste.hidden = !resultado.valido;
+        if (resultado.valido) teste.href = 'https://wa.me/' + resultado.whatsapp;
+        // Trocou o número: pede a confirmação de novo.
+        if (resultado.whatsapp !== ultimoValido && ultimoValido !== null) confirmar.checked = false;
+        ultimoValido = resultado.valido ? resultado.whatsapp : ultimoValido;
+        campo.setCustomValidity(resultado.valido ? '' : resultado.erro);
+        return resultado;
+      }
+
+      campo.addEventListener('input', function () {
+        campo.value = CPCTelefone.mascararTelefone(campo.value);
+        atualizar(campo.value.replace(/\D/g, '').length >= 10);
+      });
+      campo.addEventListener('blur', function () { if (campo.value) atualizar(true); });
+      if (campo.value) {
+        campo.value = CPCTelefone.mascararTelefone(campo.value);
+        ultimoValido = atualizar(true).whatsapp || null;
+      }
+
+      document.getElementById('formAnuncio').addEventListener('submit', function (event) {
+        var resultado = atualizar(true);
+        if (!resultado.valido) {
+          event.preventDefault();
+          campo.focus();
+        } else if (!confirmar.checked) {
+          event.preventDefault();
+          status.className = 'whatsapp-status is-invalido';
+          status.textContent = 'Confirme que o número informado é o seu WhatsApp.';
+          confirmar.focus();
+        }
+      });
+    })();
+
     (function () {
       var input = document.getElementById('imagens');
       var preview = document.getElementById('previewImagens');
+      var form = document.getElementById('formAnuncio');
+      var edicao = form && form.getAttribute('data-edicao') === '1';
       if (!input || !preview) return;
 
       input.addEventListener('change', function () {
@@ -137,7 +167,9 @@
         var arquivos = Array.from(input.files || []);
 
         if (arquivos.length !== 3) {
-          alert('Você deve selecionar exatamente 3 imagens do item para concluir o anúncio.');
+          alert(edicao
+            ? 'Para trocar as fotos, selecione exatamente 3 imagens.'
+            : 'Você deve selecionar exatamente 3 imagens do item para concluir o anúncio.');
           input.value = '';
           return;
         }
@@ -151,8 +183,9 @@
         });
       });
 
-      document.querySelector('form[action="/novo-anuncio"]').addEventListener('submit', function (event) {
+      form.addEventListener('submit', function (event) {
         var arquivos = Array.from(document.getElementById('imagens').files || []);
+        if (edicao && arquivos.length === 0) return; // mantém as fotos atuais
         if (arquivos.length !== 3) {
           event.preventDefault();
           alert('É obrigatório enviar exatamente 3 fotos do item antes de publicar o anúncio.');
@@ -161,5 +194,6 @@
     })();
   </script>
 
+  <%- include('../partials/footer.ejs') %>
 </body>
 </html>

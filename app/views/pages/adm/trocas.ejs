@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <%- include('../../partials/tema-inicial.ejs') %>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trocas — CPC Admin</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap">
+  <link rel="icon" href="/img/logo-black.png">
+  <link rel="stylesheet" href="/css/cpc-palette.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+
+  <%- include('../../partials/adm-topbar', { ativo: 'trocas' }) %>
+
+  <main class="page adm-page">
+    <header class="adm-header">
+      <section>
+        <p class="hero-label">gerenciar</p>
+        <h1>Trocas</h1>
+        <p class="adm-sub"><%= contagem.total %> trocas registradas · <%= contagem.pendente %> aguardando confirmação</p>
+      </section>
+    </header>
+
+    <section class="adm-toolbar">
+      <input type="search" class="adm-search" id="busca" placeholder="Buscar por anúncio, solicitante ou e-mail…" aria-label="Buscar trocas">
+      <section class="adm-chips" role="group" aria-label="Filtrar por status">
+        <button type="button" class="chip active" data-filtro="">todas <span><%= contagem.total %></span></button>
+        <button type="button" class="chip" data-filtro="pendente">pendentes <span><%= contagem.pendente %></span></button>
+        <button type="button" class="chip" data-filtro="concluida">concluídas <span><%= contagem.concluida %></span></button>
+        <button type="button" class="chip" data-filtro="cancelada">canceladas <span><%= contagem.cancelada %></span></button>
+      </section>
+    </section>
+
+    <section class="card adm-table-wrap">
+      <% if (!trocas.length) { %>
+        <p class="empty">Nenhuma troca registrada.</p>
+      <% } else { %>
+        <table class="adm-table">
+          <thead>
+            <tr><th>#</th><th>Anúncio</th><th>Solicitante</th><th>Créditos</th><th>Solicitada</th><th>Status</th><th class="col-acoes">Ações</th></tr>
+          </thead>
+          <tbody>
+            <% trocas.forEach(function(t) { %>
+              <tr data-filtro="<%= t.status %>" data-busca="<%= [t.anuncioTitulo, t.solicitanteNome, t.solicitanteEmail, t.doadorNome].join(' ').toLowerCase() %>">
+                <td data-label="#" class="muted">#<%= t.id %></td>
+                <td data-label="Anúncio">
+                  <p class="item-title"><%= t.anuncioTitulo || '—' %></p>
+                  <% if (t.mensagem) { %><small class="item-desc">“<%= t.mensagem %>”</small><% } %>
+                </td>
+                <td data-label="Solicitante"><%= t.solicitanteNome || '—' %><br><small class="muted"><%= t.solicitanteEmail %></small></td>
+                <td data-label="Créditos"><strong><%= t.pontos || 0 %></strong></td>
+                <td data-label="Solicitada"><%= t.data %><% if (t.status !== 'pendente') { %><br><small class="muted"><%= t.status === 'concluida' ? 'concluída' : 'cancelada' %> em <%= t.dataFim %></small><% } %></td>
+                <td data-label="Status">
+                  <span class="tag tag-<%= t.status %>"><%= t.status === 'concluida' ? 'concluída' : t.status %></span>
+                  <% if (t.avaliacaoNota) { %><br><small class="muted" aria-label="Avaliação <%= t.avaliacaoNota %> de 5"><%= '★'.repeat(t.avaliacaoNota) %></small><% if (t.avaliacaoComentario) { %><br><small class="muted">“<%= t.avaliacaoComentario %>”</small><% } %><% } %>
+                </td>
+                <td class="col-acoes">
+                  <section class="row-actions">
+                    <% if (t.status === 'pendente') { %>
+                      <form action="/adm/trocas/confirmar/<%= t.id %>" method="POST">
+                        <button class="btn-approve" type="submit">confirmar</button>
+                      </form>
+                      <form action="/adm/trocas/cancelar/<%= t.id %>" method="POST" data-confirmar="Cancelar a troca #<%= t.id %> (<%= t.anuncioTitulo %>)?">
+                        <button class="btn-reject" type="submit">cancelar</button>
+                      </form>
+                    <% } else { %>
+                      <form action="/adm/trocas/deletar/<%= t.id %>" method="POST" data-confirmar="Excluir a troca #<%= t.id %> do histórico? Essa ação não pode ser desfeita.">
+                        <button class="btn-reject" type="submit">excluir</button>
+                      </form>
+                    <% } %>
+                  </section>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <p class="empty" id="semResultado" hidden>Nenhuma troca corresponde ao filtro.</p>
+      <% } %>
+    </section>
+  </main>
+
+  <script src="/js/adm.js"></script>
+</body>
+</html>
