@@ -31,8 +31,10 @@ const lerConfiguracao = () => {
 // Bancos na nuvem exigem conexão criptografada. DB_SSL=true liga o TLS validando o
 // certificado; DB_SSL_CA (conteúdo do .pem ou caminho do arquivo) é para provedores
 // com certificado próprio, como o Aiven.
-const lerSSL = (sslNaUrl) => {
-  const ligado = sslNaUrl || /^(true|1|required)$/i.test(process.env.DB_SSL || "");
+const lerSSL = (sslNaUrl, host) => {
+  // O TiDB Cloud sempre exige criptografia: liga sozinho, a menos que DB_SSL=false seja explícito.
+  const tidb = /\.tidbcloud\.com$/i.test(host || "") && !/^(false|0)$/i.test(process.env.DB_SSL || "");
+  const ligado = tidb || sslNaUrl || /^(true|1|required)$/i.test(process.env.DB_SSL || "");
   if (!ligado) return undefined;
   const ssl = { minVersion: "TLSv1.2", rejectUnauthorized: true };
   const ca = process.env.DB_SSL_CA;
@@ -41,7 +43,7 @@ const lerSSL = (sslNaUrl) => {
 };
 
 const { sslNaUrl, ...conexao } = lerConfiguracao();
-const ssl = lerSSL(sslNaUrl);
+const ssl = lerSSL(sslNaUrl, conexao.host);
 
 const pool = mysql.createPool({
   ...conexao,

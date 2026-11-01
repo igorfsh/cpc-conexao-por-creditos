@@ -259,7 +259,7 @@ const usuariosModel = {
     return await withFallback(
       async () => {
         const [linhas] = await pool.query(
-          "SELECT * FROM usuarios WHERE email = ? OR nome = ?",
+          "SELECT * FROM usuarios WHERE LOWER(email) = ? OR LOWER(nome) = ?",
           [usuarioOuEmail.toLowerCase(), usuarioOuEmail.toLowerCase()]
         );
         if (!linhas || linhas.length === 0) return null;
@@ -278,7 +278,7 @@ const usuariosModel = {
     return await withFallback(
       async () => {
         const [linhas] = await pool.query(
-          "SELECT * FROM usuarios WHERE email = ? OR nome = ?",
+          "SELECT * FROM usuarios WHERE LOWER(email) = ? OR LOWER(nome) = ?",
           [usuarioOuEmail.toLowerCase(), usuarioOuEmail.toLowerCase()]
         );
         if (!linhas || linhas.length === 0) return null;
