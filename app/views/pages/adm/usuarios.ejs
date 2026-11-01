@@ -2,63 +2,84 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <%- include('../../partials/tema-inicial.ejs') %>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Usuários — CPC</title>
-  <link rel="stylesheet" href="/css/cpc-palette.css">
+  <title>Usuários — CPC Admin</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap">
+  <link rel="icon" href="/img/logo-black.png">
+  <link rel="stylesheet" href="/css/cpc-palette.css">
   <link rel="stylesheet" href="/css/dashboard.css">
-  <style>
-    .users-page { max-width: 1180px; margin: 0 auto; padding: 32px 24px; }
-    .users-header { display: flex; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 24px; }
-    .users-header h1 { margin: 0; color: #1a1a1a; }
-    .users-header p { margin: 6px 0 0; color: #777; }
-    .users-table-wrap { overflow-x: auto; background: #fff; border-radius: 8px; box-shadow: 0 8px 24px rgba(24, 40, 34, .08); }
-    .users-table { width: 100%; border-collapse: collapse; min-width: 760px; }
-    .users-table th, .users-table td { padding: 14px 16px; border-bottom: 1px solid #edf0ee; text-align: left; white-space: nowrap; }
-    .users-table th { color: #68736e; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
-    .users-table td { color: #26312c; font-size: 14px; }
-    .user-cell { display: flex; align-items: center; gap: 10px; }
-    .user-avatar { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; background: var(--cpc-mint-pale); display: grid; place-items: center; color: var(--cpc-primary); font-weight: 600; }
-    .tag { display: inline-block; padding: 4px 9px; border-radius: 999px; background: var(--cpc-mint-pale); color: var(--cpc-primary); font-size: 12px; }
-    .tag.local { background: #f3f4f2; color: #59615d; }
-    .tag.inativo { background: #fbeceb; color: #a23b35; }
-    .empty { padding: 28px; text-align: center; color: #777; }
-  </style>
 </head>
 <body>
-  <section class="topbar">
-    <section class="topbar-left">
-      <a class="topbar-logo" href="/"><img src="/img/logo-white.png" alt="CPC"><span>admin</span></a>
-    </section>
-    <nav class="topbar-nav side-menu">
-      <ul><li><a href="/adm">Dashboard</a></li><li><a href="/adm/anuncios">Anúncios</a></li><li><a href="/adm/trocas">Trocas</a></li><li><a href="/adm/usuarios" class="active">Usuários</a></li></ul>
-    </nav>
-    <section class="topbar-right desktop-only-right"><span class="topbar-badge">● sistema ativo</span><section class="topbar-user"><%= usuarioLogado ? usuarioLogado.nome.charAt(0).toUpperCase() : 'A' %></section></section>
-  </section>
 
-  <main class="users-page">
-    <header class="users-header"><section><h1>Usuários</h1><p><%= usuarios.length %> contas cadastradas no sistema CPC</p></section></header>
-    <section class="users-table-wrap">
+  <%- include('../../partials/adm-topbar', { ativo: 'usuarios' }) %>
+
+  <% const admins = usuarios.filter(function(u) { return u.perfil === 'admin'; }).length; %>
+  <main class="page adm-page">
+    <header class="adm-header">
+      <section>
+        <p class="hero-label">gerenciar</p>
+        <h1>Usuários</h1>
+        <p class="adm-sub"><%= usuarios.length %> contas cadastradas no sistema CPC</p>
+      </section>
+    </header>
+
+    <section class="adm-toolbar">
+      <input type="search" class="adm-search" id="busca" placeholder="Buscar por nome ou e-mail…" aria-label="Buscar usuários">
+      <section class="adm-chips" role="group" aria-label="Filtrar por perfil">
+        <button type="button" class="chip active" data-filtro="">todos <span><%= usuarios.length %></span></button>
+        <button type="button" class="chip" data-filtro="user">usuários <span><%= usuarios.length - admins %></span></button>
+        <button type="button" class="chip" data-filtro="admin">admins <span><%= admins %></span></button>
+      </section>
+    </section>
+
+    <section class="card adm-table-wrap">
       <% if (!usuarios.length) { %>
         <p class="empty">Nenhum usuário cadastrado.</p>
       <% } else { %>
-        <table class="users-table">
-          <thead><tr><th>Usuário</th><th>E-mail</th><th>Provedor</th><th>Cadastro</th><th>Último login</th><th>Status</th></tr></thead>
+        <table class="adm-table">
+          <thead>
+            <tr><th>Usuário</th><th>E-mail</th><th>Provedor</th><th>Cadastro</th><th>Último login</th><th>Status</th><th class="col-acoes">Ações</th></tr>
+          </thead>
           <tbody>
-            <% usuarios.forEach(function(usuario) { %>
-              <tr>
-                <td><section class="user-cell"><% if (usuario.foto) { %><img class="user-avatar" src="<%= usuario.foto %>" alt=""><% } else { %><span class="user-avatar"><%= (usuario.nome || '?').charAt(0).toUpperCase() %></span><% } %><span><%= usuario.nome %></span></section></td>
-                <td><%= usuario.email %></td>
-                <td><span class="tag <%= (usuario.provider || 'local') === 'local' ? 'local' : '' %>"><%= usuario.provider || 'local' %></span></td>
-                <td><%= usuario.dataCriacao ? new Date(usuario.dataCriacao).toLocaleDateString('pt-BR') : '—' %></td>
-                <td><%= usuario.ultimoLogin ? new Date(usuario.ultimoLogin).toLocaleString('pt-BR') : '—' %></td>
-                <td><span class="tag <%= usuario.status === 'inativo' ? 'inativo' : '' %>"><%= usuario.status || 'ativo' %></span></td>
+            <% usuarios.forEach(function(usuario) {
+                 const perfil = usuario.perfil || 'user';
+                 const ehVoce = usuarioLogado && String(usuarioLogado.id) === String(usuario.id); %>
+              <tr data-filtro="<%= perfil %>" data-busca="<%= [usuario.nome, usuario.email].join(' ').toLowerCase() %>">
+                <td data-label="Usuário">
+                  <section class="item-cell">
+                    <% if (usuario.foto) { %><img class="user-avatar" src="<%= usuario.foto %>" alt=""><% } else { %><span class="user-avatar"><%= (usuario.nome || '?').charAt(0).toUpperCase() %></span><% } %>
+                    <section>
+                      <p class="item-title"><%= usuario.nome %><% if (ehVoce) { %> <small class="muted">(você)</small><% } %></p>
+                      <% if (perfil === 'admin') { %><span class="tag tag-admin">admin</span><% } %>
+                    </section>
+                  </section>
+                </td>
+                <td data-label="E-mail"><%= usuario.email %></td>
+                <td data-label="Provedor"><span class="tag <%= (usuario.provider || 'local') === 'local' ? 'tag-muted' : '' %>"><%= usuario.provider || 'local' %></span></td>
+                <td data-label="Cadastro"><%= usuario.dataCriacao ? new Date(usuario.dataCriacao).toLocaleDateString('pt-BR') : '—' %></td>
+                <td data-label="Último login"><%= usuario.ultimoLogin ? new Date(usuario.ultimoLogin).toLocaleString('pt-BR') : '—' %></td>
+                <td data-label="Status"><span class="tag <%= usuario.status === 'inativo' ? 'tag-cancelada' : '' %>"><%= usuario.status || 'ativo' %></span></td>
+                <td class="col-acoes">
+                  <section class="row-actions">
+                    <% if (perfil === 'admin' || ehVoce) { %>
+                      <span class="muted">—</span>
+                    <% } else { %>
+                      <form action="/adm/usuarios/deletar/<%= usuario.id %>" method="POST" data-confirmar="Remover a conta de <%= usuario.nome %> (<%= usuario.email %>)? Os anúncios dessa pessoa serão desativados e a ação não pode ser desfeita.">
+                        <button class="btn-reject" type="submit">remover conta</button>
+                      </form>
+                    <% } %>
+                  </section>
+                </td>
               </tr>
             <% }) %>
           </tbody>
         </table>
+        <p class="empty" id="semResultado" hidden>Nenhum usuário corresponde ao filtro.</p>
       <% } %>
     </section>
   </main>
+
+  <script src="/js/adm.js"></script>
 </body>
 </html>

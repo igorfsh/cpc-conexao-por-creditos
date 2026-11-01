@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/conta.css" />
+  <link rel="stylesheet" href="/css/footer.css">
 </head>
 <%- include('../partials/header.ejs') %>
  
@@ -25,7 +26,7 @@
         <h1><%= usuario?.nome || 'Usuário' %></h1>
         <p><%= usuario?.email || 'Sem e-mail cadastrado' %></p>
         <% if (usuario?.provider) { %>
-          <span class="provider-label"><%= usuario.provider === 'google' ? 'Entrou com Google' : usuario.provider === 'local' ? 'Login local' : 'Entrou com ' + usuario.provider %></span>
+          <span class="provider-label"><%= usuario.provider === 'local' ? 'Login local' : 'Entrou com ' + ({ google: 'Google', facebook: 'Facebook', linkedin: 'LinkedIn', apple: 'Apple', github: 'GitHub' }[usuario.provider] || usuario.provider) %></span>
         <% } %>
         <section class="passkey-panel" aria-labelledby="passkey-titulo">
           <section class="passkey-panel-header">
@@ -38,7 +39,7 @@
             </span>
           </section>
           <p>Use a digital ou o Face ID para entrar sem digitar sua senha.</p>
-          <button type="button" class="passkey-button" id="cadastrarBiometria" data-passkey-existente="<%= passkeys?.length ? 'true' : 'false' %>">
+          <button type="button" class="passkey-button" id="cadastrarBiometria" data-passkey-existente="<%= passkeys?.length ? 'true' : 'false' %>"<% if (locals.biometriaDisponivel === false) { %> data-indisponivel="true" disabled<% } %>>
             <span id="textoCadastroBiometria"><%= passkeys?.length ? 'Alterar chave de acesso' : 'Ativar Face ID ou biometria digital' %></span>
           </button>
           <p class="passkey-message" id="mensagemBiometria" role="status"></p>
@@ -72,9 +73,9 @@
                 const statusClasse = troca.status === 'concluida' ? 'status-concluido' : 'status-andamento';
                 const statusTexto = troca.status === 'concluida' ? 'CONCLUÍDO' : 'ANDAMENTO';
               %>
-              <section class="trade-card">
+              <a class="trade-card trade-card--link" href="/avaliacao#troca-<%= troca.id %>" aria-label="<%= troca.anuncioTitulo %> com <%= troca.doadorNome %>, <%= dataFormatada %>, <%= statusTexto.toLowerCase() %>. <%= troca.avaliacaoNota ? 'Ver avaliação' : 'Avaliar troca' %>">
                 <section class="trade-icon">
-                  <img src="<%= troca.fotoPerfil %>" alt="Foto de perfil de <%= troca.doadorNome %>">
+                  <img src="<%= troca.fotoPerfil %>" alt="">
                 </section>
                 <section class="trade-info">
                   <p class="trade-type"><%= dataFormatada %></p>
@@ -82,7 +83,8 @@
                   <p class="trade-name"><%= troca.anuncioTitulo %></p>
                 </section>
                 <section class="trade-status status-badge <%= statusClasse %>"><%= statusTexto %></section>
-              </section>
+                <span class="trade-acao" aria-hidden="true"><%= troca.avaliacaoNota ? 'Ver avaliação' : 'Avaliar' %> ›</span>
+              </a>
             <% }) %>
           <% } else { %>
             <section style="padding: 20px; text-align: center; color: #999;">
@@ -96,9 +98,9 @@
           <% if (meusAnuncios && meusAnuncios.length > 0) { %>
             <% meusAnuncios.slice(0, 3).forEach(anuncio => { %>
               <% const dataAnuncio = new Date(anuncio.dataCriacao); %>
-              <section class="trade-card">
+              <a class="trade-card trade-card--link" href="/contato/<%= anuncio.id %>" aria-label="Anúncio <%= anuncio.titulo %>, <%= anuncio.categoria %>, publicado em <%= dataAnuncio.toLocaleDateString('pt-BR') %>. Ver e editar anúncio">
                 <section class="trade-icon">
-                  <img src="<%= usuario?.foto || '/img/img perfil-white.png' %>" alt="Foto de perfil de <%= usuario?.nome || anuncio.doadorNome %>">
+                  <img src="<%= anuncio.fotoCapa %>" alt="">
                 </section>
                 <section class="trade-info">
                   <p class="trade-type"><%= dataAnuncio.toLocaleDateString('pt-BR') %></p>
@@ -106,7 +108,8 @@
                   <p class="trade-name"><%= anuncio.titulo %></p>
                 </section>
                 <section class="trade-status status-badge status-ativa">ATIVA</section>
-              </section>
+                <span class="trade-acao" aria-hidden="true">Ver / editar ›</span>
+              </a>
             <% }) %>
           <% } else { %>
             <section style="padding: 20px; text-align: center; color: #999;">
@@ -114,7 +117,54 @@
             </section>
           <% } %>
         </section>
+      </section>
+
+      <section class="dados-section" id="meus-dados" aria-labelledby="dados-titulo">
+        <h2 id="dados-titulo">Meus dados</h2>
+        <% if (locals.dadosSucesso) { %><p class="profile-message success" role="status">Dados atualizados com sucesso.</p><% } %>
+        <% if (locals.dadosErro) { %><p class="profile-message error" role="alert"><%= dadosErro %></p><% } %>
+
+        <form class="dados-form" action="/conta/dados" method="POST">
+          <label class="dados-campo">
+            <span>E-mail</span>
+            <input type="email" name="email" value="<%= usuario?.email || '' %>" required autocomplete="email" />
+          </label>
+          <label class="dados-campo">
+            <span>Telefone</span>
+            <input type="tel" name="telefone" id="telefoneConta" value="<%= usuario?.telefone || '' %>" placeholder="(11) 91234-5678" autocomplete="tel" inputmode="tel" maxlength="20" />
+          </label>
+          <label class="dados-campo dados-campo--largo">
+            <span>Endereço</span>
+            <input type="text" name="endereco" value="<%= usuario?.endereco || '' %>" placeholder="Rua, número, bairro, cidade - UF" autocomplete="street-address" maxlength="255" />
+            <small class="dados-dica">Seu endereço completo fica privado. Nos anúncios aparece só a cidade e o estado (ex.: Barueri-SP).</small>
+          </label>
+          <button type="submit" class="dados-salvar">Salvar alterações</button>
+        </form>
+
+        <section class="dados-perigo">
+          <span>
+            <strong>Excluir conta</strong>
+            <p>Sua conta e todos os seus anúncios serão apagados permanentemente.</p>
+          </span>
+          <button type="button" class="dados-excluir" id="abrirExcluirConta">Excluir conta</button>
+        </section>
+      </section>
   </main>
+
+  <dialog class="excluir-dialog" id="excluirContaDialog" aria-labelledby="excluir-titulo">
+    <form action="/conta/excluir" method="POST">
+      <h3 id="excluir-titulo">Excluir sua conta?</h3>
+      <p>Essa ação não pode ser desfeita. <strong><%= meusAnuncios?.length || 0 %> anúncio<%= meusAnuncios?.length === 1 ? '' : 's' %></strong> também <%= meusAnuncios?.length === 1 ? 'será excluído' : 'serão excluídos' %>.</p>
+      <label class="dados-campo">
+        <span>Digite <strong>EXCLUIR</strong> para confirmar</span>
+        <input type="text" id="confirmarExclusao" autocomplete="off" />
+      </label>
+      <section class="excluir-acoes">
+        <button type="button" class="dados-cancelar" id="cancelarExcluirConta">Cancelar</button>
+        <button type="submit" class="dados-excluir" id="confirmarExcluirConta" disabled>Excluir definitivamente</button>
+      </section>
+    </form>
+  </dialog>
  
    <!-- Logout -->
     <section class="logout-section">
@@ -139,6 +189,42 @@
           preview.src = URL.createObjectURL(arquivo);
           formulario.submit();
         });
+      })();
+    </script>
+    <script>
+      (function () {
+        var dialog = document.getElementById('excluirContaDialog');
+        var abrir = document.getElementById('abrirExcluirConta');
+        var cancelar = document.getElementById('cancelarExcluirConta');
+        var campo = document.getElementById('confirmarExclusao');
+        var confirmar = document.getElementById('confirmarExcluirConta');
+        if (!dialog || !abrir) return;
+        abrir.addEventListener('click', function () {
+          campo.value = '';
+          confirmar.disabled = true;
+          dialog.showModal();
+          campo.focus();
+        });
+        cancelar.addEventListener('click', function () { dialog.close(); });
+        campo.addEventListener('input', function () {
+          confirmar.disabled = campo.value.trim().toUpperCase() !== 'EXCLUIR';
+        });
+      })();
+    </script>
+    <script src="/js/telefone.js"></script>
+    <script>
+      (function () {
+        var campo = document.getElementById('telefoneConta');
+        if (!campo || !window.CPCTelefone) return;
+        function validar() {
+          var r = CPCTelefone.validarTelefone(campo.value);
+          campo.setCustomValidity(!campo.value || r.valido ? '' : r.erro);
+        }
+        campo.addEventListener('input', function () {
+          campo.value = CPCTelefone.mascararTelefone(campo.value);
+          validar();
+        });
+        validar();
       })();
     </script>
     <script src="/js/passkeys.js"></script>

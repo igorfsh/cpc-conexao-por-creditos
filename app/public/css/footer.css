@@ -1,91 +1,342 @@
-:root{
-    --paper:#FFFFFF; --paper-2:#E1F5EE; --ink:#111111; --ink-soft:#4B5563;
-    --amber:var(--cpc-gold); --amber-deep:var(--cpc-gold-hover);
-    --teal:var(--cpc-sage); --teal-deep:var(--cpc-primary);
-    --clay:var(--cpc-mint); --line:#8B8B8B; --white:#FFFFFF; --radius:16px;
+/* ===== Rodapé do site (partials/footer.ejs) =====
+   Fica idêntico em todas as páginas: tudo o que o CSS de cada página poderia
+   alterar (fonte, alinhamento, margens, listas, links, imagens) é definido aqui. */
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap");
+
+.site-footer {
+  --rodape-texto: #f2f7f4;
+  --rodape-suave: #cfe3d7;
+  --rodape-titulo: var(--cpc-mint, #b2e5d9);
+  --rodape-linha: rgba(242, 247, 244, 0.18);
+  /* espaço livre para os botões flutuantes de chat e acessibilidade */
+  --rodape-reserva-direita: 168px;
+
+  display: block;
+  position: relative;
+  clear: both;
+  flex-shrink: 0;
+  align-self: stretch;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  color: var(--rodape-texto);
+  font-family: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  text-align: left;
+  letter-spacing: normal;
+  -webkit-font-smoothing: antialiased;
+  background: linear-gradient(
+    135deg,
+    var(--cpc-primary, #184c3b),
+    var(--cpc-primary-dark, #1f5d49) 45%,
+    var(--cpc-primary-light, #2a7d63) 75%,
+    var(--cpc-primary, #184c3b)
+  );
+}
+
+.site-footer *,
+.site-footer *::before,
+.site-footer *::after {
+  box-sizing: border-box;
+  font-family: inherit;
+  letter-spacing: inherit;
+}
+
+.site-footer p,
+.site-footer h4,
+.site-footer ul,
+.site-footer li,
+.site-footer figure {
+  margin: 0;
+  padding: 0;
+  text-align: inherit;
+  text-indent: 0;
+}
+
+.site-footer ul { list-style: none; }
+
+.site-footer a {
+  margin: 0;
+  color: inherit;
+  text-decoration: none;
+  background: none;
+  border: 0;
+}
+
+.site-footer img {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  position: static;
+  transform: none;
+  max-width: 100%;
+}
+
+.site-footer a:focus-visible {
+  outline: 3px solid var(--cpc-gold, #ffb703);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ===== Estrutura ===== */
+.site-footer .wrap {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-left: clamp(20px, 5vw, 56px);
+  padding-right: clamp(20px, 5vw, 56px);
+}
+
+.site-footer .footer-top {
+  padding-top: 56px;
+  padding-bottom: 40px;
+}
+
+.site-footer .footer-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 0.8fr)) minmax(0, 1.1fr);
+  grid-template-areas: "marca navegar categorias novidades";
+  gap: 40px;
+  align-items: start;
+}
+
+.site-footer .footer-brand { grid-area: marca; }
+.site-footer .footer-col:nth-of-type(2) { grid-area: navegar; }
+.site-footer .footer-col:nth-of-type(3) { grid-area: categorias; }
+.site-footer .footer-news { grid-area: novidades; }
+
+/* ===== Marca ===== */
+.site-footer .footer-brand {
+  text-align: left;
+}
+
+.site-footer .footer-brand .logo {
+  display: inline-flex;
+  align-items: center;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+}
+
+.site-footer .footer-brand .logo img {
+  display: block;
+  width: auto;
+  height: 38px;
+  object-fit: contain;
+}
+
+.site-footer .footer-brand p {
+  max-width: 30ch;
+  margin-top: 14px;
+  color: var(--rodape-suave);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.site-footer .footer-social {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.site-footer .footer-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(242, 247, 244, 0.35);
+  border-radius: 50%;
+  color: var(--rodape-texto);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.site-footer .footer-social a:hover {
+  border-color: var(--cpc-gold, #ffb703);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.site-footer .footer-social svg {
+  width: 17px;
+  height: 17px;
+}
+
+/* ===== Colunas ===== */
+.site-footer .footer-col h4,
+.site-footer .footer-news h4 {
+  margin-bottom: 14px;
+  color: var(--rodape-titulo);
+  font-size: 0.74rem;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.site-footer .footer-col ul {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.site-footer .footer-col a {
+  display: inline-block;
+  padding: 2px 0;
+  color: var(--rodape-texto);
+  font-size: 0.92rem;
+  font-weight: 500;
+  line-height: 1.4;
+  transition: color 0.15s ease;
+}
+
+.site-footer .footer-col a:hover {
+  color: var(--cpc-gold, #ffb703);
+}
+
+.site-footer .footer-news p {
+  margin-bottom: 16px;
+  max-width: 32ch;
+  color: var(--rodape-suave);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.site-footer .footer-news-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: 999px;
+  background: var(--cpc-gold, #ffb703);
+  color: #111111;
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1;
+  transition: background-color 0.15s ease;
+}
+
+.site-footer .footer-news-link:hover {
+  background: var(--cpc-gold-hover, #f0b354);
+}
+
+/* ===== Linha final ===== */
+.site-footer .footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+  padding-top: 20px;
+  padding-bottom: 24px;
+  /* os botões flutuantes ficam no canto inferior direito */
+  padding-right: max(clamp(20px, 5vw, 56px), var(--rodape-reserva-direita));
+  border-top: 1px solid var(--rodape-linha);
+}
+
+.site-footer .footer-bottom p {
+  color: var(--rodape-suave);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.site-footer .footer-legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+}
+
+.site-footer .footer-legal a {
+  color: var(--rodape-suave);
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.site-footer .footer-legal a:hover {
+  color: #ffffff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ===== Tablet: marca em cima, três colunas embaixo ===== */
+@media (max-width: 1023px) {
+  .site-footer .footer-top { padding-top: 48px; padding-bottom: 36px; }
+
+  .site-footer .footer-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-areas:
+      "marca marca marca"
+      "navegar categorias novidades";
+    gap: 32px 28px;
   }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  footer{ font-family:Arial, Helvetica, sans-serif; line-height:1.5; -webkit-font-smoothing:antialiased; }
-  h1,h2,h3{ font-family:'Fraunces', serif; font-weight:600; line-height:1.1; letter-spacing:-0.01em; }
-  a{ color:inherit; text-decoration:none; }
-  a:focus-visible, button:focus-visible, input:focus-visible{ outline:3px solid var(--amber-deep); outline-offset:2px; }
-  .wrap{ max-width:1180px; margin:0 auto; padding:0 clamp(20px, 5vw, 56px); }
 
-  /* conteúdo de exemplo só pra dar contexto ao rodapé */
-  .demo-page{ padding:80px 0; text-align:center; color:var(--ink-soft); }
-  .demo-page p{ font-family:'IBM Plex Mono', monospace; font-size:0.8rem; }
-
-  /* ================= RODAPÉ ================= */
-  footer{ background:linear-gradient(135deg, var(--cpc-primary), var(--cpc-primary-dark), var(--cpc-primary-light), var(--cpc-primary-dark), var(--cpc-primary)); color:#F2F7F4; }
-
-  .footer-top{ padding:clamp(40px,6vw,64px) 0 clamp(28px,4vw,40px); }
-  .footer-grid{
-    display:grid;
-    grid-template-columns:1.3fr 0.8fr 0.8fr 1.1fr;
-    gap:32px;
+  .site-footer .footer-brand {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px 28px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--rodape-linha);
   }
-  @media (max-width:860px){ .footer-grid{ grid-template-columns:1fr 1fr; } }
-  @media (max-width:560px){ .footer-grid{ grid-template-columns:1fr; gap:28px; } }
 
-  .footer-brand{ text-align:center; }
-  .footer-brand .logo{ display:flex; align-items:center; justify-content:center; color:var(--white); }
-  .footer-brand .logo img{ width:auto; height:40px; display:block; object-fit:contain; }
-  .footer-brand p{ margin:12px auto 0; font-size:0.92rem; max-width:30ch; color:#D7E8DE; }
+  .site-footer .footer-brand p { max-width: 42ch; margin-top: 0; }
+  .site-footer .footer-social { margin-top: 0; }
+}
 
-  .footer-social{ display:flex; justify-content:center; gap:10px; margin-top:18px; }
-  .footer-social a{
-    width:36px; height:36px; border-radius:50%;
-    border:1px solid rgba(242,247,244,0.35);
-    display:flex; align-items:center; justify-content:center;
-    color:#F2F7F4;
-    transition:background .15s, border-color .15s;
-  }
-  .footer-social a:hover{ background:rgba(255,255,255,0.12); border-color:var(--amber); }
-  .footer-social svg{ width:16px; height:16px; }
+/* ===== Mobile: tudo centralizado, Navegar e Categorias lado a lado ===== */
+@media (max-width: 600px) {
+  .site-footer { --rodape-reserva-direita: 0px; }
 
-  .footer-col h4{
-    font-family:'IBM Plex Mono', monospace;
-    font-size:0.72rem;
-    text-transform:uppercase;
-    letter-spacing:0.1em;
-    color:var(--cpc-sage);
-    margin-bottom:14px;
-    font-weight:500;
-  }
-  .footer-col ul{ list-style:none; display:flex; flex-direction:column; gap:10px; }
-  .footer-col a{ font-size:0.92rem; color:#F2F7F4; transition:color .15s; }
-  .footer-col a:hover{ color:var(--amber); }
+  .site-footer .footer-top { padding-top: 40px; padding-bottom: 28px; }
 
-  /* newsletter */
-  .footer-news h4{ font-family:'IBM Plex Mono', monospace; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--cpc-sage); margin-bottom:10px; font-weight:500; }
-  .footer-news p{ font-size:0.88rem; color:#D7E8DE; margin-bottom:14px; }
-  .news-form{ display:flex; gap:8px; }
-  .news-form input{
-    flex:1; min-width:0;
-    padding:11px 14px;
-    border-radius:100px;
-    border:1px solid rgba(242,247,244,0.35);
-    background:rgba(255,255,255,0.1);
-    color:var(--white);
-    font-family:Arial, Helvetica, sans-serif;
-    font-size:0.86rem;
+  .site-footer .footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "marca marca"
+      "navegar categorias"
+      "novidades novidades";
+    gap: 28px 20px;
+    text-align: center;
   }
-  .news-form input::placeholder{ color:#B8D0C1; }
-  .news-form input:focus{ outline:none; border-color:var(--amber); background:rgba(255,255,255,0.16); }
-  .news-form button{
-    background:var(--amber); color:#111111; border:none;
-    border-radius:100px; padding:11px 18px; font-weight:600; font-size:0.86rem;
-    cursor:pointer; flex-shrink:0; white-space:nowrap;
-  }
-  .news-form button:hover{ background:#F0B354; }
 
-  /* barra inferior */
-  .footer-bottom{
-    border-top:1px solid rgba(242,247,244,0.2);
-    padding:20px 0;
-    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+  .site-footer .footer-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    text-align: center;
+    padding-bottom: 24px;
   }
-  .footer-bottom p{ font-family:'IBM Plex Mono', monospace; font-size:0.76rem; color:#B8D0C1; }
-  .footer-legal{ display:flex; gap:20px; flex-wrap:wrap; }
-  .footer-legal a{ font-size:0.8rem; color:#D7E8DE; }
-  .footer-legal a:hover{ color:var(--white); }
+
+  .site-footer .footer-brand p { margin-top: 12px; max-width: 32ch; }
+  .site-footer .footer-social { margin-top: 16px; justify-content: center; }
+
+  .site-footer .footer-col ul { align-items: center; gap: 6px; }
+
+  .site-footer .footer-news {
+    padding-top: 24px;
+    border-top: 1px solid var(--rodape-linha);
+  }
+  .site-footer .footer-news p { margin-left: auto; margin-right: auto; }
+
+  /* Linha final centralizada e longe da faixa direita onde ficam os botões flutuantes */
+  .site-footer .footer-bottom {
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    padding-left: 84px;
+    padding-right: 84px;
+    text-align: center;
+  }
+  .site-footer .footer-legal { justify-content: center; gap: 6px 16px; }
+}
+
+@media (max-width: 360px) {
+  .site-footer .footer-bottom { padding-left: 76px; padding-right: 76px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-footer a { transition: none; }
+}

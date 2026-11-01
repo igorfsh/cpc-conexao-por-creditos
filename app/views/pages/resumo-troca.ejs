@@ -6,6 +6,7 @@
   <title>Resumo de Troca - CPC</title>
   <link rel="stylesheet" href="/css/resumo-troca.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="/css/footer.css">
 </head>
 
 <%- include('../partials/header.ejs') %>
@@ -21,6 +22,7 @@
   const saldoAtual = 120;
   const saldoApos  = saldoAtual - anuncio.pontos;
   const temSaldo   = saldoApos >= 0;
+  const proprio    = Boolean(locals.proprioAnuncio);
 
   // emoji de fallback por categoria
   const emojiCat = { profissionais:'🔧', alimentos:'🥗', infantil:'🍼' };
@@ -32,12 +34,12 @@
   // inicial do nome para avatar
   const inicial = (anuncio.doadorNome || 'D').charAt(0).toUpperCase();
 
-  // link whatsapp
-  const waNumero = (anuncio.whatsapp || '5511954500030').replace(/\D/g,'');
+  // link whatsapp: só o número validado do anunciante
+  const waNumero = locals.whatsappAnunciante || null;
   const waMensagem = encodeURIComponent(
     'Olá ' + anuncio.doadorNome.split(' ')[0] + '! Vi seu anúncio "' + anuncio.titulo + '" no CPC e gostaria de combinar a troca. Podemos conversar?'
   );
-  const waLink = 'https://wa.me/' + waNumero + '?text=' + waMensagem;
+  const waLink = waNumero ? 'https://wa.me/' + waNumero + '?text=' + waMensagem : null;
 %>
 
   <!-- CABEÇALHO VERDE -->
@@ -51,7 +53,7 @@
     <p class="rt-card-label">Você está trocando com</p>
     <section class="rt-doador">
       <section class="rt-avatar">
-        <img src="<%= anuncio.fotoExibicao %>" alt="Foto de <%= anuncio.doadorNome %>">
+        <img src="<%= anuncio.fotoAnunciante %>" alt="Foto de <%= anuncio.doadorNome %>">
       </section>
       <section>
         <section class="rt-doador-nome"><%= anuncio.doadorNome %></section>
@@ -73,8 +75,8 @@
     <section class="rt-troca-visual">
       <section class="rt-troca-item">
         <section class="rt-troca-img">
-          <% if (anuncio.foto && !anuncio.foto.includes('malcon')) { %>
-            <img src="<%= anuncio.foto %>" alt="<%= anuncio.titulo %>">
+          <% if (anuncio.fotoItem) { %>
+            <img src="<%= anuncio.fotoItem %>" alt="<%= anuncio.titulo %>">
           <% } else { %>
             <%= emoji %>
           <% } %>
@@ -167,7 +169,18 @@
   <section class="rt-card">
     <p class="rt-card-label">Falar com o doador</p>
 
+    <% if (proprio) { %>
+      <section class="rt-aviso rt-aviso--proprio" role="note">
+        Este anúncio é seu. Você não pode fazer uma troca com você mesmo.
+      </section>
+    <% } else { %>
+
     <!-- Botão WhatsApp -->
+    <% if (!waLink) { %>
+    <p class="rt-btn-wa rt-btn-wa--indisponivel" role="note">
+      O anunciante ainda não informou um WhatsApp válido. Confirme a troca pela plataforma.
+    </p>
+    <% } else { %>
     <a href="<%= usuarioLogado ? waLink : '/login' %>" class="rt-btn-wa"<% if (usuarioLogado) { %> target="_blank" rel="noopener"<% } %>>
       <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
         <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
@@ -175,6 +188,7 @@
       </svg>
       <%= usuarioLogado ? 'Conversar pelo WhatsApp' : 'Entrar para falar no WhatsApp' %>
     </a>
+    <% } %>
 
     <!-- Formulário de confirmação -->
     <form action="/confirmar-troca" method="POST">
@@ -185,6 +199,7 @@
         Confirmar troca
       </button>
     </form>
+    <% } %>
 
     <section class="rt-aviso">
       Os usuários têm até <strong>30 dias</strong> para concluir a troca.<br>

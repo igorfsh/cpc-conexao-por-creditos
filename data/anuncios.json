@@ -287,22 +287,23 @@
     "pontos": 10,
     "doadorId": 3,
     "doadorNome": "Igor Andrade",
-    "doadorLocal": "São Paulo-SP",
+    "doadorLocal": "Barueri-SP",
     "foto": "../img/img malcon.png",
     "imagens": [],
     "tipo": "servico",
     "ativo": true,
-    "dataCriacao": "2026-08-03T00:09:55.611Z"
+    "dataCriacao": "2026-08-03T00:09:55.611Z",
+    "whatsapp": "5511954500030"
   },
   {
     "id": 22,
-    "titulo": "professor 2",
-    "descricao": "aula de pilates",
+    "titulo": "professor de luta",
+    "descricao": "aula de boxe ou muay thai particular",
     "categoria": "profissionais",
-    "pontos": 10,
+    "pontos": 15,
     "doadorId": 3,
     "doadorNome": "Igor Andrade",
-    "doadorLocal": "São Paulo-SP",
+    "doadorLocal": "Barueri-SP",
     "foto": "../img/img malcon.png",
     "imagens": [
       "/img/anuncios/1785717017049-39403.webp",
@@ -311,7 +312,9 @@
     ],
     "tipo": "servico",
     "ativo": true,
-    "dataCriacao": "2026-08-03T00:30:17.178Z"
+    "dataCriacao": "2026-08-03T00:30:17.178Z",
+    "whatsapp": "5511954500030",
+    "dataAtualizacao": "2026-10-31T23:35:24.610Z"
   },
   {
     "id": 23,

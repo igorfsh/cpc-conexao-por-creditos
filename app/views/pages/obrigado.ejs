@@ -3,61 +3,129 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="../img/logo-black.png" />
   <title>Obrigado - Conexão por Créditos</title>
-  <link rel="stylesheet" href="/css/cpc-palette.css">
-  <link rel="stylesheet" href="../css/obrigado.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/cpc-palette.css">
+  <link rel="stylesheet" href="/css/obrigado.css">
+  <link rel="stylesheet" href="/css/footer.css">
 </head>
-    <!-- MENU LATERAL -->
-  <nav class="side-menu" id="side-menu">
-    <a href="/conta">MINHA CONTA</a>
-    <a href="/">INÍCIO</a>
-    <a href="/sobrenos">SOBRE NÓS</a>
-    <a href="/comofunciona">COMO FUNCIONA</a>
-    <a href="/servicos">SERVIÇOS DE TROCA</a>
-    <a href="/saibamais">SAIBA MAIS</a>
-    <a href="/noticia">NOTÍCIAS</a>
-  </nav>
-  
-  <!-- SOBREPOSIÇÃO DO MENU (FUNDO ESCURO) -->
+<body class="ob-body">
+  <%- include('../partials/header.ejs') %>
 
-  <script src="../js/menu.js"></script>
-  </header>
+  <%
+    const temTroca = Boolean(locals.troca);
+    let dataFormatada = '';
+    if (temTroca) {
+      const data = new Date(troca.dataSolicitacao);
+      dataFormatada = data.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric', timeZone: 'America/Sao_Paulo' });
+    }
+    const fotoItem = locals.anuncio?.fotoExibicao || (temTroca ? troca.foto : null);
+    const pontos = locals.anuncio?.pontos ?? (temTroca ? troca.pontos : null);
+  %>
 
-<body>
-  <!-- Seção Hero -->
-  <header class="hero">
-    <section class="navbar">
-      <a href="/"><img src="../img/logo-white.png" alt="Logo CPC" class="logo"></a>
-      <section class="icons">
-        <a href="/conta"><img src="../img/img perfil-white.png" alt="Usuário" class="icon"></a>
-        <img src="../img/img menu-white.png" class="icon" id="btnMenu" alt="Abrir menu">
-</section>
-  
-  <!-- SOBREPOSIÇÃO DO MENU (FUNDO ESCURO) -->
+  <main class="ob-page">
+    <span class="ob-blob ob-blob--um" aria-hidden="true"></span>
+    <span class="ob-blob ob-blob--dois" aria-hidden="true"></span>
+
+    <section class="ob-grid <%= temTroca ? '' : 'ob-grid--simples' %>">
+
+      <!-- Mensagem principal -->
+      <section class="ob-hero" aria-labelledby="ob-titulo">
+        <section class="ob-selo" aria-hidden="true">
+          <svg viewBox="0 0 52 52" class="ob-check">
+            <circle cx="26" cy="26" r="24" class="ob-check__circulo" />
+            <path d="M15 27.5l7.2 7.2L37.5 19" class="ob-check__traco" />
+          </svg>
+          <span class="ob-confete ob-confete--1"></span>
+          <span class="ob-confete ob-confete--2"></span>
+          <span class="ob-confete ob-confete--3"></span>
+          <span class="ob-confete ob-confete--4"></span>
+          <span class="ob-confete ob-confete--5"></span>
+          <span class="ob-confete ob-confete--6"></span>
+        </section>
+
+        <p class="ob-eyebrow"><%= temTroca ? 'Solicitação enviada' : 'Conexão por Créditos' %></p>
+        <h1 id="ob-titulo">Obrigado por trocar<span class="ob-ponto">!</span></h1>
+        <p class="ob-lead">
+          <% if (temTroca) { %>
+            Sua solicitação foi registrada e <strong><%= troca.doadorNome %></strong> já pode combinar os detalhes com você.
+            Cada troca fortalece uma rede de apoio de verdade.
+          <% } else { %>
+            Cada troca fortalece uma rede de apoio de verdade. Continue explorando e conectando pessoas por meio dos créditos CPC.
+          <% } %>
+        </p>
+
+        <section class="ob-acoes">
+          <% if (locals.whatsappLink) { %>
+            <a href="<%= whatsappLink %>" class="ob-botao ob-botao--whatsapp" target="_blank" rel="noopener">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.532 5.862L.043 23.5l5.788-1.479A11.93 11.93 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.793 9.793 0 01-5.001-1.371l-.359-.214-3.436.877.907-3.344-.234-.372A9.793 9.793 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818zm5.472-7.436c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
+              Combinar pelo WhatsApp
+            </a>
+          <% } %>
+          <% if (temTroca) { %>
+            <a href="/conta" class="ob-botao <%= locals.whatsappLink ? 'ob-botao--contorno' : 'ob-botao--primario' %>">Ver minhas trocas</a>
+          <% } %>
+          <a href="/todos" class="ob-botao <%= temTroca ? 'ob-botao--texto' : 'ob-botao--primario' %>">Explorar mais anúncios</a>
+          <% if (!temTroca) { %>
+            <a href="/" class="ob-botao ob-botao--contorno">Voltar ao início</a>
+          <% } %>
+        </section>
+      </section>
+
+      <% if (temTroca) { %>
+      <!-- Resumo da troca -->
+      <aside class="ob-resumo" aria-label="Resumo da troca">
+        <article class="ob-item">
+          <section class="ob-item__foto">
+            <% if (fotoItem) { %>
+              <img src="<%= fotoItem %>" alt="<%= troca.anuncioTitulo %>" loading="lazy">
+            <% } %>
+            <span class="ob-status">Pendente</span>
+          </section>
+          <section class="ob-item__info">
+            <p class="ob-item__protocolo">Troca nº <%= String(troca.id).padStart(4, '0') %> · <%= dataFormatada %></p>
+            <h2 class="ob-item__titulo"><%= troca.anuncioTitulo %></h2>
+            <p class="ob-item__doador">
+              com <strong><%= troca.doadorNome %></strong><% if (locals.anuncio?.doadorLocal) { %> · <%= anuncio.doadorLocal %><% } %>
+            </p>
+            <% if (pontos) { %>
+              <p class="ob-item__pontos"><strong><%= pontos %></strong> créditos CPC</p>
+            <% } %>
+          </section>
+        </article>
+
+        <section class="ob-passos">
+          <h2 class="ob-passos__titulo">Próximos passos</h2>
+          <ol>
+            <li class="ob-passo ob-passo--feito">
+              <span class="ob-passo__marca" aria-hidden="true">✓</span>
+              <span>
+                <strong>Solicitação enviada</strong>
+                <small>Registramos seu pedido de troca.</small>
+              </span>
+            </li>
+            <li class="ob-passo ob-passo--atual">
+              <span class="ob-passo__marca" aria-hidden="true">2</span>
+              <span>
+                <strong>Combine com o anunciante</strong>
+                <small><%= locals.whatsappLink ? 'Converse pelo WhatsApp para acertar local e horário.' : 'Aguarde o contato do anunciante pela plataforma.' %></small>
+              </span>
+            </li>
+            <li class="ob-passo">
+              <span class="ob-passo__marca" aria-hidden="true">3</span>
+              <span>
+                <strong>Confirme a conclusão</strong>
+                <small>Os créditos só são debitados quando as duas partes confirmarem.</small>
+              </span>
+            </li>
+          </ol>
+        </section>
+      </aside>
+      <% } %>
     </section>
-    <section class="hero-text">
-      <h1>OBRIGADO<br>POR TROCAR</h1>
-    </section>
-  </header>
-
-  <!-- Seção Principal -->
-  <main class="content">
-    <img src="../img/logo-black.png" alt="Logo CPC Preto" class="main-logo">
-    <h2>Conexão por Créditos</h2>
-    <a href="/"><button class="btn">Voltar para Página Inicial</button></a>
   </main>
 
-  <br>
-  <br>
-  <br>
-
-  <%- include('../partials/acessibilidade.ejs') %>
-  <%- include('../partials/chat-ia.ejs') %>
+  <%- include('../partials/footer.ejs') %>
 </body>
-
-<%- include('../partials/footer.ejs') %>
 </html>

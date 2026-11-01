@@ -299,3 +299,63 @@ input[name="slider"] {
   padding: var(--spacing-medium) 0 var(--spacing-large) 0;
   text-align: center; /* Centraliza o botão */
 }}
+
+/* Dono do anúncio: aviso + editar */
+.dono-anuncio {
+  max-width: 460px;
+  margin: 0 auto;
+  padding: 18px 20px;
+  border: 1px solid #cfe0d3;
+  border-radius: 16px;
+  background: var(--cpc-mint-pale);
+  text-align: center;
+}
+.dono-anuncio__sucesso {
+  margin: 0 0 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--cpc-primary);
+  font-weight: 700;
+  font-size: calc(14px * var(--a11y-escala, 1));
+}
+.dono-anuncio__titulo {
+  margin: 0 0 4px;
+  font-weight: 800;
+  font-size: calc(16px * var(--a11y-escala, 1));
+  color: var(--cpc-primary);
+}
+.dono-anuncio__texto {
+  margin: 0 0 14px;
+  font-size: calc(14px * var(--a11y-escala, 1));
+  color: #3f4a44;
+}
+.dono-anuncio__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px 16px;
+}
+.dono-anuncio__editar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 22px;
+  border-radius: 999px;
+  background: var(--cpc-primary);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: calc(15px * var(--a11y-escala, 1));
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+.dono-anuncio__editar:hover { background: var(--cpc-primary-light); }
+.dono-anuncio__editar svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.dono-anuncio__voltar {
+  color: var(--cpc-primary-light);
+  font-weight: 600;
+  font-size: calc(14px * var(--a11y-escala, 1));
+}
+.dono-anuncio a:focus-visible { outline: 3px solid var(--cpc-gold); outline-offset: 3px; }

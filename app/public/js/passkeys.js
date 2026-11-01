@@ -109,6 +109,13 @@
     return;
   }
 
+  // Servidor sem armazenamento permanente: não deixa cadastrar uma biometria que seria apagada.
+  if (botaoCadastro?.dataset.indisponivel === "true") {
+    botaoCadastro.disabled = true;
+    mostrarMensagem(mensagem, "Cadastro de Face ID/digital temporariamente indisponível. Tente novamente mais tarde.", true);
+    return;
+  }
+
   const verificarAutenticadorNativo = window.PublicKeyCredential
     .isUserVerifyingPlatformAuthenticatorAvailable;
   const autenticadorNativoDisponivel = typeof verificarAutenticadorNativo === "function"

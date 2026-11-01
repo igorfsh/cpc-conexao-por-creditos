@@ -11,7 +11,6 @@ body {
   background: #f8faf8;
   color: #191c1b;
   min-height: 100vh;
-  padding-bottom: 40px;
   position: relative;
 }
  
@@ -837,3 +836,186 @@ body {
   .trades-section { padding: 16px; }
   .balance-card { margin-top: 14px; }
 }
+
+/* Meus dados */
+.dados-section {
+  max-width: 860px;
+  margin: 0 auto 32px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #fff;
+  border: 1px solid var(--conta-borda);
+  border-radius: 16px;
+}
+
+.dados-section h2 {
+  color: var(--conta-verde);
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.dados-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.dados-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: calc(13px * var(--a11y-escala, 1));
+  font-weight: 700;
+  color: var(--conta-texto-suave);
+}
+
+.dados-campo--largo { grid-column: 1 / -1; }
+
+.dados-dica {
+  font-weight: 400;
+  font-size: calc(12px * var(--a11y-escala, 1));
+  color: var(--conta-texto-suave);
+}
+
+.dados-campo input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid var(--conta-borda);
+  border-radius: 10px;
+  background: #f8fbf8;
+  color: #191c1b;
+  font: inherit;
+  font-weight: 400;
+  font-size: calc(15px * var(--a11y-escala, 1));
+}
+
+.dados-campo input:focus {
+  outline: 2px solid var(--cpc-primary);
+  outline-offset: 1px;
+  background: #fff;
+}
+
+.dados-salvar,
+.dados-excluir,
+.dados-cancelar {
+  border: 0;
+  border-radius: 20px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  font-size: calc(14px * var(--a11y-escala, 1));
+  padding: 10px 20px;
+}
+
+.dados-salvar {
+  grid-column: 1 / -1;
+  justify-self: start;
+  background: var(--cpc-primary);
+  color: #fff;
+}
+
+.dados-perigo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid #f3c9c4;
+  border-radius: 12px;
+  background: #fff7f6;
+}
+
+.dados-perigo strong { color: #b63c32; }
+
+.dados-perigo p {
+  margin-top: 2px;
+  color: var(--conta-texto-suave);
+  font-size: calc(13px * var(--a11y-escala, 1));
+}
+
+.dados-excluir {
+  flex-shrink: 0;
+  background: #d93025;
+  color: #fff;
+}
+
+.dados-excluir:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.dados-cancelar {
+  background: #eef2ef;
+  color: #191c1b;
+}
+
+.excluir-dialog {
+  width: min(92vw, 420px);
+  margin: auto;
+  padding: 24px;
+  border: 0;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+}
+
+.excluir-dialog::backdrop { background: rgba(25, 28, 27, 0.5); }
+
+.excluir-dialog form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.excluir-dialog h3 {
+  color: #b63c32;
+  font-size: calc(20px * var(--a11y-escala, 1));
+}
+
+.excluir-dialog p {
+  color: #424842;
+  font-size: calc(14px * var(--a11y-escala, 1));
+}
+
+.excluir-acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+@media (max-width: 600px) {
+  .dados-section { padding: 16px; }
+  .dados-form { grid-template-columns: 1fr; }
+  .dados-salvar { justify-self: stretch; }
+  .dados-perigo { flex-direction: column; align-items: stretch; text-align: left; }
+}
+
+/* Cards clicáveis (Últimas trocas / Ofertas ativas) */
+.trade-card--link {
+  position: relative;
+  flex-wrap: wrap;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+.trade-card--link:hover {
+  border-color: var(--cpc-sage);
+  background: #f6faf7;
+  transform: translateY(-1px);
+  border-radius: 12px;
+}
+.trade-card--link:focus-visible {
+  outline: 3px solid var(--cpc-gold);
+  outline-offset: 2px;
+}
+.trade-acao {
+  flex-basis: 100%;
+  text-align: right;
+  font-size: calc(12px * var(--a11y-escala, 1));
+  font-weight: 700;
+  color: var(--cpc-primary-light);
+}
+.trade-card--link:hover .trade-acao { text-decoration: underline; }

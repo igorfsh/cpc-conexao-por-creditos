@@ -1,0 +1,64 @@
+/* Página Novo Anúncio */
+.form-anuncio { max-width: 480px; margin: 40px auto; padding: 32px; background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.10); }
+
+.form-anuncio h2 { color: var(--cpc-primary); margin-bottom: 24px; text-align: center; }
+.form-anuncio label { display: block; font-size: calc(13px * var(--a11y-escala, 1)); font-weight: 600; color: #302f2f; margin-bottom: 4px; margin-top: 14px; }
+.form-anuncio input, .form-anuncio select, .form-anuncio textarea {
+  width: 100%; padding: 10px 14px; border: 1.5px solid #ccc; border-radius: 8px;
+  font-family: Poppins, sans-serif; font-size: calc(14px * var(--a11y-escala, 1)); box-sizing: border-box; transition: border 0.2s;
+}
+.form-anuncio input:focus, .form-anuncio select:focus, .form-anuncio textarea:focus { border-color: var(--cpc-sage); outline: none; }
+.form-anuncio button[type=submit] {
+  width: 100%; margin-top: 22px; padding: 13px; background: var(--cpc-primary-light); color: #fff;
+  border: none; border-radius: 10px; font-size: calc(16px * var(--a11y-escala, 1)); font-weight: 700; cursor: pointer; transition: background 0.2s;
+}
+.form-anuncio button[type=submit]:hover { background: var(--cpc-primary); }
+.msg-erro { background: #fdecea; color: #c62828; border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: calc(14px * var(--a11y-escala, 1)); }
+.msg-sucesso { background: var(--cpc-mint-pale); color: var(--cpc-primary); border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: calc(14px * var(--a11y-escala, 1)); }
+body { background: #f5f5f5; font-family: Poppins, sans-serif;
+}
+.btn-voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: -8px 0 18px;
+  padding: 6px 0;
+  border: 0;
+  background: transparent;
+  color: var(--cpc-primary);
+  font: inherit;
+  font-size: calc(14px * var(--a11y-escala, 1));
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-voltar:hover { text-decoration: underline; }
+.campo-imagens { margin-top: 14px; }
+.campo-imagens-preview { display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
+.campo-imagens-preview img { width: 76px; height: 76px; object-fit: cover; border-radius: 8px; border: 1.5px solid #ccc; }
+.msg-erro { background: #fdecea; color: #c62828; border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: calc(14px * var(--a11y-escala, 1)); }
+.msg-sucesso { background: var(--cpc-mint-pale); color: var(--cpc-primary); border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: calc(14px * var(--a11y-escala, 1)); }
+body { background: #f5f5f5; font-family: Poppins, sans-serif; }
+
+@media (min-width: 769px) and (max-width: 1200px) {
+  .form-anuncio { max-width: 430px; margin: 24px auto; padding: 24px; border-radius: 14px; }
+  .form-anuncio h2 { margin-bottom: 18px; }
+  .form-anuncio label { margin-top: 10px; }
+  .form-anuncio input, .form-anuncio select, .form-anuncio textarea { padding: 9px 12px; }
+}
+
+@media (max-width: 480px) {
+  .form-anuncio { margin: 16px auto; padding: 20px 16px; border-radius: 12px; max-width: calc(100% - 24px); }
+  .campo-imagens-preview img { width: 64px; height: 64px; }
+  .btn-voltar { margin-top: -4px; }
+}
+.whatsapp-status { margin: 4px 0 0; font-size: calc(11px * var(--a11y-escala, 1)); color: #888; }
+.whatsapp-status.is-valido { color: var(--cpc-primary); font-weight: 600; }
+.whatsapp-status.is-invalido { color: #c62828; }
+.form-anuncio input.is-invalido { border-color: #c62828; }
+.whatsapp-teste[hidden] { display: none; }
+.whatsapp-teste { display: inline-block; margin-top: 4px; font-size: calc(12px * var(--a11y-escala, 1)); color: var(--cpc-primary-light); font-weight: 600; }
+.form-anuncio .whatsapp-confirmar { display: flex; align-items: flex-start; gap: 8px; font-weight: 400; font-size: calc(12px * var(--a11y-escala, 1)); cursor: pointer; }
+.form-anuncio .whatsapp-confirmar input { width: auto; margin: 2px 0 0; flex-shrink: 0; }
+.fotos-atuais-titulo { margin: 6px 0 0; font-size: calc(12px * var(--a11y-escala, 1)); color: #666; }
+.fotos-atuais { margin-bottom: 8px; }
+.form-anuncio a.btn-voltar { display: inline-block; text-decoration: none; }

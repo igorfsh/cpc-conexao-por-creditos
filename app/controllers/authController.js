@@ -1,5 +1,17 @@
 // Controller dedicado para lógica de autenticação social
+const mensagensErroSocial = {
+  "provedor-indisponivel": "Esse login social ainda não está disponível. Use e-mail e senha ou outra opção.",
+  "social": "Não foi possível entrar com a conta social. Tente novamente.",
+  "social-cancelado": "Login social cancelado.",
+  "social-expirado": "A tentativa de login expirou. Tente novamente.",
+  "sem-email": "O provedor não compartilhou seu e-mail. Autorize o acesso ao e-mail e tente de novo.",
+  "email-nao-verificado": "Já existe uma conta com esse e-mail, mas ele não está verificado no provedor. Entre com e-mail e senha.",
+  "conta-inativa": "Esta conta está inativa.",
+};
+
 module.exports = {
+  mensagensErroSocial,
+
   oauthCallback: (req, res) => {
     try {
       console.log("🔐 Processando OAuth callback...");

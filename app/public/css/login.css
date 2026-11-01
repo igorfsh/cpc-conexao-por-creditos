@@ -9,9 +9,10 @@ body {
   font-family: "Poppins", sans-serif;
   background: linear-gradient(120deg, var(--cpc-mint-pale), #f5f7f6);
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   margin: 0;
 }
 
@@ -20,6 +21,7 @@ body {
 }
 
 .container {
+  flex-shrink: 0;
   background-color: #fff;
   border-radius: 20px;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.15), 0 10px 10px rgba(0, 0, 0, 0.1);
@@ -309,8 +311,10 @@ a {
   box-shadow: 0 0 0 4px rgba(217,83,79,0.08);
 }
 
-.msgErro {
+.msgErro,
+.form-container .msg-erro {
   display: block;
+  width: 100%;
   color: #d9534f;
   font-size: calc(12px * var(--a11y-escala, 1));
   margin-top: 6px;
@@ -400,7 +404,7 @@ input:focus {
 
 @media (max-width: 768px) {
   body {
-    align-items: flex-start;
+    align-items: center;
     padding-top: 50px;
     transition: padding 0.8s ease-in-out;
   }

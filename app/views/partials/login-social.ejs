@@ -1,0 +1,9 @@
+<% const iconesSociais = { google: 'bxl-google', facebook: 'bxl-facebook', linkedin: 'bxl-linkedin', apple: 'bxl-apple', github: 'bxl-github' }; %>
+<% if (locals.provedoresSociais && provedoresSociais.length) { %>
+  <p><%= textoChamada %></p>
+  <section class="social-container">
+    <% provedoresSociais.forEach((provedor) => { %>
+      <a href="/auth/<%= provedor.id %>" class="social social--<%= provedor.id %>" title="<%= acao %> com <%= provedor.id === 'apple' ? 'Apple (iCloud)' : provedor.nome %>" aria-label="<%= acao %> com <%= provedor.id === 'apple' ? 'Apple (iCloud)' : provedor.nome %>"><i class="bx <%= iconesSociais[provedor.id] %>" aria-hidden="true"></i></a>
+    <% }) %>
+  </section>
+<% } %>

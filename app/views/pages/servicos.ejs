@@ -8,45 +8,33 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/footer.css">
 </head>
 
 <%- include('../partials/header.ejs') %>
 <body>
 
-  <!-- SOBREPOSIÇÃO DO MENU (FUNDO ESCURO) -->
-
   <main>
-    <h1>Troque produtos e Serviços<br>com a nossa Comunidade</h1><br>
+    <h1>Troque produtos e Serviços<br>com a nossa Comunidade</h1>
 
     <section class="botoes">
       <a href="/profissionais" class="btn servicos">
         <img src="/img/servicos.jpeg" alt="">
-        <span>SERVIÇOS DE<br>PROFISSIONAIS</span>
+        <span>Serviços de<br>Profissionais</span>
       </a>
 
       <a href="/alimentos" class="btn alimentos">
-        <img src="/img/img alimentacao.jpeg" alt="">
-        <span>ALIMENTOS &<br>BEBIDAS</span>
+        <img src="/img/servico-alimentos.png" alt="">
+        <span>Alimentos &amp;<br>Bebidas</span>
       </a>
 
       <a href="/kids" class="btn criancas">
         <img src="/img/img kids.jpeg" alt="">
-        <span>ITENS PARA<br>CRIANÇAS</span>
+        <span>Itens para<br>Crianças</span>
       </a>
     </section>
   </main>
 
-  <script src="../app/public/js/menu.js"></script>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
+  <%- include('../partials/footer.ejs') %>
 </body>
-<%- include('../partials/footer.ejs') %>
 </html>

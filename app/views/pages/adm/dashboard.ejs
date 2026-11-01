@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <%- include('../../partials/tema-inicial.ejs') %>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin — CPC</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap">
@@ -11,71 +12,14 @@
 </head>
 <body>
 
-  <!-- TOPBAR -->
-  <section class="topbar">
-  <section class="topbar-left">
-    <a href="/adm/usuarios" class="topbar-user mobile-only-user">
-      <%= usuarioLogado ? usuarioLogado.nome.charAt(0).toUpperCase() : 'A' %>
-    </a>
+  <%- include('../../partials/adm-topbar', { ativo: 'dashboard' }) %>
 
-    <a class="topbar-logo" href="/">
-      <img src="/img/logo-white.png" alt="CPC">
-      <span>admin</span>
-    </a>
-  </section>
-
-  <nav class="topbar-nav side-menu">
-    <ul>
-      <li>
-        <a href="/adm" class="active">
-          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-          Dashboard
-        </a>
-      </li>
-      <li>
-        <a href="/adm/anuncios">
-          <svg viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-          Anúncios
-        </a>
-      </li>
-      <li>
-        <a href="/adm/trocas">
-          <svg viewBox="0 0 24 24"><path d="M7 16V4m0 0L3 8m4-4l4 4"/><path d="M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
-          Trocas
-        </a>
-      </li>
-      <li>
-        <a href="/adm/usuarios">
-          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          Usuários
-        </a>
-      </li>
-    </ul>
-  </nav>
-
-  <section class="hamburger mobile-menu" id="hamburger">
-    <span></span>
-    <span></span>
-    <span></span>
-  </section>
-
-  <section class="topbar-right desktop-only-right">
-    <span class="topbar-badge">● sistema ativo</span>
-    <section class="topbar-user"><%= usuarioLogado ? usuarioLogado.nome.charAt(0).toUpperCase() : 'A' %></section>
-  </section>
-</section>
-
-<section class="overlay" id="overlay"></section>
-
-<script src="/js/menu.js"></script>
-
-  <!-- GRID -->
   <section class="page">
     <section class="grid">
 
       <!-- HERO -->
-      <section class="card card-dark hero" style="display:flex;flex-direction:column;justify-content:space-between;min-height:140px">
-        <section style="display:flex;justify-content:space-between;align-items:flex-start">
+      <section class="card card-dark hero">
+        <section class="hero-top">
           <section>
             <p class="hero-label">conexão por créditos</p>
             <p class="hero-title">Painel<br>admin</p>
@@ -91,76 +35,105 @@
       </section>
 
       <!-- TROCAS HOJE -->
-      <section class="card" style="display:flex;flex-direction:column;justify-content:center">
+      <section class="card stat-card">
         <p class="stat-label">trocas hoje</p>
         <p class="stat-value"><%= trocasHoje %></p>
-        <p class="stat-delta delta-up">+<%= deltaPercent %>% vs. ontem</p>
+        <% if (deltaPercent === null) { %>
+          <p class="stat-delta delta-neutral">sem trocas ontem</p>
+        <% } else { %>
+          <p class="stat-delta <%= deltaPercent >= 0 ? 'delta-up' : 'delta-down' %>"><%= deltaPercent >= 0 ? '+' : '' %><%= deltaPercent %>% vs. ontem</p>
+        <% } %>
       </section>
 
       <!-- MEMBROS -->
-      <section class="card" style="display:flex;flex-direction:column;justify-content:center">
+      <section class="card stat-card">
         <p class="stat-label">membros ativos</p>
         <p class="stat-value"><%= stats.membrosAtivos.toLocaleString('pt-BR') %></p>
         <p class="stat-delta delta-neutral">+<%= novosEssaSemana %> esta semana</p>
       </section>
 
+      <!-- ATALHOS / KPIs -->
+      <a class="card kpi-card" href="/adm/trocas?status=pendente">
+        <section class="bottom-icon" style="background:rgba(255,183,3,.18)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#184C3B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+        </section>
+        <section>
+          <p class="bottom-label">trocas pendentes</p>
+          <p class="bottom-value"><%= trocasPendentes %></p>
+        </section>
+      </a>
+
+      <a class="card kpi-card" href="/adm/anuncios">
+        <section class="bottom-icon" style="background:var(--cpc-mint-pale)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#184C3B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </section>
+        <section>
+          <p class="bottom-label">anúncios ativos</p>
+          <p class="bottom-value"><%= totalAnuncios.toLocaleString('pt-BR') %></p>
+        </section>
+      </a>
+
+      <a class="card kpi-card" href="/adm/usuarios">
+        <section class="bottom-icon" style="background:var(--cpc-mint-pale)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#184C3B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
+        </section>
+        <section>
+          <p class="bottom-label">novos hoje</p>
+          <p class="bottom-value"><%= novosHoje %> <small>de <%= totalUsuarios %> contas</small></p>
+        </section>
+      </a>
+
+      <section class="card kpi-card">
+        <section class="bottom-icon" style="background:var(--cpc-mint-pale)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#184C3B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </section>
+        <section>
+          <p class="bottom-label">doações acumuladas</p>
+          <p class="bottom-value"><%= doacoes %></p>
+        </section>
+      </section>
+
       <!-- ATIVIDADE POR HORA -->
-      <section class="card" style="grid-column:1/2;grid-row:2/4">
+      <section class="card">
         <section class="sec-title">atividade por hora</section>
         <section class="bars">
-          <% const alturas = [30,45,55,70,90,100,75,55,40,35]; %>
-          <% const cores = ['var(--cpc-mint-pale)','var(--cpc-mint-pale)','var(--cpc-mint)','var(--cpc-mint)','var(--cpc-sage)','var(--cpc-primary-light)','var(--cpc-mint)','var(--cpc-mint)','var(--cpc-mint-pale)','var(--cpc-mint-pale)']; %>
-          <% alturas.forEach(function(h, i) { %>
-            <section class="bar" style="--bar-height: <%= h %>%; --bar-color: <%= cores[i] %>"></section>
+          <% atividade.forEach(function(h) { %>
+            <section class="bar" style="--bar-height: <%= h %>%; --bar-color: <%= h >= 75 ? 'var(--cpc-primary-light)' : h >= 45 ? 'var(--cpc-sage)' : h >= 20 ? 'var(--cpc-mint)' : 'var(--cpc-mint-pale)' %>"></section>
           <% }) %>
         </section>
         <section class="bars-labels">
-          <span>08h</span><span>12h</span><span>16h</span><span>20h</span>
+          <span>00h</span><span>06h</span><span>12h</span><span>18h</span><span>24h</span>
         </section>
         <section class="bar-peak">
-          <p>pico hoje</p>
-          <strong>14h – 15h</strong>
+          <p>horário de pico</p>
+          <strong><%= picoFaixa %></strong>
           <small><%= picoDia %> trocas nesse intervalo</small>
         </section>
       </section>
 
-      <!-- ANÚNCIOS PENDENTES -->
-      <section class="card" style="grid-column:2/4;grid-row:2/3">
+      <!-- ÚLTIMAS TROCAS -->
+      <section class="card span-2">
         <section class="sec-title">
-          anúncios pendentes
-          <span style="font-size: calc(11px * var(--a11y-escala, 1));background:rgba(255,183,3,.18);color:#184c3b;padding:2px 8px;border-radius:20px;font-weight:500">
-            <%= pendentes.length %> aguardando
-          </span>
+          últimas trocas
+          <a href="/adm/trocas">ver todas</a>
         </section>
-        <% pendentes.slice(0,3).forEach(function(a) { %>
-          <section class="pending-item">
-            <section class="pending-icon" style="background:var(--cpc-mint-pale)">
-              <span style="font-size: calc(18px * var(--a11y-escala, 1))">
-                <% if(a.categoria === 'alimentos') { %>🥦<% } else if(a.categoria === 'infantil') { %>🧒<% } else { %>🔧<% } %>
-              </span>
-            </section>
-            <section class="pending-info">
-              <p><%= a.titulo %></p>
-              <small><%= a.doadorNome %> · <%= a.categoria %></small>
-            </section>
-            <section class="pending-actions">
-              <form action="/adm/anuncios/aprovar/<%= a.id %>" method="POST" style="display:inline">
-                <button class="btn-approve" type="submit">aprovar</button>
-              </form>
-              <form action="/adm/anuncios/deletar/<%= a.id %>" method="POST" style="display:inline">
-                <button class="btn-reject" type="submit">rejeitar</button>
-              </form>
-            </section>
+        <% ultimasTrocas.forEach(function(t) { %>
+          <section class="feed-item">
+            <span class="feed-dot" style="--dot-color: <%= t.status === 'concluida' ? '#2A7D63' : t.status === 'cancelada' ? '#e07a73' : '#FFB703' %>"></span>
+            <span class="feed-title"><%= t.anuncioTitulo %></span>
+            <span class="feed-user"><%= t.solicitanteNome %></span>
+            <span class="tag tag-<%= t.status %>"><%= t.status %></span>
+            <span class="feed-time"><%= t.data %></span>
           </section>
         <% }) %>
-        <% if (pendentes.length === 0) { %>
-          <p style="font-size: calc(13px * var(--a11y-escala, 1));color:#aaa;text-align:center;padding:1rem 0">Nenhum anúncio pendente</p>
+        <% if (ultimasTrocas.length === 0) { %>
+          <p class="empty-inline">Nenhuma troca ainda</p>
         <% } %>
       </section>
 
       <!-- CATEGORIAS -->
-      <section class="card" style="grid-column:4/5;grid-row:2/4">
-        <section class="sec-title">por categoria</section>
+      <section class="card">
+        <section class="sec-title">por categoria <a href="/adm/anuncios">gerenciar</a></section>
         <section class="cat-row">
           <section class="cat-header"><span>alimentos</span><strong><%= catAlimentos %>%</strong></section>
           <section class="cat-track"><section class="cat-fill" style="--cat-width: <%= catAlimentos %>%; background: #2A7D63"></section></section>
@@ -177,83 +150,14 @@
           <section class="cat-header"><span>outros</span><strong><%= catOutros %>%</strong></section>
           <section class="cat-track"><section class="cat-fill" style="--cat-width: <%= catOutros %>%; background: #184C3B"></section></section>
         </section>
-        <section style="margin-top:1rem;border-top:0.5px solid rgba(0,0,0,.07);padding-top:10px">
-          <p style="font-size: calc(11px * var(--a11y-escala, 1));color:#888">total de anúncios</p>
-          <p style="font-size: calc(22px * var(--a11y-escala, 1));font-weight:600;color:#1a1a1a"><%= totalAnuncios.toLocaleString('pt-BR') %></p>
+        <section class="cat-total">
+          <p>total de anúncios</p>
+          <strong><%= totalAnuncios.toLocaleString('pt-BR') %></strong>
         </section>
       </section>
 
-      <!-- ÚLTIMAS TROCAS -->
-      <section class="card" style="grid-column:2/4;grid-row:3/4">
-        <section class="sec-title">
-          últimas trocas
-          <a href="/adm/trocas">ver todas</a>
-        </section>
-        <% ultimasTrocas.slice(0,4).forEach(function(t) { %>
-          <section class="feed-item">
-            <span class="feed-dot" style="--dot-color: <%= t.status === 'concluida' ? '#2A7D63' : '#b4b2a9' %>"></span>
-            <span class="feed-title"><%= t.anuncioTitulo %></span>
-            <span class="feed-user"><%= t.solicitanteNome %></span>
-            <span class="feed-time"><%= t.data %></span>
-          </section>
-        <% }) %>
-        <% if (ultimasTrocas.length === 0) { %>
-          <p style="font-size: calc(13px * var(--a11y-escala, 1));color:#aaa;text-align:center;padding:.5rem 0">Nenhuma troca ainda</p>
-        <% } %>
-      </section>
-
-      <!-- NOVOS HOJE -->
-      <section class="card">
-        <section class="bottom-card-inner">
-          <section class="bottom-icon" style="background:var(--cpc-mint-pale)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#184C3B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
-          </section>
-          <section>
-            <p class="bottom-label">novos hoje</p>
-            <p class="bottom-value"><%= novosHoje %> membros</p>
-          </section>
-        </section>
-      </section>
-
-      <!-- DENÚNCIAS -->
-      <section class="card">
-        <section class="bottom-card-inner">
-          <section class="bottom-icon" style="background:rgba(255,183,3,.18)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#184C3B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          </section>
-          <section>
-            <p class="bottom-label">denúncias</p>
-            <p class="bottom-value"><%= denuncias %> abertas</p>
-          </section>
-        </section>
-      </section>
-
-      <!-- DOAÇÕES -->
-      <section class="card" style="grid-column:3/5">
-        <section class="doacoes-inner">
-          <section class="bottom-card-inner">
-            <section class="bottom-icon" style="background:var(--cpc-mint-pale)">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#184C3B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 21s-6-4.35-9-8.5A5.5 5.5 0 0 1 7 3a5.5 5.5 0 0 1 5 3.13A5.5 5.5 0 0 1 17 3a5.5 5.5 0 0 1 19 12.5C18 16.65 12 21 12 21z"/>
-              </svg>
-            </section>
-            <section>
-              <p class="bottom-label">doações acumuladas</p>
-              <p class="bottom-value" style="font-size: calc(24px * var(--a11y-escala, 1))">
-                500
-              </p>
-            </section>
-          </section>
-        </section>
-      </section>
     </section>
   </section>
-
-     <!-- Logout -->
-    <section class="logout-section">
-      <a href="/logout" class="logout-btn">Sair da Conta</a>
-    </section>
- 
 
 </body>
 </html>

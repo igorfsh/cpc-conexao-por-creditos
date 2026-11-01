@@ -1,0 +1,47 @@
+/* Ajustes finos do modo escuro feitos à mão (carregado depois de modo-escuro.css).
+   Use para o que o gerador não enxerga: estilos inline nos .ejs e cores combinadas em regras diferentes. */
+
+/* Botões dourados: texto escuro para manter contraste (o dourado não muda no escuro) */
+html.a11y-dark .site-footer .footer-news-link,
+html.a11y-dark .btn-contato,
+html.a11y-dark .rt-btn-confirm {
+  color: #111111 !important;
+}
+
+/* Listagens (todos, kids, alimentos, profissionais): pontuação com estilo inline */
+html.a11y-dark .service-info small[style*="--cpc-primary-light"] {
+  color: var(--cpc-mint) !important;
+}
+
+/* Novo anúncio: subtítulo com cor inline */
+html.a11y-dark .form-anuncio p[style*="#666"] {
+  color: #b9c3bd !important;
+}
+
+/* Campos de formulário: fundo escuro coerente com os cartões */
+html.a11y-dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+html.a11y-dark select,
+html.a11y-dark textarea {
+  background-color: #1d2220;
+  color: #eef2ef;
+  border-color: #3a443e;
+}
+html.a11y-dark input::placeholder,
+html.a11y-dark textarea::placeholder {
+  color: #8c978f;
+}
+
+/* Admin: ícones dos KPIs com fundo menta inline */
+html.a11y-dark .bottom-icon[style*="--cpc-mint-pale"] {
+  background: #1f3a30 !important;
+  color: var(--cpc-mint);
+}
+
+/* Serviços: o cartão "Alimentos & Bebidas" vira superfície escura; o texto verde médio clareia */
+html.a11y-dark:has(link[href$="/servicos.css"]) .alimentos {
+  color: var(--cpc-mint) !important;
+}
+
+/* Conta: cards clicáveis */
+html.a11y-dark .trade-card--link:hover { background: #232a27 !important; border-color: #3f5a4c !important; }
+html.a11y-dark .trade-acao { color: var(--cpc-sage); }

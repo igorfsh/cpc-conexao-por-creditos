@@ -1,14 +1,9 @@
 const fs = require("fs");
 const path = require("path");
 
-let pool = null;
-let usarJSON = !process.env.DB_HOST || !process.env.DB_NAME;
-try {
-  pool = require("../../config/pool_conexoes");
-} catch (err) {
-  pool = null;
-  usarJSON = true;
-}
+// Chaves de acesso (Face ID/biometria). Com banco configurado ficam só no MySQL,
+// para não sumirem quando o Render reinicia; sem banco, em data/passkeys.json.
+const { pool, executar: withFallback } = require("../../config/banco");
 
 const dbPath = path.join(__dirname, "../../data/passkeys.json");
 if (!fs.existsSync(dbPath)) fs.writeFileSync(dbPath, "[]", "utf8");
@@ -16,15 +11,6 @@ if (!fs.existsSync(dbPath)) fs.writeFileSync(dbPath, "[]", "utf8");
 const lerPasskeys = () => JSON.parse(fs.readFileSync(dbPath, "utf8") || "[]");
 const salvarPasskeys = (passkeys) => fs.writeFileSync(dbPath, JSON.stringify(passkeys, null, 2), "utf8");
 
-const withFallback = async (mysqlFn, jsonFn) => {
-  try {
-    if (pool && !usarJSON) return await mysqlFn();
-    return jsonFn();
-  } catch (err) {
-    usarJSON = true;
-    return jsonFn();
-  }
-};
 
 const mapRow = (row) => ({
   id: row.id,
@@ -97,6 +83,16 @@ module.exports = {
       passkey.counter = counter;
       passkey.ultimoUso = new Date().toISOString();
       salvarPasskeys(passkeys);
+      return true;
+    }
+  ),
+  deleteByUserId: async (userId) => withFallback(
+    async () => {
+      await pool.query("DELETE FROM passkeys WHERE usuario_id = ?", [userId]);
+      return true;
+    },
+    () => {
+      salvarPasskeys(lerPasskeys().filter((passkey) => String(passkey.userId) !== String(userId)));
       return true;
     }
   ),

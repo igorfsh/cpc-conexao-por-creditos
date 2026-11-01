@@ -1,0 +1,12 @@
+<script>
+  /* Aplica tema/fonte salvos antes da primeira pintura, para a página não piscar no tema claro. */
+  (function () {
+    try {
+      var estado = JSON.parse(localStorage.getItem("cpc-acessibilidade") || "{}");
+      var html = document.documentElement;
+      if (estado.escuro) html.classList.add("a11y-dark");
+      if (estado.contraste) html.classList.add("a11y-contraste");
+      html.classList.add("a11y-font-" + ((estado.fonte | 0) + 1));
+    } catch (e) { /* sem localStorage: segue no tema claro */ }
+  })();
+</script>
