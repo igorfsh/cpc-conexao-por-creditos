@@ -192,10 +192,12 @@ const prepararBanco = async () => {
 
     estado.pronto = true;
     estado.erro = null;
+    estado.dica = null;
     console.log("✅ MySQL pronto: contas e chaves de acesso (Face ID/biometria) são salvas no banco.");
   } catch (err) {
     estado.pronto = false;
     estado.erro = err.code || err.message;
+    estado.dica = dicaDoErro(`${err.code || ""} ${err.message || ""}`);
     console.error("❌ Não foi possível preparar o MySQL. Contas e biometria não serão salvas até o banco responder:", err.message);
     agendarNovaTentativa();
   }
@@ -217,12 +219,24 @@ const agendarNovaTentativa = () => {
 // Biometria só pode ser cadastrada onde ela não vai sumir: no banco, ou no modo local de desenvolvimento.
 const biometriaPersistente = () => (bancoConfigurado ? estado.pronto : !emProducao);
 
+// Explica o erro do banco sem expor valores (o /health é público).
+const DICAS = [
+  [/user name prefix/i, "DB_USER sem o prefixo do TiDB: use o usuário completo do Connect, no formato xxxxxxxx.root"],
+  [/insecure transport/i, "conexão sem criptografia: defina DB_SSL=true"],
+  [/access denied/i, "usuário ou senha recusados: confira DB_USER e DB_PASSWORD (gere uma nova senha no Connect do TiDB se precisar)"],
+  [/ENOTFOUND|EAI_AGAIN/i, "DB_HOST não encontrado: confira o endereço do banco"],
+  [/ECONNREFUSED|ETIMEDOUT|ETIMEOUT/i, "o banco não respondeu: confira DB_HOST e DB_PORT (TiDB usa 4000)"],
+  [/certificate|self.signed|CERT_/i, "certificado SSL recusado: confira DB_SSL_CA"],
+];
+const dicaDoErro = (mensagem = "") => (DICAS.find(([padrao]) => padrao.test(mensagem)) || [])[1];
+
 const statusArmazenamento = () => ({
   modo: estado.modo,
   persistente: estado.modo === "mysql",
   pronto: estado.pronto,
   biometria: biometriaPersistente() ? "disponivel" : "bloqueada",
   ...(estado.erro ? { erro: estado.erro } : {}),
+  ...(estado.dica ? { dica: estado.dica } : {}),
 });
 
 module.exports = { pool, bancoConfigurado, emProducao, executar, prepararBanco, statusArmazenamento, biometriaPersistente };
