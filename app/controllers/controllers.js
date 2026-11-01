@@ -2,6 +2,10 @@ const usuariosModel = require("../models/models");
 const trocasModel = require("../models/trocasModel");
 const { validationResult } = require("express-validator");
 
+// Falha do banco (fora do ar, sem conexão) não é erro do usuário: mensagem clara para tentar de novo.
+const mensagemDeFalha = (err, padrao) =>
+  err?.code || err?.sqlMessage ? "Serviço temporariamente indisponível. Tente novamente em alguns instantes." : padrao;
+
 const cadastroController = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -43,7 +47,7 @@ const cadastroController = async (req, res) => {
     return res.redirect(destino);
   } catch (err) {
     console.error("Erro ao cadastrar:", err);
-    return res.render("pages/login", { modo: "cadastro", erro: "Erro ao cadastrar. Tente novamente.", sucesso: false, valores: req.body, erroValidacao: {}, msgErro: {} });
+    return res.render("pages/login", { modo: "cadastro", erro: mensagemDeFalha(err, "Erro ao cadastrar. Tente novamente."), sucesso: false, valores: req.body, erroValidacao: {}, msgErro: {} });
   }
 };
 
@@ -79,7 +83,7 @@ const loginController = async (req, res) => {
     return res.render("pages/login", { erro: null, sucesso: false, valores: req.body, erroValidacao: { usuarioDigitado: "input-error" }, msgErro: { usuarioDigitado: "Usuário não encontrado!" } });
   } catch (err) {
     console.error("Erro ao fazer login:", err);
-    return res.render("pages/login", { erro: "Erro ao fazer login.", sucesso: false, valores: req.body, erroValidacao: {}, msgErro: {} });
+    return res.render("pages/login", { erro: mensagemDeFalha(err, "Erro ao fazer login."), sucesso: false, valores: req.body, erroValidacao: {}, msgErro: {} });
   }
 };
 

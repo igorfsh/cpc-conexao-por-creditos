@@ -6,6 +6,9 @@
 //   o disco do Render é apagado a cada deploy/reinício e os dados sumiriam.
 // - Sem banco configurado (desenvolvimento local), usa os arquivos em data/*.json.
 require("dotenv").config();
+const fs = require("fs");
+const path = require("path");
+const bcrypt = require("bcryptjs");
 
 const bancoConfigurado = Boolean(process.env.DATABASE_URL || (process.env.DB_HOST && process.env.DB_NAME));
 // O Render define RENDER=true automaticamente; lá o disco é apagado a cada deploy/reinício.
@@ -107,6 +110,49 @@ const criarBancoSeFaltar = async () => {
   }
 };
 
+// Migração única: na primeira vez que o banco é usado (tabela usuarios vazia), copia as contas
+// e chaves de biometria que estavam em data/*.json. Só roda com o banco vazio, para que uma conta
+// excluída não "volte" num próximo reinício.
+const lerJSON = (arquivo) => {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(__dirname, "../data", arquivo), "utf8") || "[]");
+  } catch (err) {
+    return [];
+  }
+};
+
+const importarContasDoJSON = async () => {
+  const [[{ total }]] = await pool.query("SELECT COUNT(*) AS total FROM usuarios");
+  if (total > 0) return;
+  const usuarios = lerJSON("usuarios.json").filter((u) => u?.email && u?.nome);
+  if (!usuarios.length) return;
+
+  const novoId = new Map();
+  for (const u of usuarios) {
+    // Senhas antigas em texto puro passam a ser guardadas com bcrypt.
+    const senha = u.senha ? (String(u.senha).startsWith("$2") ? u.senha : bcrypt.hashSync(String(u.senha), 8)) : null;
+    const [r] = await pool.query(
+      `INSERT IGNORE INTO usuarios (nome, email, senha, foto, perfil, provider, provider_id, telefone, endereco, status)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [u.nome, String(u.email).toLowerCase(), senha, u.foto || null, u.perfil || "user", u.provider || "local",
+        u.providerId || null, u.telefone || null, u.endereco || null, u.status || "ativo"]
+    );
+    if (r.insertId) novoId.set(String(u.id), r.insertId);
+  }
+
+  let chaves = 0;
+  for (const k of lerJSON("passkeys.json")) {
+    const usuarioId = novoId.get(String(k.userId));
+    if (!usuarioId || !k.credentialId || !k.publicKey) continue;
+    const [r] = await pool.query(
+      "INSERT IGNORE INTO passkeys (usuario_id, credential_id, public_key, counter, transports) VALUES (?, ?, ?, ?, ?)",
+      [usuarioId, k.credentialId, k.publicKey, Number(k.counter) || 0, JSON.stringify(k.transports || [])]
+    );
+    chaves += r.affectedRows;
+  }
+  console.log(`📥 Migração inicial: ${novoId.size} conta(s) e ${chaves} chave(s) de biometria copiadas de data/*.json para o banco.`);
+};
+
 const prepararBanco = async () => {
   if (!bancoConfigurado) {
     if (emProducao) {
@@ -142,6 +188,8 @@ const prepararBanco = async () => {
       if (!linhas.length) await pool.query(`CREATE INDEX ${indice.nome} ON ${indice.tabela} (${indice.colunas})`);
     }
 
+    await importarContasDoJSON();
+
     estado.pronto = true;
     estado.erro = null;
     console.log("✅ MySQL pronto: contas e chaves de acesso (Face ID/biometria) são salvas no banco.");
@@ -149,8 +197,21 @@ const prepararBanco = async () => {
     estado.pronto = false;
     estado.erro = err.code || err.message;
     console.error("❌ Não foi possível preparar o MySQL. Contas e biometria não serão salvas até o banco responder:", err.message);
+    agendarNovaTentativa();
   }
   return estado;
+};
+
+// Se o banco falhou ao iniciar (ex.: fora do ar por um momento), tenta de novo sozinho.
+let tentativa = null;
+const agendarNovaTentativa = () => {
+  if (tentativa) return;
+  tentativa = setTimeout(() => {
+    tentativa = null;
+    console.log("🔁 Tentando conectar ao MySQL novamente...");
+    prepararBanco();
+  }, 30000);
+  tentativa.unref?.();
 };
 
 // Biometria só pode ser cadastrada onde ela não vai sumir: no banco, ou no modo local de desenvolvimento.
