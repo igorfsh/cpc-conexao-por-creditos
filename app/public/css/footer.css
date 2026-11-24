@@ -232,7 +232,11 @@
   padding-top: 20px;
   padding-bottom: 24px;
   /* os botões flutuantes ficam no canto inferior direito */
-  padding-right: max(clamp(20px, 5vw, 56px), var(--rodape-reserva-direita));
+  /* em telas largas os botões ficam fora do conteúdo e a reserva não é necessária */
+  padding-right: max(
+    clamp(20px, 5vw, 56px),
+    calc(var(--rodape-reserva-direita) - max(0px, (100vw - 1180px) / 2))
+  );
   border-top: 1px solid var(--rodape-linha);
 }
 
@@ -260,29 +264,35 @@
   text-underline-offset: 3px;
 }
 
-/* ===== Tablet: marca em cima, três colunas embaixo ===== */
+/* ===== Tablet: grade 2x2 — marca e novidades em cima, links embaixo ===== */
 @media (max-width: 1023px) {
   .site-footer .footer-top { padding-top: 48px; padding-bottom: 36px; }
 
   .site-footer .footer-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-areas:
-      "marca marca marca"
-      "navegar categorias novidades";
-    gap: 32px 28px;
+      "marca novidades"
+      "navegar categorias";
+    gap: 0 40px;
   }
 
-  .site-footer .footer-brand {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 8px 28px;
-    padding-bottom: 28px;
+  .site-footer .footer-brand,
+  .site-footer .footer-news {
+    padding-bottom: 32px;
     border-bottom: 1px solid var(--rodape-linha);
   }
 
-  .site-footer .footer-brand p { max-width: 42ch; margin-top: 0; }
-  .site-footer .footer-social { margin-top: 0; }
+  .site-footer .footer-col { padding-top: 32px; }
+
+  .site-footer .footer-brand p { max-width: 34ch; }
+  .site-footer .footer-news p { max-width: 34ch; }
+
+  /* copyright e links legais empilhados à esquerda, longe dos botões flutuantes */
+  .site-footer .footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
 }
 
 /* ===== Mobile: tudo centralizado, Navegar e Categorias lado a lado ===== */
@@ -315,9 +325,13 @@
 
   .site-footer .footer-col ul { align-items: center; gap: 6px; }
 
+  .site-footer .footer-col { padding-top: 0; }
+
   .site-footer .footer-news {
     padding-top: 24px;
+    padding-bottom: 0;
     border-top: 1px solid var(--rodape-linha);
+    border-bottom: 0;
   }
   .site-footer .footer-news p { margin-left: auto; margin-right: auto; }
 
@@ -325,12 +339,15 @@
   .site-footer .footer-bottom {
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     gap: 8px;
     padding-left: 84px;
     padding-right: 84px;
     text-align: center;
   }
   .site-footer .footer-legal { justify-content: center; gap: 6px 16px; }
+  .site-footer .footer-bottom .copy-nome { display: block; }
+  .site-footer .footer-bottom .copy-sep { display: none; }
 }
 
 @media (max-width: 360px) {

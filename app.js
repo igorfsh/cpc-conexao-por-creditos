@@ -39,6 +39,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 const { prepararBanco, statusArmazenamento } = require("./config/banco");
+const { criarSessaoStore } = require("./config/sessaoStore");
 
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok", armazenamento: statusArmazenamento() });
@@ -48,7 +49,29 @@ const passport = require("passport");
 const { provedoresConfigurados, NOMES_PROVEDORES } = require("./config/passport");
 const authRoutes = require("./app/routes/auth");
 
+// Proteção contra CSRF: formulário enviado por outro site (com o cookie de quem está logado)
+// é recusado. O navegador sempre manda Origin (ou Referer) em POST; comparamos com o nosso endereço.
+// A Apple devolve o login por POST vindo do site dela, então essa rota fica de fora.
+const METODOS_SEGUROS = new Set(["GET", "HEAD", "OPTIONS"]);
+const ROTAS_DE_FORA = new Set(["/auth/apple/callback"]);
+const hostDaUrl = (url) => {
+  try {
+    return new URL(url).host;
+  } catch (err) {
+    return null;
+  }
+};
+app.use((req, res, next) => {
+  if (METODOS_SEGUROS.has(req.method) || ROTAS_DE_FORA.has(req.path)) return next();
+  const origem = hostDaUrl(req.get("origin")) || hostDaUrl(req.get("referer"));
+  const nossos = [req.get("host"), req.get("x-forwarded-host"), hostDaUrl(process.env.APP_BASE_URL)];
+  if (origem && nossos.includes(origem)) return next();
+  console.warn(`🚫 Pedido ${req.method} ${req.path} recusado: origem ${origem || "ausente"}.`);
+  res.status(403).send("Pedido recusado: ele não veio do site do CPC. Volte à página e tente de novo.");
+});
+
 app.use(session({
+  store: criarSessaoStore(),
   secret: sessionSecret || "seu-secret-seguro-aqui",
   resave: false,
   saveUninitialized: false, // só cria sessão quando há algo para guardar (login, desafio de biometria...)
@@ -65,6 +88,21 @@ app.post("/upload", upload.single("minhaImagem"), uploadImagem);
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Com a sessão no banco, o express-session manda o redirect antes de terminar de gravar:
+// o navegador abria a próxima página com a sessão antiga (ex.: login que "não pegava").
+// Se a sessão mudou nesta requisição, grava primeiro e só depois responde.
+app.use((req, res, next) => {
+  if (!req.session) return next();
+  const antes = JSON.stringify(req.session);
+  const gravarAntes = (responder) => (...args) => {
+    if (!req.session || JSON.stringify(req.session) === antes) return responder(...args);
+    req.session.save(() => responder(...args));
+  };
+  res.redirect = gravarAntes(res.redirect.bind(res));
+  res.json = gravarAntes(res.json.bind(res));
+  next();
+});
 
 app.use((req, res, next) => {
   res.locals.usuarioLogado = req.session.usuario || null;

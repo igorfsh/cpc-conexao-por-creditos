@@ -8,6 +8,7 @@ const fotos = require("../services/fotoAnuncioService");
 const { biometriaPersistente } = require("../../config/banco");
 const { extrairCidadeUF } = require("../services/enderecoService");
 const { validarTelefone } = require("../public/js/telefone");
+const trocaService = require("../services/trocaService");
 
 const anuncianteBase = "Malcolm Eliseu Ribeiro";
 
@@ -19,11 +20,11 @@ const exibirConta = async (req, res) => {
     if (!usuario) return res.redirect("/login");
     const passkeys = await passkeysModel.findByUserId(usuario.id);
 
-    const meusTrocas = trocasModel.findAll().filter(
+    const meusTrocas = (await trocasModel.findAll()).filter(
       (troca) => troca.solicitanteEmail === usuario.email
     );
     const meusTrocasComPerfil = await Promise.all(meusTrocas.map(async (troca) => {
-      const anuncio = anunciosModel.findById(troca.anuncioId);
+      const anuncio = await anunciosModel.findById(troca.anuncioId);
       const anunciante = anuncio?.doadorId
         ? await usuariosModel.findById(anuncio.doadorId)
         : null;
@@ -35,7 +36,7 @@ const exibirConta = async (req, res) => {
           : (anunciante?.foto || "/img/img perfil-white.png"),
       };
     }));
-    const meusAnuncios = anunciosModel.findAll().filter(
+    const meusAnuncios = (await anunciosModel.findAll()).filter(
       (anuncio) => String(anuncio.doadorId) === String(usuario.id)
     ).map((anuncio) => ({
       ...anuncio,
@@ -110,7 +111,7 @@ const atualizarDados = async (req, res) => {
     const usuario = await usuariosModel.updateDados(req.session.usuario.id, { email, telefone, endereco });
     if (!usuario) return res.redirect("/conta?erro=dados#meus-dados");
     req.session.usuario.email = usuario.email;
-    anunciosModel.atualizarContatoDoador(usuario.id, {
+    await anunciosModel.atualizarContatoDoador(usuario.id, {
       whatsapp: validacao.valido ? validacao.whatsapp : null,
       local: extrairCidadeUF(endereco),
     });
@@ -127,7 +128,8 @@ const excluirConta = async (req, res) => {
 
   try {
     await passkeysModel.deleteByUserId(id);
-    anunciosModel.deletarPorDoador(id);
+    await trocaService.cancelarPendentes({ doadorId: id });
+    await anunciosModel.deletarPorDoador(id);
     const ok = await usuariosModel.delete(id);
     if (!ok) return res.redirect("/conta?erro=excluir#meus-dados");
 

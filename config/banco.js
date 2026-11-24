@@ -77,7 +77,66 @@ const TABELAS = [
     CONSTRAINT fk_passkeys_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
     INDEX idx_passkeys_usuario (usuario_id)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`,
+  // doador_id sem chave estrangeira: anúncios de exemplo não têm dono e o histórico sobrevive à conta.
+  `CREATE TABLE IF NOT EXISTS anuncios (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    titulo VARCHAR(150) NOT NULL,
+    descricao TEXT NOT NULL,
+    categoria VARCHAR(30) NOT NULL DEFAULT 'todos',
+    tipo VARCHAR(20) NOT NULL DEFAULT 'produto',
+    pontos INT NOT NULL DEFAULT 10,
+    doador_id INT DEFAULT NULL,
+    doador_nome VARCHAR(100) NOT NULL,
+    doador_local VARCHAR(100) DEFAULT NULL,
+    whatsapp VARCHAR(20) DEFAULT NULL,
+    foto VARCHAR(255) DEFAULT NULL,
+    imagens TEXT DEFAULT NULL,
+    ativo TINYINT(1) NOT NULL DEFAULT 1,
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_atualizacao TIMESTAMP NULL DEFAULT NULL,
+    INDEX idx_anuncios_doador (doador_id),
+    INDEX idx_anuncios_categoria (categoria)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`,
+  `CREATE TABLE IF NOT EXISTS trocas (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    anuncio_id INT NOT NULL,
+    anuncio_titulo VARCHAR(150) NOT NULL DEFAULT '',
+    doador_id INT DEFAULT NULL,
+    doador_nome VARCHAR(100) NOT NULL DEFAULT '',
+    foto VARCHAR(255) DEFAULT NULL,
+    solicitante_id INT DEFAULT NULL,
+    solicitante_nome VARCHAR(100) NOT NULL DEFAULT '',
+    solicitante_email VARCHAR(100) NOT NULL DEFAULT '',
+    pontos INT NOT NULL DEFAULT 0,
+    creditos_reservados TINYINT(1) NOT NULL DEFAULT 0,
+    mensagem TEXT DEFAULT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'pendente',
+    data_solicitacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_conclusao TIMESTAMP NULL DEFAULT NULL,
+    avaliacao_nota TINYINT DEFAULT NULL,
+    avaliacao_comentario VARCHAR(300) DEFAULT NULL,
+    avaliacao_data TIMESTAMP NULL DEFAULT NULL,
+    INDEX idx_trocas_anuncio (anuncio_id),
+    INDEX idx_trocas_solicitante (solicitante_email)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`,
+  `CREATE TABLE IF NOT EXISTS estatisticas (
+    id TINYINT PRIMARY KEY,
+    membros_ativos INT NOT NULL DEFAULT 0,
+    trocas_realizadas INT NOT NULL DEFAULT 0,
+    total_doacoes_reais BIGINT NOT NULL DEFAULT 0,
+    ultima_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`,
+  // Sessões de login: na memória do servidor elas sumiam a cada reinício do Render.
+  `CREATE TABLE IF NOT EXISTS sessoes (
+    sid VARCHAR(128) PRIMARY KEY,
+    dados TEXT NOT NULL,
+    expira BIGINT NOT NULL,
+    INDEX idx_sessoes_expira (expira)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`,
 ];
+
+// Saldo de quem acaba de criar a conta (e de contas antigas, quando a coluna é criada).
+const SALDO_INICIAL = 20;
 
 // Colunas adicionadas depois da primeira versão da tabela usuarios.
 const COLUNAS_USUARIOS = {
@@ -88,6 +147,7 @@ const COLUNAS_USUARIOS = {
   endereco: "VARCHAR(255) DEFAULT NULL",
   ultimo_login: "TIMESTAMP NULL DEFAULT NULL",
   status: "VARCHAR(20) NOT NULL DEFAULT 'ativo'",
+  creditos: `INT NOT NULL DEFAULT ${SALDO_INICIAL}`,
 };
 
 const INDICES = [
@@ -153,6 +213,75 @@ const importarContasDoJSON = async () => {
   console.log(`📥 Migração inicial: ${novoId.size} conta(s) e ${chaves} chave(s) de biometria copiadas de data/*.json para o banco.`);
 };
 
+// Mesma ideia para anúncios, trocas e números da home: com as tabelas vazias, copia de data/*.json.
+// Os ids dos anúncios são mantidos para as trocas continuarem apontando para eles.
+const paraData = (valor) => (valor ? new Date(valor) : null);
+
+const importarAnunciosDoJSON = async () => {
+  const [[{ total }]] = await pool.query("SELECT COUNT(*) AS total FROM anuncios");
+  if (total > 0) return;
+  const anuncios = lerJSON("anuncios.json").filter((a) => a?.id && a?.titulo);
+  if (!anuncios.length) return;
+
+  // Os ids das contas mudaram na migração delas: acha o dono pelo e-mail (data/usuarios.json) ou pelo nome.
+  const emailPorIdAntigo = new Map(lerJSON("usuarios.json").map((u) => [String(u.id), String(u.email || "").toLowerCase()]));
+  const [contas] = await pool.query("SELECT id, nome, email FROM usuarios");
+  const donoAtual = (a) => {
+    if (!a.doadorId) return null;
+    const email = emailPorIdAntigo.get(String(a.doadorId));
+    const conta = (email && contas.find((c) => c.email === email)) || contas.find((c) => c.nome === a.doadorNome);
+    return conta ? conta.id : null;
+  };
+
+  for (const a of anuncios) {
+    await pool.query(
+      `INSERT IGNORE INTO anuncios (id, titulo, descricao, categoria, tipo, pontos, doador_id, doador_nome, doador_local,
+         whatsapp, foto, imagens, ativo, data_criacao, data_atualizacao)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [a.id, a.titulo, a.descricao || "", a.categoria || "todos", a.tipo || "produto", Number(a.pontos) || 0,
+        donoAtual(a), a.doadorNome || "Usuário CPC", a.doadorLocal || null, a.whatsapp || null, a.foto || null,
+        JSON.stringify(a.imagens || []), a.ativo === false ? 0 : 1, paraData(a.dataCriacao) || new Date(), paraData(a.dataAtualizacao)]
+    );
+  }
+  const maior = Math.max(...anuncios.map((a) => Number(a.id) || 0));
+  await pool.query(`ALTER TABLE anuncios AUTO_INCREMENT = ${maior + 1}`);
+  console.log(`📥 Migração inicial: ${anuncios.length} anúncio(s) copiados de data/anuncios.json para o banco.`);
+};
+
+const importarTrocasDoJSON = async () => {
+  const [[{ total }]] = await pool.query("SELECT COUNT(*) AS total FROM trocas");
+  if (total > 0) return;
+  const trocas = lerJSON("trocas.json").filter((t) => t?.anuncioId);
+  for (const t of trocas) {
+    await pool.query(
+      `INSERT INTO trocas (anuncio_id, anuncio_titulo, doador_nome, foto, solicitante_nome, solicitante_email, pontos,
+         mensagem, status, data_solicitacao, data_conclusao, avaliacao_nota, avaliacao_comentario, avaliacao_data)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [t.anuncioId, t.anuncioTitulo || "", t.doadorNome || "", t.foto || null, t.solicitanteNome || "",
+        String(t.solicitanteEmail || "").toLowerCase(), Number(t.pontos) || 0, t.mensagem || "", t.status || "pendente",
+        paraData(t.dataSolicitacao) || new Date(), paraData(t.dataConclusao), t.avaliacaoNota || null,
+        t.avaliacaoComentario || null, paraData(t.avaliacaoData)]
+    );
+  }
+  if (trocas.length) console.log(`📥 Migração inicial: ${trocas.length} troca(s) copiadas de data/trocas.json para o banco.`);
+};
+
+const importarEstatisticasDoJSON = async () => {
+  const [linhas] = await pool.query("SELECT 1 FROM estatisticas WHERE id = 1");
+  if (linhas.length) return;
+  const stats = (() => {
+    try {
+      return JSON.parse(fs.readFileSync(path.join(__dirname, "../data/stats.json"), "utf8"));
+    } catch (err) {
+      return {};
+    }
+  })();
+  await pool.query(
+    "INSERT IGNORE INTO estatisticas (id, membros_ativos, trocas_realizadas, total_doacoes_reais) VALUES (1, ?, ?, ?)",
+    [Number(stats.membrosAtivos) || 0, Number(stats.trocasRealizadas) || 0, Number(stats.totalDoacoesReais) || 0]
+  );
+};
+
 const prepararBanco = async () => {
   if (!bancoConfigurado) {
     if (emProducao) {
@@ -189,16 +318,19 @@ const prepararBanco = async () => {
     }
 
     await importarContasDoJSON();
+    await importarAnunciosDoJSON();
+    await importarTrocasDoJSON();
+    await importarEstatisticasDoJSON();
 
     estado.pronto = true;
     estado.erro = null;
     estado.dica = null;
-    console.log("✅ MySQL pronto: contas e chaves de acesso (Face ID/biometria) são salvas no banco.");
+    console.log("✅ MySQL pronto: contas, créditos, anúncios, trocas, sessões e biometria são salvos no banco.");
   } catch (err) {
     estado.pronto = false;
     estado.erro = err.code || err.message;
     estado.dica = dicaDoErro(`${err.code || ""} ${err.message || ""}`);
-    console.error("❌ Não foi possível preparar o MySQL. Contas e biometria não serão salvas até o banco responder:", err.message);
+    console.error("❌ Não foi possível preparar o MySQL. Os dados não serão salvos até o banco responder:", err.message);
     agendarNovaTentativa();
   }
   return estado;
@@ -239,4 +371,4 @@ const statusArmazenamento = () => ({
   ...(estado.dica ? { dica: estado.dica } : {}),
 });
 
-module.exports = { pool, bancoConfigurado, emProducao, executar, prepararBanco, statusArmazenamento, biometriaPersistente };
+module.exports = { pool, bancoConfigurado, emProducao, executar, prepararBanco, statusArmazenamento, biometriaPersistente, SALDO_INICIAL };

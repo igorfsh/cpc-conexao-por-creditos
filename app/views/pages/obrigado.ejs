@@ -21,7 +21,7 @@
       dataFormatada = data.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric', timeZone: 'America/Sao_Paulo' });
     }
     const fotoItem = locals.anuncio?.fotoExibicao || (temTroca ? troca.foto : null);
-    const pontos = locals.anuncio?.pontos ?? (temTroca ? troca.pontos : null);
+    const pontos = temTroca ? troca.pontos : null;
   %>
 
   <main class="ob-page">
@@ -90,7 +90,10 @@
               com <strong><%= troca.doadorNome %></strong><% if (locals.anuncio?.doadorLocal) { %> · <%= anuncio.doadorLocal %><% } %>
             </p>
             <% if (pontos) { %>
-              <p class="ob-item__pontos"><strong><%= pontos %></strong> créditos CPC</p>
+              <p class="ob-item__pontos"><strong><%= pontos %></strong> créditos CPC reservados</p>
+            <% } %>
+            <% if (locals.saldoAtual !== null && locals.saldoAtual !== undefined) { %>
+              <p class="ob-item__doador">Seu saldo agora: <strong><%= saldoAtual %></strong> créditos</p>
             <% } %>
           </section>
         </article>

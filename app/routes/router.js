@@ -13,6 +13,7 @@ const { responderDuvida } = require("../controllers/iaController");
 const { cadastroController, loginController } = require("../controllers/controllers");
 const { mensagensErroSocial } = require("../controllers/authController");
 const { obterOpcoesRegistro, verificarRegistro, obterOpcoesLogin, verificarLogin } = require("../controllers/passkeyController");
+const trocaService = require("../services/trocaService");
 
 const router = express.Router();
 
@@ -32,9 +33,9 @@ router.get("/cadastro", (req, res) => {
   res.render("pages/login", { modo: "cadastro", erro: null, sucesso: null, valores: {}, erroValidacao: {}, msgErro: {} });
 });
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const stats = trocasModel.getStats();
+    const stats = await trocasModel.getStats();
     res.render("pages/home", {
       membrosAtivos: stats.membrosAtivos.toLocaleString("pt-BR"),
       trocasRealizadas: stats.trocasRealizadas.toLocaleString("pt-BR"),
@@ -75,13 +76,22 @@ const whatsappDoAnunciante = async (anuncio) => {
   return daConta.valido ? daConta.whatsapp : null;
 };
 
+const ERROS_TROCA = {
+  saldo: "Você não tem créditos suficientes para esta troca.",
+  duplicada: "Você já pediu este item. A troca está aguardando conclusão.",
+  falha: "Não foi possível registrar a troca. Tente novamente.",
+};
+
 const prepararResumo = async (req, anuncio) => {
   const preparado = await prepararAnuncio(anuncio);
   if (!preparado) return { anuncio: null };
+  const conta = req.session?.usuario ? await usuariosModel.findById(req.session.usuario.id) : null;
   return {
     anuncio: preparado,
     whatsappAnunciante: await whatsappDoAnunciante(anuncio),
     proprioAnuncio: ehProprioAnuncio(req, anuncio),
+    saldoAtual: conta ? conta.creditos : null,
+    erroTroca: ERROS_TROCA[req.query.erro] || null,
   };
 };
 
@@ -90,7 +100,7 @@ const ehProprioAnuncio = (req, anuncio) =>
 
 const listarAnuncios = (categoria, pagina) => async (req, res) => {
   const busca = req.query.busca || "";
-  const anuncios = anunciosModel.findAll({ categoria, busca });
+  const anuncios = await anunciosModel.findAll({ categoria, busca });
   const usuariosPorId = new Map();
   // Os cards só usam a foto do item: não precisa buscar a conta de cada anunciante no banco.
   const anunciosComFoto = await Promise.all(anuncios.map((anuncio) => prepararAnuncio(anuncio, usuariosPorId, { comAnunciante: false })));
@@ -103,7 +113,7 @@ router.get("/alimentos", listarAnuncios("alimentos", "alimentos"));
 router.get("/profissionais", listarAnuncios("profissionais", "profissionais"));
 
 router.get("/contato/:id", async (req, res) => {
-  const anuncio = anunciosModel.findById(req.params.id);
+  const anuncio = await anunciosModel.findById(req.params.id);
   if (!anuncio) return res.redirect("/todos");
   res.render("pages/contato-troca", {
     anuncio: await prepararAnuncio(anuncio),
@@ -113,12 +123,12 @@ router.get("/contato/:id", async (req, res) => {
 });
 
 router.get("/contato", async (req, res) => {
-  const anuncio = anunciosModel.findAll()[0] || null;
+  const anuncio = (await anunciosModel.findAll())[0] || null;
   res.render("pages/contato-troca", { anuncio: await prepararAnuncio(anuncio), proprioAnuncio: ehProprioAnuncio(req, anuncio) });
 });
 
 router.get("/resumo/:anuncioId", async (req, res) => {
-  const anuncio = anunciosModel.findById(req.params.anuncioId);
+  const anuncio = await anunciosModel.findById(req.params.anuncioId);
   if (!anuncio) return res.redirect("/todos");
   if (!req.session?.usuario) req.session.redirectAfterLogin = `/resumo/${req.params.anuncioId}`;
   req.session.anuncioPendente = anuncio;
@@ -128,35 +138,30 @@ router.get("/resumo/:anuncioId", async (req, res) => {
 router.get("/resumo", async (req, res) => {
   // Relê o anúncio para pegar o WhatsApp atualizado, não a cópia guardada na sessão.
   const pendente = req.session.anuncioPendente;
-  const anuncio = pendente ? anunciosModel.findById(pendente.id) || pendente : null;
+  const anuncio = pendente ? (await anunciosModel.findById(pendente.id)) || pendente : null;
   if (anuncio && !req.session?.usuario) req.session.redirectAfterLogin = "/resumo";
   res.render("pages/resumo-troca", await prepararResumo(req, anuncio));
 });
 
-router.post("/confirmar-troca", autenticado, (req, res) => {
-  const anuncio = anunciosModel.findById(req.body.anuncioId);
-  if (!anuncio) return res.redirect("/todos");
-  if (ehProprioAnuncio(req, anuncio)) return res.redirect(`/resumo/${anuncio.id}`);
+router.post("/confirmar-troca", autenticado, async (req, res) => {
+  const anuncio = await anunciosModel.findById(req.body.anuncioId);
+  if (!anuncio || anuncio.ativo === false) return res.redirect("/todos");
 
   try {
-    const { anuncioId, anuncioTitulo, mensagem } = req.body;
-    const usuario = req.session.usuario;
-    const troca = trocasModel.create({
-      anuncioId,
-      anuncioTitulo: anuncioTitulo || "Anúncio CPC",
-      doadorNome: anuncio?.doadorNome || "Doador CPC",
-      foto: anuncio?.foto || "../img/img malcon.png",
-      pontos: anuncio?.pontos,
-      solicitanteNome: usuario?.nome || req.body.nome || "Visitante",
-      solicitanteEmail: usuario?.email || req.body.email || "",
-      mensagem: mensagem || "",
+    const resultado = await trocaService.solicitar({
+      usuario: req.session.usuario,
+      anuncio,
+      mensagem: req.body.mensagem,
     });
+    if (resultado.erro === "proprio") return res.redirect(`/resumo/${anuncio.id}`);
+    if (resultado.erro) return res.redirect(`/resumo/${anuncio.id}?erro=${resultado.erro}`);
     delete req.session.anuncioPendente;
-    req.session.ultimaTrocaId = troca.id;
+    req.session.ultimaTrocaId = resultado.troca.id;
+    return res.redirect("/obrigado");
   } catch (err) {
     console.error("Erro confirmar troca:", err);
+    return res.redirect(`/resumo/${anuncio.id}?erro=falha`);
   }
-  res.redirect("/obrigado");
 });
 
 router.get("/novo-anuncio", async (req, res) => {
@@ -211,8 +216,8 @@ router.post(
   editarAnuncio
 );
 
-router.get("/api/stats", (req, res) => {
-  const stats = trocasModel.getStats();
+router.get("/api/stats", async (req, res) => {
+  const stats = await trocasModel.getStats();
   res.json({
     membrosAtivos: stats.membrosAtivos,
     trocasRealizadas: stats.trocasRealizadas,
@@ -220,8 +225,8 @@ router.get("/api/stats", (req, res) => {
   });
 });
 
-router.get("/api/anuncios", (req, res) => {
-  res.json(anunciosModel.findAll({ categoria: req.query.categoria, busca: req.query.busca }));
+router.get("/api/anuncios", async (req, res) => {
+  res.json(await anunciosModel.findAll({ categoria: req.query.categoria, busca: req.query.busca }));
 });
 
 router.post("/api/chat", responderDuvida);
@@ -231,13 +236,12 @@ router.get("/avaliacao", autenticado, async (req, res) => {
     const usuario = await usuariosModel.findById(req.session.usuario.id);
     if (!usuario) return res.redirect("/login");
 
-    const trocas = trocasModel.findAll()
+    const trocas = await Promise.all((await trocasModel.findAll())
       .filter((troca) => troca.solicitanteEmail === usuario.email)
-      .sort((a, b) => new Date(b.dataSolicitacao) - new Date(a.dataSolicitacao))
-      .map((troca) => {
-        const anuncio = anunciosModel.findById(troca.anuncioId);
+      .map(async (troca) => {
+        const anuncio = await anunciosModel.findById(troca.anuncioId);
         return { ...troca, fotoItem: anuncio ? fotos.fotoCapa(anuncio) : null };
-      });
+      }));
 
     return res.render("pages/avaliacao", {
       pendentes: trocas.filter((troca) => !troca.avaliacaoNota),
@@ -255,7 +259,7 @@ router.post("/avaliacao/:id", autenticado, async (req, res) => {
   try {
     const usuario = await usuariosModel.findById(req.session.usuario.id);
     const id = Number(req.params.id);
-    const avaliacao = usuario && trocasModel.avaliar(id, usuario.email, req.body.nota, req.body.comentario);
+    const avaliacao = usuario && await trocasModel.avaliar(id, usuario.email, req.body.nota, req.body.comentario);
     return res.redirect(avaliacao ? `/avaliacao?salva=${id}#troca-${id}` : `/avaliacao?erro=${id}#troca-${id}`);
   } catch (err) {
     console.error("Erro ao salvar avaliação:", err);
@@ -272,11 +276,12 @@ router.get("/doe", (req, res) => res.render("pages/doe"));
 router.get("/obrigado", async (req, res) => {
   const usuario = req.session?.usuario;
   const troca = req.session?.ultimaTrocaId && usuario
-    ? trocasModel.findAll().find((t) => t.id === req.session.ultimaTrocaId && t.solicitanteEmail === usuario.email)
+    ? await trocasModel.findById(req.session.ultimaTrocaId)
     : null;
-  if (!troca) return res.render("pages/obrigado", { troca: null });
+  if (!troca || troca.solicitanteEmail !== usuario.email) return res.render("pages/obrigado", { troca: null });
 
-  const anuncio = anunciosModel.findById(troca.anuncioId);
+  const anuncio = await anunciosModel.findById(troca.anuncioId);
+  const conta = await usuariosModel.findById(usuario.id);
   const preparado = await prepararAnuncio(anuncio);
   const whatsapp = anuncio ? await whatsappDoAnunciante(anuncio) : null;
   const mensagem = encodeURIComponent(
@@ -286,6 +291,7 @@ router.get("/obrigado", async (req, res) => {
     troca,
     anuncio: preparado,
     whatsappLink: whatsapp ? `https://wa.me/${whatsapp}?text=${mensagem}` : null,
+    saldoAtual: conta ? conta.creditos : null,
   });
 });
 

@@ -3,3 +3,7 @@ node_modules
 .env
 __pycache__/
 *.pyc
+# Dados pessoais gravados pelo modo local (sem MySQL): nunca versionar.
+data/usuarios.json
+data/passkeys.json
+data/trocas.json

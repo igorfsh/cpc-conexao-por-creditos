@@ -4,6 +4,7 @@ const anunciosModel = require("../models/anunciosModel");
 const trocasModel = require("../models/trocasModel");
 const usuariosModel = require("../models/models");
 const passkeysModel = require("../models/passkeysModel");
+const trocaService = require("../services/trocaService");
 
 const CATEGORIAS = ["alimentos", "profissionais", "infantil", "todos"];
 const TIPOS = ["produto", "servico"];
@@ -45,9 +46,9 @@ const formatarData = (iso) => iso ? new Date(iso).toLocaleDateString("pt-BR") : 
 // ============================================
 router.get("/", async (req, res) => {
     try {
-        const stats         = trocasModel.getStats();
-        const contagem      = anunciosModel.contarPorCategoria();
-        const todasTrocas   = trocasModel.findAll();
+        const stats         = await trocasModel.getStats();
+        const contagem      = await anunciosModel.contarPorCategoria();
+        const todasTrocas   = await trocasModel.findAll();
         const usuarios      = await usuariosModel.findAll({ limit: 100000, offset: 0 });
 
         // Percentuais de categoria
@@ -113,15 +114,15 @@ router.get("/", async (req, res) => {
 // ============================================
 // 📋 ANÚNCIOS — GET /adm/anuncios
 // ============================================
-router.get("/anuncios", (req, res) => {
-    const anuncios = anunciosModel.findAll().map(a => ({ ...a, data: formatarData(a.dataCriacao) }));
-    res.render("pages/adm/anuncios", { anuncios, contagem: anunciosModel.contarPorCategoria() });
+router.get("/anuncios", async (req, res) => {
+    const anuncios = (await anunciosModel.findAll()).map(a => ({ ...a, data: formatarData(a.dataCriacao) }));
+    res.render("pages/adm/anuncios", { anuncios, contagem: await anunciosModel.contarPorCategoria() });
 });
 
 // ============================================
 // ✏️  EDITAR anúncio — POST /adm/anuncios/editar/:id
 // ============================================
-router.post("/anuncios/editar/:id", (req, res) => {
+router.post("/anuncios/editar/:id", async (req, res) => {
     const { titulo, descricao, categoria, tipo, pontos } = req.body;
     const pontosNum = parseInt(pontos);
     const valido = titulo && titulo.trim() && descricao && descricao.trim()
@@ -130,23 +131,24 @@ router.post("/anuncios/editar/:id", (req, res) => {
 
     if (!valido) return res.redirect("/adm/anuncios?msg=anuncio-invalido");
 
-    const atualizado = anunciosModel.update(Number(req.params.id), { titulo, descricao, categoria, tipo, pontos: pontosNum });
+    const atualizado = await anunciosModel.update(Number(req.params.id), { titulo, descricao, categoria, tipo, pontos: pontosNum });
     res.redirect(`/adm/anuncios?msg=${atualizado ? "anuncio-editado" : "anuncio-invalido"}`);
 });
 
 // ============================================
 // 🗑️  DELETAR anúncio — POST /adm/anuncios/deletar/:id
 // ============================================
-router.post("/anuncios/deletar/:id", (req, res) => {
-    anunciosModel.delete(Number(req.params.id));
+router.post("/anuncios/deletar/:id", async (req, res) => {
+    await anunciosModel.delete(Number(req.params.id));
+    await trocaService.cancelarPendentes({ anuncioId: req.params.id });
     res.redirect("/adm/anuncios?msg=anuncio-removido");
 });
 
 // ============================================
 // 🔄 TROCAS — GET /adm/trocas
 // ============================================
-router.get("/trocas", (req, res) => {
-    const trocas = trocasModel.findAll().map(t => ({
+router.get("/trocas", async (req, res) => {
+    const trocas = (await trocasModel.findAll()).map(t => ({
         ...t,
         data: formatarData(t.dataSolicitacao),
         dataFim: formatarData(t.dataConclusao),
@@ -163,24 +165,24 @@ router.get("/trocas", (req, res) => {
 // ============================================
 // ✅ CONFIRMAR troca — POST /adm/trocas/confirmar/:id
 // ============================================
-router.post("/trocas/confirmar/:id", (req, res) => {
-    const ok = trocasModel.confirmar(Number(req.params.id));
+router.post("/trocas/confirmar/:id", async (req, res) => {
+    const ok = await trocaService.concluir(Number(req.params.id));
     res.redirect(`/adm/trocas?msg=${ok ? "troca-confirmada" : "troca-erro"}`);
 });
 
 // ============================================
 // ✖️  CANCELAR troca — POST /adm/trocas/cancelar/:id
 // ============================================
-router.post("/trocas/cancelar/:id", (req, res) => {
-    const ok = trocasModel.cancelar(Number(req.params.id));
+router.post("/trocas/cancelar/:id", async (req, res) => {
+    const ok = await trocaService.cancelar(Number(req.params.id));
     res.redirect(`/adm/trocas?msg=${ok ? "troca-cancelada" : "troca-erro"}`);
 });
 
 // ============================================
 // 🗑️  DELETAR troca — POST /adm/trocas/deletar/:id
 // ============================================
-router.post("/trocas/deletar/:id", (req, res) => {
-    const ok = trocasModel.delete(Number(req.params.id));
+router.post("/trocas/deletar/:id", async (req, res) => {
+    const ok = await trocaService.excluir(Number(req.params.id));
     res.redirect(`/adm/trocas?msg=${ok ? "troca-removida" : "troca-erro"}`);
 });
 
@@ -206,7 +208,8 @@ router.post("/usuarios/deletar/:id", async (req, res) => {
         if (usuario.perfil === "admin") return res.redirect("/adm/usuarios?msg=usuario-admin");
 
         await passkeysModel.deleteByUserId(usuario.id);
-        anunciosModel.desativarPorDoador(usuario.id);
+        await anunciosModel.desativarPorDoador(usuario.id);
+        await trocaService.cancelarPendentes({ doadorId: usuario.id });
         const ok = await usuariosModel.delete(usuario.id);
         res.redirect(`/adm/usuarios?msg=${ok ? "usuario-removido" : "usuario-erro"}`);
     } catch (err) {

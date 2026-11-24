@@ -48,7 +48,7 @@ const criarAnuncio = async (req, res) => {
       imagens.push(`/img/anuncios/${nome}`);
     }
 
-    anunciosModel.create({
+    await anunciosModel.create({
       titulo: req.body.titulo,
       descricao: req.body.descricao,
       categoria: req.body.categoria,
@@ -97,8 +97,8 @@ const valoresDoAnuncio = (anuncio) => ({
 const ehDono = (req, anuncio) =>
   Boolean(anuncio?.doadorId && String(anuncio.doadorId) === String(req.session.usuario?.id));
 
-const exibirEdicao = (req, res) => {
-  const anuncio = anunciosModel.findById(req.params.id);
+const exibirEdicao = async (req, res) => {
+  const anuncio = await anunciosModel.findById(req.params.id);
   if (!anuncio || anuncio.ativo === false) return res.redirect("/conta");
   if (!ehDono(req, anuncio)) return res.redirect(`/contato/${anuncio.id}`);
   return res.render("pages/novo-anuncio", {
@@ -110,7 +110,7 @@ const exibirEdicao = (req, res) => {
 };
 
 const editarAnuncio = async (req, res) => {
-  const anuncio = anunciosModel.findById(req.params.id);
+  const anuncio = await anunciosModel.findById(req.params.id);
   const descartarUploads = () => (req.files || []).forEach(imageService.removerArquivoTemporario);
   if (!anuncio || anuncio.ativo === false) {
     descartarUploads();
@@ -150,7 +150,7 @@ const editarAnuncio = async (req, res) => {
     }
 
     const fotosAntigas = imagens.length ? (anuncio.imagens || []) : [];
-    anunciosModel.update(anuncio.id, {
+    await anunciosModel.update(anuncio.id, {
       titulo: req.body.titulo,
       descricao: req.body.descricao,
       tipo: req.body.tipo,

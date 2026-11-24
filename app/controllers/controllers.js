@@ -38,7 +38,7 @@ const cadastroController = async (req, res) => {
       ? usuarioCriado
       : await usuariosModel.findById(usuarioCriado.insertId);
     if (!usuario) throw new Error("Usuário criado, mas não localizado");
-    trocasModel.incrementarMembro();
+    await trocasModel.incrementarMembro();
     await usuariosModel.updateLastLogin(usuario.id);
     req.session.usuario = { id: usuario.id, nome: usuario.nome, email: usuario.email, foto: usuario.foto || null, perfil: usuario.perfil || "user", status: usuario.status || "ativo" };
     req.session.usuarioId = usuario.id;

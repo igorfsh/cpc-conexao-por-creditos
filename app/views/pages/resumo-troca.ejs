@@ -19,9 +19,11 @@
     <a href="/todos" style="color:var(--cpc-primary-light);font-weight:600">← Ver todos os anúncios</a>
   </section>
 <% } else {
-  const saldoAtual = 120;
+  // Visitante sem login ainda não tem saldo: a conta aparece depois de entrar.
+  const logado     = locals.saldoAtual !== null && locals.saldoAtual !== undefined;
+  const saldoAtual = logado ? locals.saldoAtual : 0;
   const saldoApos  = saldoAtual - anuncio.pontos;
-  const temSaldo   = saldoApos >= 0;
+  const temSaldo   = !logado || saldoApos >= 0;
   const proprio    = Boolean(locals.proprioAnuncio);
 
   // emoji de fallback por categoria
@@ -117,7 +119,7 @@
     <section class="rt-pontos-rows">
       <section class="rt-pontos-row">
         <span class="rt-pontos-row-label">Seu saldo atual</span>
-        <span class="rt-pontos-row-value"><%= saldoAtual %> pontos</span>
+        <span class="rt-pontos-row-value"><%= logado ? saldoAtual + ' pontos' : 'Entre para ver' %></span>
       </section>
       <section class="rt-pontos-row">
         <span class="rt-pontos-row-label">Custo desta troca</span>
@@ -126,7 +128,7 @@
       <section class="rt-pontos-row" style="background:var(--cpc-mint-pale);border-color:var(--cpc-mint)">
         <span class="rt-pontos-row-label" style="font-weight:600;color:var(--cpc-primary)">Saldo após a troca</span>
         <span class="rt-pontos-row-value <%= temSaldo ? '' : 'insuf' %>">
-          <% if (temSaldo) { %><%= saldoApos %> pontos<% } else { %>Saldo insuficiente<% } %>
+          <% if (!logado) { %>—<% } else if (temSaldo) { %><%= saldoApos %> pontos<% } else { %>Saldo insuficiente<% } %>
         </span>
       </section>
     </section>
@@ -159,7 +161,7 @@
         <section class="rt-step-num">3</section>
         <section>
           <section class="rt-step-title">Confirme a conclusão</section>
-          <section class="rt-step-desc">Os pontos só são debitados após ambas as partes confirmarem</section>
+          <section class="rt-step-desc">Os pontos ficam reservados e só vão para o doador quando a troca for concluída</section>
         </section>
       </section>
     </section>
@@ -190,6 +192,10 @@
     </a>
     <% } %>
 
+    <% if (locals.erroTroca) { %>
+      <p class="rt-erro" role="alert" style="font-size: calc(13px * var(--a11y-escala, 1));color:#c0392b;text-align:center;font-weight:600;margin:12px 0"><%= erroTroca %></p>
+    <% } %>
+
     <!-- Formulário de confirmação -->
     <form action="/confirmar-troca" method="POST">
       <input type="hidden" name="anuncioId"     value="<%= anuncio.id %>">
@@ -203,7 +209,7 @@
 
     <section class="rt-aviso">
       Os usuários têm até <strong>30 dias</strong> para concluir a troca.<br>
-      Os pontos só são debitados após confirmação de ambas as partes.
+      Ao confirmar, os pontos saem do seu saldo e ficam reservados. Se a troca for cancelada, eles voltam para você.
     </section>
 
     <p class="rt-termos">

@@ -1,6 +1,21 @@
 Para instalar as dependencias use:
 npm i --save
 
+Para rodar os testes (regras de créditos; usam `data/*.json` e restauram os arquivos no fim):
+npm test
+
+## Créditos
+
+- Conta nova começa com **20 créditos** (`SALDO_INICIAL` em `config/banco.js`).
+- Ao confirmar uma troca, o custo do anúncio sai do saldo de quem pediu e fica **reservado** (sem saldo, o pedido é recusado; o mesmo item não pode ser pedido duas vezes enquanto estiver pendente).
+- Quando o admin **conclui** a troca, os créditos vão para quem ofereceu. Se ela for **cancelada** ou **excluída** antes, voltam para quem pediu. Anúncio removido ou conta excluída cancela os pedidos pendentes.
+- A regra fica em `app/services/trocaService.js`.
+
+## Segurança
+
+- `data/usuarios.json`, `data/passkeys.json` e `data/trocas.json` têm dados pessoais e não são versionados (`.gitignore`). Senhas antigas em texto puro nesses arquivos são convertidas para bcrypt quando o servidor sobe.
+- Formulários e APIs só aceitam `POST` vindo do próprio site (cabeçalho `Origin`/`Referer`), contra CSRF. A exceção é `/auth/apple/callback`, que a Apple envia do site dela.
+
 ## Deploy no Render
 
 O arquivo `render.yaml` configura o serviço Node.js automaticamente. No Render:
@@ -11,9 +26,9 @@ O arquivo `render.yaml` configura o serviço Node.js automaticamente. No Render:
 4. Configure um banco MySQL externo e informe `DB_HOST`, `DB_USER`, `DB_PASSWORD` e `DB_NAME`.
 5. Atualize os callbacks OAuth para `/auth/<provedor>/callback` usando o domínio público (veja abaixo).
 
-## Contas e Face ID/biometria que não somem no Render
+## Dados que não somem no Render
 
-O disco do Render (plano gratuito) é apagado a cada deploy ou reinício. Por isso as **contas** e as **chaves de Face ID/digital** ficam num banco MySQL. Do aparelho, o servidor guarda só a chave pública; a biometria nunca sai do celular.
+O disco do Render (plano gratuito) é apagado a cada deploy ou reinício. Por isso **contas, créditos, anúncios, trocas, números da home, sessões de login** e **chaves de Face ID/digital** ficam num banco MySQL. Na primeira subida com o banco vazio, anúncios (`data/anuncios.json`) e números da home (`data/stats.json`) são copiados para ele. Do aparelho, o servidor guarda só a chave pública; a biometria nunca sai do celular.
 
 **Configuração (uma vez):**
 
@@ -27,7 +42,7 @@ O disco do Render (plano gratuito) é apagado a cada deploy ou reinício. Por is
 
 **Proteções:**
 
-- **Sem banco configurado no Render**, o log mostra um erro e o cadastro de Face ID/digital fica **bloqueado** (`"biometria": "bloqueada"` no `/health`). Assim ninguém cadastra uma biometria que sumiria no próximo reinício.
+- **Sem banco configurado no Render**, anúncios, trocas e créditos voltam ao estado do repositório a cada deploy, e o log mostra um erro e o cadastro de Face ID/digital fica **bloqueado** (`"biometria": "bloqueada"` no `/health`). Assim ninguém cadastra uma biometria que sumiria no próximo reinício.
 - Com banco configurado, nada é gravado em JSON. Se o banco cair ou demorar mais de 8 s (`DB_TIMEOUT_MS`), o usuário vê uma mensagem de erro em vez de um "sucesso" falso.
 - Mantenha `WEBAUTHN_RP_ID` e `WEBAUTHN_ORIGIN` (já no `render.yaml`) com o mesmo domínio: se o domínio mudar, as chaves cadastradas deixam de valer.
 

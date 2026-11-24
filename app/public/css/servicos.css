@@ -6,9 +6,15 @@
 
 body {
   font-family: 'Poppins', sans-serif;
+  /* rodapé sempre colado no fim da tela, mesmo em monitores altos */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 main {
+  flex: 1 0 auto;
   --srv-verde: #5f8f79;
   --srv-cinza: #e8e8e6;
   padding: 0 16px 64px;
@@ -42,6 +48,8 @@ main h1 {
   background-color: var(--srv-verde);
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.18);
   transition: transform 0.2s, box-shadow 0.2s;
+  /* o texto escala pela largura do próprio card (unidade cqi) */
+  container-type: inline-size;
 }
 
 .btn:hover,
@@ -66,13 +74,15 @@ main h1 {
 .btn span {
   margin-left: 40%;
   flex: 1;
-  padding: 16px;
+  min-width: 0;
+  padding: 12px;
   text-align: center;
   text-transform: uppercase;
   font-family: 'Montserrat', sans-serif;
   font-weight: 400;
-  font-size: calc(clamp(20px, 5.5vw, 26px) * var(--a11y-escala, 1));
+  font-size: calc(clamp(15px, 6cqi, 28px) * var(--a11y-escala, 1));
   line-height: 1.15;
+  overflow-wrap: anywhere;
 }
 
 /* Profissional "salta" para fora do topo do card */
@@ -102,39 +112,52 @@ main h1 {
   font-weight: 700;
 }
 
-/* Tablet */
+/* Tablet: uma coluna mais larga */
 @media (min-width: 600px) {
-  .botoes {
-    max-width: 560px;
+  main {
+    padding: 0 24px 80px;
   }
 
-  .btn {
-    min-height: 160px;
-  }
-
-  .btn span {
-    font-size: calc(28px * var(--a11y-escala, 1));
-  }
-}
-
-/* Desktop: três cards lado a lado */
-@media (min-width: 1024px) {
   main h1 {
-    font-size: calc(24px * var(--a11y-escala, 1));
-    margin: 40px 0 64px;
+    font-size: calc(22px * var(--a11y-escala, 1));
+    margin: 32px 0 48px;
   }
 
   .botoes {
-    grid-template-columns: repeat(3, 1fr);
-    max-width: 1200px;
-    gap: 28px;
+    max-width: 620px;
+    gap: 36px;
   }
 
   .btn {
     min-height: 170px;
   }
+}
 
-  .btn span {
-    font-size: calc(clamp(18px, 1.6vw, 24px) * var(--a11y-escala, 1));
+/* Desktop: três cards lado a lado */
+@media (min-width: 1200px) {
+  main h1 {
+    font-size: calc(26px * var(--a11y-escala, 1));
+    margin: 48px 0 72px;
+  }
+
+  .botoes {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 1240px;
+    gap: 32px;
+  }
+
+  .btn {
+    min-height: 180px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn {
+    transition: none;
+  }
+
+  .btn:hover,
+  .btn:focus-visible {
+    transform: none;
   }
 }

@@ -3,7 +3,7 @@ const path = require("path");
 const bcrypt = require("bcryptjs");
 
 // Com banco configurado tudo vai para o MySQL; sem banco, para data/usuarios.json (config/banco.js).
-const { pool, executar: withFallback } = require("../../config/banco");
+const { pool, executar: withFallback, SALDO_INICIAL } = require("../../config/banco");
 
 const dbPath = path.join(__dirname, "../../data/usuarios.json");
 const dbDir = path.dirname(dbPath);
@@ -40,6 +40,19 @@ const salvarUsuarios = (usuarios) => {
   }
 };
 
+// Senhas antigas em texto puro (de antes do bcrypt) são convertidas assim que o servidor sobe.
+const protegerSenhasAntigas = () => {
+  const usuarios = lerUsuarios();
+  const antigas = usuarios.filter(u => u.senha && !String(u.senha).startsWith("$2"));
+  if (!antigas.length) return;
+  antigas.forEach(u => { u.senha = bcrypt.hashSync(String(u.senha), 8); });
+  salvarUsuarios(usuarios);
+  console.log(`🔒 ${antigas.length} senha(s) em texto puro convertidas para bcrypt em data/usuarios.json.`);
+};
+protegerSenhasAntigas();
+
+const saldoDe = (usuario) => (Number.isInteger(usuario?.creditos) ? usuario.creditos : SALDO_INICIAL);
+
 const gerarId = () => {
   const usuarios = lerUsuarios();
   if (usuarios.length === 0) return 1;
@@ -68,8 +81,8 @@ const usuariosModel = {
         return mapRowToUsuario(linhas[0]);
       },
       () => {
-        const usuarios = lerUsuarios();
-        return usuarios.find(u => String(u.id) === String(id)) || null;
+        const usuario = lerUsuarios().find(u => String(u.id) === String(id));
+        return usuario ? { ...usuario, creditos: saldoDe(usuario) } : null;
       }
     );
   },
@@ -245,7 +258,8 @@ const usuariosModel = {
             : [],
           dataCriacao: new Date().toISOString(),
           ultimoLogin: usuarioValido.provider === "local" ? null : new Date().toISOString(),
-          status: "ativo"
+          status: "ativo",
+          creditos: SALDO_INICIAL
         };
         usuarios.push(novoUsuario);
         salvarUsuarios(usuarios);
@@ -294,11 +308,7 @@ const usuariosModel = {
           u.email === usuarioOuEmail.toLowerCase() || u.nome.toLowerCase() === usuarioOuEmail.toLowerCase()
         );
         if (!usuario || !usuario.senha) return null;
-        const isHash = usuario.senha && usuario.senha.startsWith('$2');
-  const match = isHash
-    ? bcrypt.compareSync(senha, usuario.senha)   // senha com hash
-    : usuario.senha === senha;                    // senha em texto puro (legado)
-        if (!match) return null;
+        if (!bcrypt.compareSync(senha, usuario.senha)) return null;
         return usuario;
       }
     );
@@ -346,6 +356,29 @@ const usuariosModel = {
     );
   },
 
+  // Soma (ou subtrai, com valor negativo) créditos sem deixar o saldo ficar negativo.
+  // Devolve false quando não há saldo suficiente ou a conta não existe.
+  ajustarCreditos: async (id, valor) => {
+    const delta = parseInt(valor) || 0;
+    return await withFallback(
+      async () => {
+        const [result] = await pool.query(
+          "UPDATE usuarios SET creditos = creditos + ? WHERE id = ? AND creditos + ? >= 0",
+          [delta, id, delta]
+        );
+        return result.affectedRows > 0;
+      },
+      () => {
+        const usuarios = lerUsuarios();
+        const usuario = usuarios.find(u => String(u.id) === String(id));
+        if (!usuario || saldoDe(usuario) + delta < 0) return false;
+        usuario.creditos = saldoDe(usuario) + delta;
+        salvarUsuarios(usuarios);
+        return true;
+      }
+    );
+  },
+
   delete: async (id) => {
     return await withFallback(
       async () => {
@@ -376,7 +409,8 @@ const mapRowToUsuario = (row) => ({
   providerId: row.provider_id || row.providerId || null,
   dataCriacao: row.data_criacao || row.dataCriacao,
   ultimoLogin: row.ultimo_login || row.ultimoLogin || null,
-  status: row.status || "ativo"
+  status: row.status || "ativo",
+  creditos: saldoDe(row)
 });
 
 module.exports = usuariosModel;
