@@ -44,13 +44,11 @@
   const waLink = waNumero ? 'https://wa.me/' + waNumero + '?text=' + waMensagem : null;
 %>
 
-  <!-- CABEÇALHO VERDE -->
   <section class="rt-header">
     <a href="/contato/<%= anuncio.id %>" title="Voltar">&#8592;</a>
     <h1>Resumo da troca</h1>
   </section>
 
-  <!-- CARD: DOADOR -->
   <section class="rt-card">
     <p class="rt-card-label">Você está trocando com</p>
     <section class="rt-doador">
@@ -71,7 +69,6 @@
     </section>
   </section>
 
-  <!-- CARD: O QUE SERÁ TROCADO -->
   <section class="rt-card">
     <p class="rt-card-label">O que será trocado</p>
     <section class="rt-troca-visual">
@@ -107,7 +104,6 @@
     </section>
   </section>
 
-  <!-- CARD: PONTOS -->
   <section class="rt-card">
     <p class="rt-card-label">Custo em pontos</p>
     <section class="rt-pontos-destaque">
@@ -139,7 +135,6 @@
     <% } %>
   </section>
 
-  <!-- CARD: COMO FUNCIONA -->
   <section class="rt-card">
     <p class="rt-card-label">Como funciona</p>
     <section class="rt-steps">
@@ -167,7 +162,6 @@
     </section>
   </section>
 
-  <!-- CARD: AÇÕES -->
   <section class="rt-card">
     <p class="rt-card-label">Falar com o doador</p>
 
@@ -177,7 +171,6 @@
       </section>
     <% } else { %>
 
-    <!-- Botão WhatsApp -->
     <% if (!waLink) { %>
     <p class="rt-btn-wa rt-btn-wa--indisponivel" role="note">
       O anunciante ainda não informou um WhatsApp válido. Confirme a troca pela plataforma.
@@ -196,7 +189,6 @@
       <p class="rt-erro" role="alert" style="font-size: calc(13px * var(--a11y-escala, 1));color:#c0392b;text-align:center;font-weight:600;margin:12px 0"><%= erroTroca %></p>
     <% } %>
 
-    <!-- Formulário de confirmação -->
     <form action="/confirmar-troca" method="POST">
       <input type="hidden" name="anuncioId"     value="<%= anuncio.id %>">
       <input type="hidden" name="anuncioTitulo" value="<%= anuncio.titulo %>">

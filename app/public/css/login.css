@@ -20,6 +20,16 @@ body {
     height: 75px;
 }
 
+.mobile-login-logo {
+  display: none;
+}
+
+.mobile-login-logo img {
+  display: block;
+  width: 120px;
+  height: auto;
+}
+
 .container {
   flex-shrink: 0;
   background-color: #fff;
@@ -492,6 +502,14 @@ input:focus {
   form h1 {
     font-size: calc(18px * var(--a11y-escala, 1));
     transition: font-size 0.8s ease-in-out;
+  }
+}
+
+@media (max-width: 480px) {
+  .mobile-login-logo {
+    display: block;
+    margin-bottom: 8px;
+    line-height: 0;
   }
 }
 

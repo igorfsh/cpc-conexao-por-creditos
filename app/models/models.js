@@ -73,6 +73,14 @@ const usuariosModel = {
     );
   },
 
+  somarCreditos: async () => await withFallback(
+    async () => {
+      const [linhas] = await pool.query("SELECT COALESCE(SUM(creditos), 0) AS total FROM usuarios");
+      return Number(linhas[0]?.total) || 0;
+    },
+    () => lerUsuarios().reduce((total, usuario) => total + saldoDe(usuario), 0)
+  ),
+
   findById: async (id) => {
     return await withFallback(
       async () => {
@@ -212,7 +220,6 @@ const usuariosModel = {
       email: dados.email.toLowerCase(),
       senha: dados.senha ?? null,
       foto: dados.foto || null,
-      // ✅ NOVO: preserva perfil ao criar (padrão "user")
       perfil: dados.perfil || "user",
       provider: dados.provider || "local",
       providerId: dados.providerId ? String(dados.providerId) : null,
@@ -250,7 +257,7 @@ const usuariosModel = {
           email: usuarioValido.email,
           senha: usuarioValido.senha,
           foto: usuarioValido.foto,
-          perfil: usuarioValido.perfil,   // ✅ NOVO
+          perfil: usuarioValido.perfil,
           provider: usuarioValido.provider,
           providerId: usuarioValido.providerId,
           provedores: usuarioValido.providerId
@@ -396,7 +403,6 @@ const usuariosModel = {
   }
 };
 
-// ✅ ALTERADO: inclui campo perfil
 const mapRowToUsuario = (row) => ({
   id: row.id,
   nome: row.nome,
@@ -404,7 +410,7 @@ const mapRowToUsuario = (row) => ({
   foto: row.foto || null,
   telefone: row.telefone || null,
   endereco: row.endereco || null,
-  perfil: row.perfil || "user",   // ✅ NOVO
+  perfil: row.perfil || "user",
   provider: row.provider || "local",
   providerId: row.provider_id || row.providerId || null,
   dataCriacao: row.data_criacao || row.dataCriacao,

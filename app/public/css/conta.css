@@ -757,8 +757,16 @@ body {
   border-radius: 50%;
   background: var(--conta-verde-claro);
   border: 1px solid #cfe0d3;
-  color: var(--conta-verde);
-  font-size: 19px;
+}
+
+.balance-icon svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: #000;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .balance-copy {

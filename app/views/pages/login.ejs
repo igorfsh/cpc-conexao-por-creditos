@@ -17,9 +17,12 @@
 <% const modoCadastro = locals.modo === 'cadastro'; %>
 <section class="container <%= modoCadastro ? 'right-panel-active' : '' %>" id="container">
 
-  <!-- ================= LOGIN ================= -->
   <section class="form-container sign-in-container">
     <form action="/login" method="POST">
+
+      <section class="mobile-login-logo">
+        <img src="/img/logo-black.png" alt="Logo CPC Conexão por Créditos">
+      </section>
 
       <h1>Login</h1>
 
@@ -74,9 +77,12 @@
     </form>
   </section>
 
-  <!-- ================= CADASTRO ================= -->
   <section class="form-container sign-up-container">
     <form action="/cadastro" method="POST">
+
+      <section class="mobile-login-logo">
+        <img src="/img/logo-black.png" alt="Logo CPC Conexão por Créditos">
+      </section>
 
       <h1>Cadastro</h1>
 
@@ -93,7 +99,6 @@
         <p class="msg-erro" role="alert"><%= erro %></p>
       <% } %>
 
-      <!-- NOME -->
       <input 
         type="text" 
         name="nome" 
@@ -107,7 +112,6 @@
         <p class="msg-erro"><%= msgErro.nome %></p>
       <% } %>
 
-      <!-- EMAIL -->
       <input 
         type="email" 
         name="email" 
@@ -121,7 +125,6 @@
         <p class="msg-erro"><%= msgErro.email %></p>
       <% } %>
 
-      <!-- SENHA -->
       <input 
         type="password" 
         name="senha" 
@@ -145,7 +148,6 @@
         <p class="msg-erro"><%= msgErro.senha %></p>
       <% } %>
 
-      <!-- CONFIRMAR SENHA -->
       <input 
         type="password" 
         name="confirmarSenha" 
@@ -170,7 +172,6 @@
     </form>
   </section>
 
-  <!-- ================= OVERLAY ================= -->
   <section class="overlay-container">
     <section class="overlay">
 

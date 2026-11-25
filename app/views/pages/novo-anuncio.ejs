@@ -76,9 +76,9 @@
           <% const fotosAtuais = (edicao.imagens && edicao.imagens.length) ? edicao.imagens : (edicao.foto ? [edicao.foto] : []); %>
           <% if (fotosAtuais.length) { %>
             <p class="fotos-atuais-titulo" id="fotosAtuaisTitulo">Fotos atuais</p>
-            <div class="campo-imagens-preview fotos-atuais" aria-labelledby="fotosAtuaisTitulo">
+            <section class="campo-imagens-preview fotos-atuais" aria-labelledby="fotosAtuaisTitulo">
               <% fotosAtuais.forEach((foto, i) => { %><img src="<%= foto.replace(/^\.\.\//, '/') %>" alt="Foto atual <%= i + 1 %> de <%= edicao.titulo %>"><% }) %>
-            </div>
+            </section>
           <% } %>
           <input type="file" id="imagens" name="imagens" accept="image/*" multiple aria-describedby="dicaImagens">
           <small id="dicaImagens" style="font-size: calc(11px * var(--a11y-escala, 1));color:#888;margin-top:2px;display:block">Para trocar as fotos, envie 3 novas imagens. Sem enviar nada, as fotos atuais continuam.</small>
@@ -87,7 +87,7 @@
           <input type="file" id="imagens" name="imagens" accept="image/*" multiple required aria-describedby="dicaImagens">
           <small id="dicaImagens" style="font-size: calc(11px * var(--a11y-escala, 1));color:#888;margin-top:2px;display:block">É obrigatório enviar exatamente 3 fotos do item que será doado.</small>
         <% } %>
-        <div class="campo-imagens-preview" id="previewImagens" aria-live="polite"></div>
+        <section class="campo-imagens-preview" id="previewImagens" aria-live="polite"></section>
       </section>
 
       <button type="submit"><%= edicao ? 'Salvar alterações' : 'Publicar Anúncio' %></button>

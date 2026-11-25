@@ -11,21 +11,18 @@
 <header class="main-header">
     <section class="header-container">
  
-        <!-- LOGIN MOBILE -->
         <% if (!usuarioLogado) { %>
             <a href="/login" class="login mobile-login">LOGIN</a>
         <% } else { %>
             <a href="/conta" class="login mobile-login"><img src="<%= usuarioLogado.foto || '/img/img perfil-white.png' %>" alt="Perfil" class="perfil-img"></a>
         <% } %>
 
-        <!-- LOGO -->
         <section class="logo">
             <a href="/">
                 <img src="/img/logo-white.png" alt="CPC Logo">
             </a>
         </section>
  
-        <!-- MENU DESKTOP -->
         <nav class="desktop-menu">
             <ul>
                 <li><a href="/">INÍCIO</a></li>
@@ -37,7 +34,6 @@
             </ul>
         </nav>
  
-        <!-- AÇÕES DESKTOP -->
         <section class="desktop-actions">
             <% if (!usuarioLogado) { %>
                 <a href="/login" class="login">LOGIN</a>
@@ -46,7 +42,6 @@
             <% } %>
         </section>
  
-        <!-- HAMBURGER MOBILE -->
         <section class="hamburger mobile-menu" id="hamburger">
             <span></span>
             <span></span>
@@ -56,12 +51,10 @@
     </section>
 </header>
  
-<script src="/js/menu.js"></script>
+<script src="/js/menu.js" defer></script>
  
-<!-- OVERLAY -->
 <section class="overlay" id="overlay"></section>
  
-<!-- MENU LATERAL MOBILE -->
 <nav class="side-menu" id="sideMenu">
     <ul>
         <li><a href="/">INÍCIO</a></li>
@@ -78,14 +71,14 @@
 </nav>
 
 <aside class="pwa-install" id="pwa-install" aria-labelledby="pwa-install-title" hidden>
-    <div class="pwa-install__content">
+    <section class="pwa-install__content">
         <strong id="pwa-install-title">Leve o CPC com você</strong>
         <p>Instale o app na tela inicial para acessar a rede de trocas com mais rapidez.</p>
-    </div>
-    <div class="pwa-install__actions">
+    </section>
+    <section class="pwa-install__actions">
         <button class="pwa-install__button" id="pwa-install-button" type="button">Adicionar à tela inicial</button>
         <button class="pwa-install__close" id="pwa-install-close" type="button" aria-label="Fechar convite de instalação">&times;</button>
-    </div>
+    </section>
 </aside>
 
 <%- include('acessibilidade.ejs') %>

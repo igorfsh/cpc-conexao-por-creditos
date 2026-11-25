@@ -17,7 +17,6 @@
   <section class="page">
     <section class="grid">
 
-      <!-- HERO -->
       <section class="card card-dark hero">
         <section class="hero-top">
           <section>
@@ -34,7 +33,6 @@
         </p>
       </section>
 
-      <!-- TROCAS HOJE -->
       <section class="card stat-card">
         <p class="stat-label">trocas hoje</p>
         <p class="stat-value"><%= trocasHoje %></p>
@@ -45,14 +43,12 @@
         <% } %>
       </section>
 
-      <!-- MEMBROS -->
       <section class="card stat-card">
         <p class="stat-label">membros ativos</p>
         <p class="stat-value"><%= stats.membrosAtivos.toLocaleString('pt-BR') %></p>
         <p class="stat-delta delta-neutral">+<%= novosEssaSemana %> esta semana</p>
       </section>
 
-      <!-- ATALHOS / KPIs -->
       <a class="card kpi-card" href="/adm/trocas?status=pendente">
         <section class="bottom-icon" style="background:rgba(255,183,3,.18)">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#184C3B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
@@ -88,12 +84,11 @@
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#184C3B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
         </section>
         <section>
-          <p class="bottom-label">doações acumuladas</p>
-          <p class="bottom-value"><%= doacoes %></p>
+          <p class="bottom-label">créditos CPC nas contas</p>
+          <p class="bottom-value"><%= creditosEmCirculacao.toLocaleString('pt-BR') %></p>
         </section>
       </section>
 
-      <!-- ATIVIDADE POR HORA -->
       <section class="card">
         <section class="sec-title">atividade por hora</section>
         <section class="bars">
@@ -111,7 +106,6 @@
         </section>
       </section>
 
-      <!-- ÚLTIMAS TROCAS -->
       <section class="card span-2">
         <section class="sec-title">
           últimas trocas
@@ -131,7 +125,6 @@
         <% } %>
       </section>
 
-      <!-- CATEGORIAS -->
       <section class="card">
         <section class="sec-title">por categoria <a href="/adm/anuncios">gerenciar</a></section>
         <section class="cat-row">

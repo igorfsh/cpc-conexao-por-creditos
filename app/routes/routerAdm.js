@@ -47,6 +47,7 @@ const formatarData = (iso) => iso ? new Date(iso).toLocaleDateString("pt-BR") : 
 router.get("/", async (req, res) => {
     try {
         const stats         = await trocasModel.getStats();
+        const creditosEmCirculacao = await usuariosModel.somarCreditos();
         const contagem      = await anunciosModel.contarPorCategoria();
         const todasTrocas   = await trocasModel.findAll();
         const usuarios      = await usuariosModel.findAll({ limit: 100000, offset: 0 });
@@ -96,7 +97,7 @@ router.get("/", async (req, res) => {
             deltaPercent,
             novosEssaSemana,
             novosHoje,
-            doacoes:          trocasModel.formatarValor(stats.totalDoacoesReais || 0),
+            creditosEmCirculacao,
             atividade,
             picoFaixa,
             picoDia:          faixas[picoIdx],

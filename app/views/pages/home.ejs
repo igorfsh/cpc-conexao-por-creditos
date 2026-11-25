@@ -14,7 +14,6 @@
 <%- include('../partials/header.ejs') %>
 <body>
 
-<!-- BANNER + TEXTO -->
 <section class="banner-wrapper">
   <section class="banner">
     <img src="../img/img-banner.webp" alt="Banner principal">
@@ -70,7 +69,6 @@
   </section>
 </section>
 
-<!-- ÍCONES DESKTOP -->
 <section class="icones">
   <a href="/kids" class="icone-card">
     <section class="icone-circle">
@@ -102,9 +100,6 @@
   </a>
 </section>
 
-<!-- ═══════════════════════════════════════════════
-     DOAR X TROCAR
-     ═══════════════════════════════════════════════ -->
 <section id="caminhos" class="secao">
   <section class="secao-head secao-head--centralizada">
     <p class="eyebrow">Duas formas de participar</p>
@@ -128,9 +123,6 @@
   </section>
 </section>
 
-<!-- ═══════════════════════════════════════════════
-     CTA DE CADASTRO
-     ═══════════════════════════════════════════════ -->
 <% if (!usuarioLogado) { %>
 <section id="cadastro" class="secao">
   <section class="cta-band">
@@ -145,12 +137,10 @@
 </section>
 <% } %>
 
-<!-- ABAS -->
 <section class="abas">
   <a href="/"><button id="btn-sobre" class="aba ativa">Conheça o CPC</button></a>
 </section>
 
-<!-- Conteúdos Home Desktop -->
 <section class="desktop-only">
   <section class="container">
     <article class="card">
@@ -170,7 +160,6 @@
 
 
 
-<!-- Conteúdos Home Mobile -->
 <section class="mobile-only">
   <section id="conteudo-aba">
     <section id="conteudo-sobre">
@@ -184,12 +173,8 @@
   </section>
 </section>
 
-<!-- ═══════════════════════════════════════════════
-     SEÇÃO: NOSSO IMPACTO (substitui .noticias-dashboard)
-     ═══════════════════════════════════════════════ -->
 <section class="impact" id="impacto">
 
-  <!-- Cabeçalho -->
   <section class="impact__header">
     <span class="impact__label">NOSSO IMPACTO</span>
     <h2 class="impact__title">Transformando vidas<br>em números reais</h2>
@@ -199,7 +184,6 @@
     </p>
   </section>
 
-  <!-- Cards de estatísticas -->
   <section class="impact__stats">
 
     <section class="stat-card">
@@ -251,11 +235,11 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"/>
-          <path d="M12 6v12M9 9.5c0-1 1.3-2 3-2s3 1 3 2-1.3 2-3 2-3 1-3 2 1.3 2 3 2 3-1 3-2"/>
+          <path d="m12 6 1.8 3.7 4.1.6-3 2.9.7 4.1-3.6-1.9-3.6 1.9.7-4.1-3-2.9 4.1-.6L12 6z"/>
         </svg>
       </section>
-      <section class="stat-card__value" id="stat-doacoes">1.200</section>
-      <section class="stat-card__label">Total em doações</section>
+      <section class="stat-card__value" id="stat-creditos"><%= creditosEmCirculacao %></section>
+      <section class="stat-card__label">Créditos CPC nas contas</section>
       <section class="stat-card__badge">
         <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24"
              fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -268,30 +252,28 @@
 
   </section>
 
-  <!-- Grade inferior -->
   <section class="impact__bottom">
 
-    <!-- Card de barras de pobreza -->
     <section class="impact-info-card">
       <h3 class="impact-info-card__title">Por que o CPC existe?</h3>
 
       <section class="impact-bar-item">
         <section class="impact-bar-item__header">
-          <span class="impact-bar-item__name">Pobreza extrema — mundo</span>
-          <span class="impact-bar-item__value">9.2%</span>
+          <span class="impact-bar-item__name">Pobreza extrema — Brasil</span>
+          <span class="impact-bar-item__value">4,4%</span>
         </section>
         <section class="impact-bar-track">
-          <section class="impact-bar-fill impact-bar-fill--gold" style="width: 9.2%"></section>
+          <section class="impact-bar-fill impact-bar-fill--gold" style="width: 4.4%"></section>
         </section>
       </section>
 
       <section class="impact-bar-item">
         <section class="impact-bar-item__header">
-          <span class="impact-bar-item__name">Pobreza extrema — Brasil</span>
-          <span class="impact-bar-item__value">5.8%</span>
+          <span class="impact-bar-item__name">Pobreza extrema — Estado de São Paulo</span>
+          <span class="impact-bar-item__value">2,2%</span>
         </section>
         <section class="impact-bar-track">
-          <section class="impact-bar-fill impact-bar-fill--gold" style="width: 5.8%"></section>
+          <section class="impact-bar-fill impact-bar-fill--gold" style="width: 2.2%"></section>
         </section>
       </section>
 
@@ -306,11 +288,10 @@
       </section>
 
       <p class="impact-info-card__source">
-        Fonte: Banco Mundial, 2024. O CPC atua em micro-comunidades urbanas de São Paulo.
+        Extrema pobreza: linha de R$ 209 mensais por pessoa (2023). Fontes: <a href="https://agenciadenoticias.ibge.gov.br/agencia-noticias/2012-agencia-de-noticias/noticias/42043-em-2023-pobreza-no-pais-cai-ao-menor-nivel-desde-2012" target="_blank" rel="noopener noreferrer">IBGE (Brasil)</a> e <a href="https://spsocial.seade.gov.br/wp-content/uploads/2025/02/SP-Social-pobreza-duminui-estado-sao-paulo.pdf" target="_blank" rel="noopener noreferrer">Fundação Seade/PNAD Contínua (São Paulo)</a>, dados de 2023. O CPC atua em micro-comunidades urbanas de São Paulo.
       </p>
     </section>
 
-    <!-- Card CTA -->
     <section class="impact-cta-card">
       <span class="impact-cta-card__badge">FAÇA PARTE</span>
       <h3 class="impact-cta-card__title">Como funcionam os Créditos?</h3>
@@ -327,7 +308,6 @@
   </section>
 </section>
 
-<script src="../js/menu.js"></script>
 
 <script>
   async function atualizarStats() {
@@ -337,7 +317,7 @@
       const formatNum = n => n.toLocaleString('pt-BR');
       document.getElementById('stat-membros').textContent = formatNum(data.membrosAtivos);
       document.getElementById('stat-trocas').textContent  = formatNum(data.trocasRealizadas);
-      document.getElementById('stat-doacoes').textContent = data.totalDoacoes;
+      document.getElementById('stat-creditos').textContent = formatNum(data.creditosEmCirculacao);
     } catch (e) {}
   }
   setInterval(atualizarStats, 30000);

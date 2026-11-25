@@ -21,7 +21,7 @@ from collections import OrderedDict
 
 RAIZ = os.path.dirname(os.path.abspath(__file__))
 PASTA_CSS = os.path.join(RAIZ, "app", "public", "css")
-IGNORAR = {"acessibilidade.css", "chat-ia.css", "modo-escuro.css", "modo-escuro-gerado.css",
+IGNORAR = {"acessibilidade.css", "chat-ia.css", "modo-escuro.css",
            "modo-escuro-manual.css", "cpc-palette.css"}
 
 # Selectors com fundo colorido definido em OUTRA regra/classe (não detectável) — não mexer no texto.

@@ -24,7 +24,6 @@
     "test": "node --test test/*.test.js"
   },
   "dependencies": {
-    "@simplewebauthn/browser": "^13.3.0",
     "@simplewebauthn/server": "^13.3.3",
     "bcryptjs": "^3.0.3",
     "compression": "^1.8.1",
@@ -33,12 +32,12 @@
     "express": "^5.1.0",
     "express-session": "^1.19.0",
     "express-validator": "^7.2.1",
-    "install": "^0.13.0",
     "multer": "^2.1.1",
     "mysql2": "^3.22.0",
     "passport": "^0.6.0",
     "passport-github2": "^0.1.12",
     "passport-google-oauth20": "^2.0.0",
+    "passport-oauth2": "^1.8.0",
     "sharp": "^0.34.5"
   }
 }

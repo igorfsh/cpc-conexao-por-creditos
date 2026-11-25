@@ -118,10 +118,10 @@ app.set("view engine", "ejs");
 app.set("views", "./app/views");
 
 const rotaPrincipal = require("./app/routes/router");
-const rotaAdm = require("./app/routes/routerAdm"); // ✅ NOVO
+const rotaAdm = require("./app/routes/routerAdm");
 
 app.use("/auth", authRoutes);
-app.use("/adm", rotaAdm);       // ✅ NOVO — antes do "/"
+app.use("/adm", rotaAdm);
 app.use("/", rotaPrincipal);
 
 const porta = process.env.APP_PORT || process.env.PORT || 3000;
