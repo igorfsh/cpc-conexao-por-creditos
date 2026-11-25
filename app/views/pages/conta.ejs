@@ -45,7 +45,12 @@
           <p class="passkey-message" id="mensagemBiometria" role="status"></p>
         </section>
         <section class="balance-card" aria-label="Saldo de créditos">
-          <span class="balance-icon material-symbols-outlined" aria-hidden="true"></span>
+          <span class="balance-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+              <circle cx="12" cy="12" r="11" />
+              <path d="M15 8.5c-.7-.7-1.6-1-2.8-1-1.8 0-3 .8-3 2s1 1.8 3 2.3 3 1 3 2.3-1.2 2.3-3.1 2.3c-1.2 0-2.4-.4-3.2-1.2M12 6.5v11" />
+            </svg>
+          </span>
           <span class="balance-copy">
             <strong class="amount"><%= usuario?.creditos ?? 0 %></strong>
             <span class="balance-label">CRÉDITOS CPC</span>
@@ -56,9 +61,7 @@
       <% if (locals.queryErro) { %><p class="profile-message error">Não foi possível atualizar a foto. Use JPG, PNG ou WebP de até 5 MB.</p><% } %>
     </section>
  
-      <!-- Bento Grid -->
       <section class="bento-grid">
-        <!-- In-Progress Trades -->
         <section class="trades-section">
           <h2>Últimas Trocas</h2>
          
@@ -166,7 +169,6 @@
     </form>
   </dialog>
  
-   <!-- Logout -->
     <section class="logout-section">
       <a href="/logout" class="logout-btn">Sair da Conta</a>
     </section>

@@ -28,7 +28,7 @@ const salvarTrocas = (trocas) => {
 const lerStats = () => {
   try {
     if (!fs.existsSync(statsPath)) {
-      const inicial = { membrosAtivos: 0, trocasRealizadas: 0, totalDoacoesReais: 0, ultimaAtualizacao: new Date().toISOString() };
+      const inicial = { membrosAtivos: 0, trocasRealizadas: 0, ultimaAtualizacao: new Date().toISOString() };
       fs.writeFileSync(statsPath, JSON.stringify(inicial, null, 2));
       return inicial;
     }
@@ -36,7 +36,7 @@ const lerStats = () => {
     return JSON.parse(dados);
   } catch (err) {
     console.error('Erro ao ler stats.json:', err);
-    return { membrosAtivos: 0, trocasRealizadas: 0, totalDoacoesReais: 0 };
+    return { membrosAtivos: 0, trocasRealizadas: 0 };
   }
 };
 
@@ -227,12 +227,11 @@ const trocasModel = {
     const trocasConcluidas = trocas.filter(t => t.status === 'concluida').length;
     const stats = await executar(
       async () => {
-        const [linhas] = await pool.query('SELECT * FROM estatisticas WHERE id = 1');
+        const [linhas] = await pool.query('SELECT membros_ativos, trocas_realizadas FROM estatisticas WHERE id = 1');
         const row = linhas[0] || {};
         return {
           membrosAtivos: Number(row.membros_ativos) || 0,
           trocasRealizadas: Number(row.trocas_realizadas) || 0,
-          totalDoacoesReais: Number(row.total_doacoes_reais) || 0,
         };
       },
       lerStats
@@ -241,20 +240,11 @@ const trocasModel = {
     return {
       membrosAtivos: stats.membrosAtivos,
       trocasRealizadas: stats.trocasRealizadas,
-      totalDoacoesReais: stats.totalDoacoesReais,
       trocasConcluidas,
     };
   },
 
   incrementarMembro: () => somarStat('membrosAtivos', 'membros_ativos'),
-
-  // Formata valor monetário em BRL
-  formatarValor: (centavos) => {
-    const reais = centavos / 100;
-    if (reais >= 1000000) return `R$ ${(reais / 1000000).toFixed(1)}M`;
-    if (reais >= 1000) return `R$ ${(reais / 1000).toFixed(1)}K`;
-    return `R$ ${reais.toFixed(2)}`;
-  }
 };
 
 module.exports = trocasModel;

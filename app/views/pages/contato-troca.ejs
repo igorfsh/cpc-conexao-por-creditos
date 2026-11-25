@@ -19,7 +19,6 @@
       <p style="text-align:center;padding:40px">Anúncio não encontrado. <a href="/todos">Voltar aos anúncios</a></p>
     <% } else { %>
 
-    <!-- Perfil do Doador -->
     <section class="profile-section">
       <figure class="profile-card">
         <img src="<%= anuncio.fotoAnunciante %>" alt="Foto de perfil de <%= anuncio.doadorNome %>" class="avatar">
@@ -35,7 +34,6 @@
 
     <% // Fotos do item, completadas com imagens da categoria (fotoAnuncioService)
        const sliderImages = anuncio.imagensCarrossel; %>
-    <!-- Carrossel -->
     <section class="carousel-section">
       <section class="slider-container">
         <input type="radio" name="slider" id="slide1" checked>
@@ -56,7 +54,6 @@
       </section>
     </section>
 
-    <!-- Descrição -->
     <section class="description-section">
       <h2>Descrição</h2>
       <p><%= anuncio.descricao %></p>
@@ -64,7 +61,6 @@
       <p><strong>Tipo:</strong> <%= anuncio.tipo === 'servico' ? 'Serviço' : 'Produto' %></p>
     </section>
 
-    <!-- Ação -->
     <section class="action-section">
       <% if (locals.proprioAnuncio) { %>
         <section class="dono-anuncio" aria-labelledby="dono-titulo">
@@ -73,13 +69,13 @@
           <% } %>
           <p class="dono-anuncio__titulo" id="dono-titulo">Este anúncio é seu</p>
           <p class="dono-anuncio__texto">Você não pode trocar com você mesmo, mas pode atualizar as informações quando quiser.</p>
-          <div class="dono-anuncio__acoes">
+          <section class="dono-anuncio__acoes">
             <a href="/anuncio/<%= anuncio.id %>/editar" class="dono-anuncio__editar">
               <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 20h4L19 9a2.83 2.83 0 0 0-4-4L4 16v4z"/><path d="m13.5 6.5 4 4"/></svg>
               Editar anúncio
             </a>
             <a href="/conta" class="dono-anuncio__voltar">Voltar para minha conta</a>
-          </div>
+          </section>
         </section>
       <% } else { %>
         <a href="/resumo/<%= anuncio.id %>" class="start-trade-button-link">

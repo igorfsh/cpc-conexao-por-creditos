@@ -61,18 +61,29 @@ test("conta nova começa com o saldo inicial", async () => {
   assert.strictEqual(await saldo(solicitante), SALDO_INICIAL);
 });
 
+test("soma o saldo de créditos de todas as contas", async () => {
+  const contas = JSON.parse(fs.readFileSync(path.join(pastaDados, "usuarios.json"), "utf8"));
+  const totalEsperado = contas.reduce(
+    (total, conta) => total + (Number.isInteger(conta.creditos) ? conta.creditos : SALDO_INICIAL),
+    0
+  );
+  assert.strictEqual(await usuarios.somarCreditos(), totalEsperado);
+});
+
 test("não dá para pedir o próprio anúncio", async () => {
   const resultado = await servico.solicitar({ usuario: doador, anuncio });
   assert.strictEqual(resultado.erro, "proprio");
 });
 
 test("pedir reserva os créditos e concluir paga o doador uma vez só", async () => {
+  const creditosEmCirculacao = await usuarios.somarCreditos();
   const { troca } = await servico.solicitar({ usuario: solicitante, anuncio });
   assert.strictEqual(await saldo(solicitante), SALDO_INICIAL - 5);
   assert.strictEqual((await servico.solicitar({ usuario: solicitante, anuncio })).erro, "duplicada");
 
   await servico.concluir(troca.id);
   assert.strictEqual(await saldo(doador), SALDO_INICIAL + 5);
+  assert.strictEqual(await usuarios.somarCreditos(), creditosEmCirculacao);
   assert.strictEqual(await servico.concluir(troca.id), null);
   assert.strictEqual(await saldo(doador), SALDO_INICIAL + 5);
 });

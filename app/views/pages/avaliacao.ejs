@@ -33,7 +33,7 @@
           <legend class="av-legenda">
             <%= editando ? 'Nova nota' : 'Sua nota' %><span class="av-oculto"> para <%= troca.anuncioTitulo %></span>
           </legend>
-          <div class="av-estrelas">
+          <section class="av-estrelas">
             <% for (let nota = 1; nota <= 5; nota++) { %>
               <input class="av-oculto-input" type="radio" name="nota" value="<%= nota %>" id="t<%= id %>-n<%= nota %><%= editando ? '-e' : '' %>" <%= notaAtual === nota ? 'checked' : '' %> required>
               <label class="av-estrela" for="t<%= id %>-n<%= nota %><%= editando ? '-e' : '' %>" data-rotulo="<%= ROTULOS[nota] %>">
@@ -41,7 +41,7 @@
                 <span class="av-oculto"><%= nota %> <%= nota === 1 ? 'estrela' : 'estrelas' %> — <%= ROTULOS[nota] %></span>
               </label>
             <% } %>
-          </div>
+          </section>
           <p class="av-rotulo-nota" aria-live="polite" data-rotulo-nota><%= notaAtual ? ROTULOS[notaAtual] : 'Toque em uma estrela' %></p>
         </fieldset>
 
@@ -90,19 +90,19 @@
         <% pendentes.forEach((troca) => { const status = statusTroca(troca); %>
           <li class="av-card <%= erroId === troca.id ? 'av-card--erro' : '' %>" id="troca-<%= troca.id %>">
             <article aria-labelledby="titulo-<%= troca.id %>">
-              <div class="av-card__topo">
-                <div class="av-card__foto">
+              <section class="av-card__topo">
+                <section class="av-card__foto">
                   <img src="<%= troca.fotoItem || '/img/img home-2.webp' %>" alt="" loading="lazy">
-                </div>
-                <div class="av-card__info">
+                </section>
+                <section class="av-card__info">
                   <h3 id="titulo-<%= troca.id %>"><%= troca.anuncioTitulo %></h3>
                   <p>com <strong><%= troca.doadorNome %></strong></p>
                   <p class="av-card__meta">
                     <time datetime="<%= troca.dataSolicitacao %>"><%= formatarData(troca.dataSolicitacao) %></time>
                     <span class="av-status <%= status.classe %>"><%= status.texto %></span>
                   </p>
-                </div>
-              </div>
+                </section>
+              </section>
               <% if (erroId === troca.id) { %>
                 <p class="av-alerta av-alerta--erro" role="alert">Escolha de 1 a 5 estrelas antes de salvar.</p>
               <% } %>
@@ -121,11 +121,11 @@
         <% avaliadas.forEach((troca) => { %>
           <li class="av-card av-card--avaliada <%= salvaId === troca.id ? 'av-card--salva' : '' %> <%= erroId === troca.id ? 'av-card--erro' : '' %>" id="troca-<%= troca.id %>">
             <article aria-labelledby="titulo-<%= troca.id %>">
-              <div class="av-card__topo">
-                <div class="av-card__foto">
+              <section class="av-card__topo">
+                <section class="av-card__foto">
                   <img src="<%= troca.fotoItem || '/img/img home-2.webp' %>" alt="" loading="lazy">
-                </div>
-                <div class="av-card__info">
+                </section>
+                <section class="av-card__info">
                   <h3 id="titulo-<%= troca.id %>"><%= troca.anuncioTitulo %></h3>
                   <p>com <strong><%= troca.doadorNome %></strong> · <time datetime="<%= troca.dataSolicitacao %>"><%= formatarData(troca.dataSolicitacao) %></time></p>
                   <p class="av-nota-lida">
@@ -134,8 +134,8 @@
                     </span>
                     <span><span class="av-oculto">Sua nota: <%= troca.avaliacaoNota %> de 5 — </span><%= ROTULOS[troca.avaliacaoNota] %></span>
                   </p>
-                </div>
-              </div>
+                </section>
+              </section>
 
               <% if (salvaId === troca.id) { %>
                 <p class="av-alerta av-alerta--ok" role="status">✓ Avaliação salva. Obrigado por ajudar a comunidade!</p>

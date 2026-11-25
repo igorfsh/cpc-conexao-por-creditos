@@ -35,15 +35,18 @@ router.get("/cadastro", (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    const stats = await trocasModel.getStats();
+    const [stats, creditosEmCirculacao] = await Promise.all([
+      trocasModel.getStats(),
+      usuariosModel.somarCreditos(),
+    ]);
     res.render("pages/home", {
       membrosAtivos: stats.membrosAtivos.toLocaleString("pt-BR"),
       trocasRealizadas: stats.trocasRealizadas.toLocaleString("pt-BR"),
-      totalDoacoes: trocasModel.formatarValor(stats.totalDoacoesReais * 100),
+      creditosEmCirculacao: creditosEmCirculacao.toLocaleString("pt-BR"),
     });
   } catch (err) {
     console.error("Erro home:", err);
-    res.render("pages/home", { membrosAtivos: "0", trocasRealizadas: "0", totalDoacoes: "R$ 0" });
+    res.render("pages/home", { membrosAtivos: "0", trocasRealizadas: "0", creditosEmCirculacao: "0" });
   }
 });
 
@@ -217,11 +220,14 @@ router.post(
 );
 
 router.get("/api/stats", async (req, res) => {
-  const stats = await trocasModel.getStats();
+  const [stats, creditosEmCirculacao] = await Promise.all([
+    trocasModel.getStats(),
+    usuariosModel.somarCreditos(),
+  ]);
   res.json({
     membrosAtivos: stats.membrosAtivos,
     trocasRealizadas: stats.trocasRealizadas,
-    totalDoacoes: trocasModel.formatarValor(stats.totalDoacoesReais * 100),
+    creditosEmCirculacao,
   });
 });
 

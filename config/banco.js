@@ -278,7 +278,7 @@ const importarEstatisticasDoJSON = async () => {
   })();
   await pool.query(
     "INSERT IGNORE INTO estatisticas (id, membros_ativos, trocas_realizadas, total_doacoes_reais) VALUES (1, ?, ?, ?)",
-    [Number(stats.membrosAtivos) || 0, Number(stats.trocasRealizadas) || 0, Number(stats.totalDoacoesReais) || 0]
+    [Number(stats.membrosAtivos) || 0, Number(stats.trocasRealizadas) || 0, 0]
   );
 };
 
